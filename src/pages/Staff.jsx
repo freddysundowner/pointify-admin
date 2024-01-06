@@ -15,8 +15,6 @@ import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { FiPlus } from "react-icons/fi";
 
-//internal import
-
 import useAsync from "@/hooks/useAsync";
 import useFilter from "@/hooks/useFilter";
 import MainDrawer from "@/components/drawer/MainDrawer";
