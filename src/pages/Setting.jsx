@@ -11,10 +11,19 @@ import InputAreaTwo from "@/components/form/input/InputAreaTwo";
 import SelectTimeZone from "@/components/form/selectOption/SelectTimeZone";
 import SelectCurrency from "@/components/form/selectOption/SelectCurrency";
 import SelectReceiptSize from "@/components/form/selectOption/SelectPrintSize";
+import SwitchToggle from "@/components/form/switch/SwitchToggle";
 
 const Setting = () => {
-  const { errors, register, isSave, isSubmitting, onSubmit, handleSubmit } =
-    useSettingSubmit();
+  const {
+    errors,
+    register,
+    isSave,
+    isSubmitting,
+    onSubmit,
+    handleSubmit,
+    setForceUpdate,
+    forceUpdate,
+  } = useSettingSubmit();
 
   const { t } = useTranslation();
 
@@ -39,6 +48,64 @@ const Setting = () => {
                       placeholder={t("NumberOfImagesPerProduct")}
                     />
                     <Error errorName={errors.number_of_image_per_product} />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-5 items-center sm:grid-cols-12 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                  <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 sm:col-span-2">
+                    IOS version
+                  </label>
+                  <div className="sm:col-span-3">
+                    <InputAreaTwo
+                      register={register}
+                      label="IOS version"
+                      name="ios_version"
+                      type="text"
+                      placeholder="IOS version"
+                    />
+                    <Error errorName={errors.ios_version} />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-5 items-center sm:grid-cols-12 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                  <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 sm:col-span-2">
+                    Demo Link
+                  </label>
+                  <div className="sm:col-span-3">
+                    <InputAreaTwo
+                      register={register}
+                      label="Demo Link"
+                      name="demolink"
+                      type="text"
+                      placeholder="Demo Link"
+                    />
+                    <Error errorName={errors.demolink} />
+                  </div>
+                </div>
+                <div className="grid md:grid-cols-5 items-center sm:grid-cols-12 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                  <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 sm:col-span-2">
+                    Android version
+                  </label>
+                  <div className="sm:col-span-3">
+                    <InputAreaTwo
+                      register={register}
+                      label="Android version"
+                      name="android_version"
+                      type="text"
+                      placeholder="Android version"
+                    />
+                    <Error errorName={errors.android_version} />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-5 items-center sm:grid-cols-12 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                  <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-1 sm:col-span-2">
+                    Force Update
+                  </label>
+                  <div className="sm:col-span-3">
+                    <SwitchToggle
+                      handleProcess={setForceUpdate}
+                      processOption={forceUpdate}
+                    />
+                    <Error errorName={errors.forceUpdate} />
                   </div>
                 </div>
 

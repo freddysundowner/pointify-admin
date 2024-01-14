@@ -32,7 +32,7 @@ const CustomerTable = ({ customers }) => {
           <TableRow key={user._id}>
             <TableCell>
               <span className="text-sm">
-                {dayjs(user.createdAt).format("MMM D, YYYY")}
+                {dayjs(user.createdAt).format("MMM D, YYYY H:mm")}
               </span>
             </TableCell>
             <TableCell>

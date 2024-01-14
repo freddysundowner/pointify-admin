@@ -13,6 +13,7 @@ const useSettingSubmit = (id) => {
   const dispatch = useDispatch();
   const { setIsUpdate } = useContext(SidebarContext);
   const [isSave, setIsSave] = useState(true);
+  const [forceUpdate, setForceUpdate] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,12 +26,7 @@ const useSettingSubmit = (id) => {
     formState: { errors },
   } = useForm();
 
-  // console.log("errors", errors);
-  // console.log("enabledCOD", enabledCOD);
-
   const onSubmit = async (data) => {
-    // console.log("data", data);
-    // return notifyError("This feature is disabled for demo!");
     try {
       setIsSubmitting(true);
       const settingData = {
@@ -39,7 +35,10 @@ const useSettingSubmit = (id) => {
           //for common setting
           number_of_image_per_product: data.number_of_image_per_product,
           shop_name: data.shop_name,
+          android_version: data.android_version,
+          ios_version: data.ios_version,
           address: data.address,
+          demolink: data.demolink,
           company_name: data.company_name,
           vat_number: data.vat_number,
           post_code: data.post_code,
@@ -50,6 +49,7 @@ const useSettingSubmit = (id) => {
           default_currency: data.default_currency,
           default_time_zone: data.default_time_zone,
           default_date_format: data.default_date_format,
+          forceUpdate: forceUpdate,
         },
       };
 
@@ -98,6 +98,8 @@ const useSettingSubmit = (id) => {
             "number_of_image_per_product",
             res.number_of_image_per_product
           );
+          setValue("ios_version", res.ios_version);
+          setValue("android_version", res.android_version);
           setValue("shop_name", res.shop_name);
           setValue("address", res.address);
           setValue("company_name", res.company_name);
@@ -105,11 +107,14 @@ const useSettingSubmit = (id) => {
           setValue("post_code", res.post_code);
           setValue("contact", res.contact);
           setValue("email", res.email);
+          setValue("demolink", res.demolink);
           setValue("website", res.website);
+          setValue("forceUpdate", res.forceUpdate);
           setValue("receipt_size", res.receipt_size);
           setValue("default_currency", res.default_currency);
           setValue("default_time_zone", res?.default_time_zone);
           setValue("default_date_format", res?.default_date_format);
+          setForceUpdate(res.forceUpdate);
         }
       } catch (err) {
         notifyError(err?.response?.data?.message || err?.message);
@@ -124,6 +129,8 @@ const useSettingSubmit = (id) => {
     isSubmitting,
     onSubmit,
     handleSubmit,
+    setForceUpdate,
+    forceUpdate,
   };
 };
 
