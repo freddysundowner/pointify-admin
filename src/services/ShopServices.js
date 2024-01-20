@@ -1,13 +1,15 @@
 import requests from "./httpService";
 
 const ShopServices = {
-  getAllShops: async ({ page, limit, category, title, price }) => {
+  getAllShops: async ({ page, limit, category, title, price, locationText }) => {
     const searchCategory = category !== null ? category : "";
     const searchTitle = title !== null ? title : "";
     const searchPrice = price !== null ? price : "";
+    const address = locationText !== null ? locationText : "";
+    
 
     return requests.get(
-      `/shop?page=${page}&limit=${limit}&category=${searchCategory}&title=${searchTitle}&price=${searchPrice}`
+      `/shop?page=${page}&address=${address}&limit=${limit}&category=${searchCategory}&title=${searchTitle}&price=${searchPrice}`
     );
   },
 

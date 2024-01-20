@@ -26,8 +26,7 @@ import UserServices from "@/services/UserServices";
 const Users = () => {
   const { data, loading, error } = useAsync(UserServices.getAllUsers);
 
-  // console.log('customer',data)
-
+  console.log(data);
   const {
     userRef,
     dataTable,
@@ -52,7 +51,7 @@ const Users = () => {
 
   return (
     <>
-      <PageTitle>{t("CustomersPage")}</PageTitle>
+      <PageTitle>Users</PageTitle>
 
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody>
@@ -129,7 +128,8 @@ const Users = () => {
                 <TableCell>{t("CustomersName")}</TableCell>
                 <TableCell>{t("CustomersEmail")}</TableCell>
                 <TableCell>Refered By</TableCell>
-                <TableCell>{t("CustomersPhone")}</TableCell>
+                    <TableCell>{t("CustomersPhone")}</TableCell>
+                    <TableCell>Shops</TableCell>
                 <TableCell className="text-right">
                   {t("CustomersActions")}
                 </TableCell>

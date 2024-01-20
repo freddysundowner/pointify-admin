@@ -284,7 +284,6 @@ const useFilter = (data) => {
         cur.iso_code.toLowerCase().includes(currency.toLowerCase())
       );
     }
-    // console.log("render", data, "categoryRef", categoryRef);
 
     return services;
   }, [

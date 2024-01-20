@@ -28,12 +28,13 @@ import { SidebarContext } from "@/context/SidebarContext";
 import MainDrawer from "@/components/drawer/MainDrawer";
 import ShopDrawer from "@/components/drawer/ShopDrawer";
 import CheckBox from "@/components/form/others/CheckBox";
-import useProductFilter from "@/hooks/useProductFilter";
+import useShopFilter from "@/hooks/useShopFilter";
 import DeleteModal from "@/components/modal/DeleteModal";
 import BulkActionDrawer from "@/components/drawer/BulkActionDrawer";
 import TableLoading from "@/components/preloader/TableLoading";
 import SelectCategory from "@/components/form/selectOption/SelectCategory";
 import ShopTable from "@/components/shop/ShopTable";
+import SelectShopCategory from "@/components/form/selectOption/SelectShopCategory";
 
 const Shops = () => {
   const { title, allId, serviceId, handleDeleteMany, handleUpdateMany } =
@@ -53,6 +54,8 @@ const Shops = () => {
     sortedField,
     setSortedField,
     limitData,
+    location,
+    searchLocationRef
   } = useContext(SidebarContext);
 
   const { data, loading, error } = useAsync(() =>
@@ -60,6 +63,7 @@ const Shops = () => {
       page: currentPage,
       limit: limitData,
       category: category,
+      locationText: location,
       title: searchText,
       price: sortedField,
     })
@@ -83,6 +87,7 @@ const Shops = () => {
     setCategory("");
     setSortedField("");
     searchRef.current.value = "";
+    searchLocationRef.current.value = "";
   };
 
   // console.log('productss',products)
@@ -92,12 +97,14 @@ const Shops = () => {
     isDisabled,
     handleSelectFile,
     handleUploadMultiple,
-    handleRemoveSelectFile,
-  } = useProductFilter(data);
+    handleRemoveSelectFile, resultsPerPage, totalResults,
+
+    dataTable,
+  } = useShopFilter(data);
 
   return (
     <>
-      <PageTitle>{t("ProductsPage")}</PageTitle>
+      <PageTitle>Shops</PageTitle>
       <DeleteModal ids={allId} setIsCheck={setIsCheck} title={title} />
       <BulkActionDrawer ids={allId} title="Products" />
       <MainDrawer>
@@ -170,10 +177,22 @@ const Shops = () => {
           >
             <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
               <Input
+                ref={searchLocationRef}
+                type="search"
+                name="search"
+                placeholder="Search By Location"
+              />
+              <button
+                type="submit"
+                className="absolute right-0 top-0 mt-5 mr-1"
+              ></button>
+            </div>
+            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+              <Input
                 ref={searchRef}
                 type="search"
                 name="search"
-                placeholder="Search Product"
+                placeholder="Search Shop"
               />
               <button
                 type="submit"
@@ -182,26 +201,16 @@ const Shops = () => {
             </div>
 
             <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-              <SelectCategory setCategory={setCategory} lang={lang} />
+              <SelectShopCategory setCategory={setCategory} lang={lang} />
             </div>
 
             <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
               <Select onChange={(e) => setSortedField(e.target.value)}>
                 <option value="All" defaultValue hidden>
-                  {t("Price")}
+                  All
                 </option>
-                <option value="low">{t("LowtoHigh")}</option>
-                <option value="high">{t("HightoLow")}</option>
-                <option value="published">{t("Published")}</option>
-                <option value="unPublished">{t("Unpublished")}</option>
-                <option value="status-selling">{t("StatusSelling")}</option>
-                <option value="status-out-of-stock">{t("StatusStock")}</option>
-                <option value="date-added-asc">{t("DateAddedAsc")}</option>
-                <option value="date-added-desc">{t("DateAddedDesc")}</option>
-                <option value="date-updated-asc">{t("DateUpdatedAsc")}</option>
-                <option value="date-updated-desc">
-                  {t("DateUpdatedDesc")}
-                </option>
+                <option value="active">Active</option>
+                <option value="expired">Expired</option>
               </Select>
             </div>
             <div className="flex items-center gap-2 flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
@@ -245,8 +254,8 @@ const Shops = () => {
                   />
                 </TableCell>
                 <TableCell>Shop Name</TableCell>
-                <TableCell>{t("CategoryTbl")}</TableCell>
                 <TableCell>Owner</TableCell>
+                <TableCell>Location</TableCell>
                 <TableCell>Expiry Date</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Subscription</TableCell>
@@ -266,10 +275,10 @@ const Shops = () => {
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={data.length}
-              resultsPerPage={limitData}
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
-              label="Product Page Navigation"
+              label="Table navigation"
             />
           </TableFooter>
         </TableContainer>

@@ -47,6 +47,9 @@ const CustomerTable = ({ customers }) => {
             <TableCell>
               <span className="text-sm font-medium">{user.phone}</span>
             </TableCell>
+            <TableCell>
+              <span className="text-sm font-medium">{user.shopCount}</span>
+            </TableCell>
 
             <TableCell>
               <div className="flex justify-end text-right">

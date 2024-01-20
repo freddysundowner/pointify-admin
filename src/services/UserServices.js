@@ -2,7 +2,9 @@ import requests from "./httpService";
 
 const UserServices = {
   getAllUsers: async ({ searchText = "" }) => {
-    return requests.get(`/admin?searchText=${searchText}`);
+    let d = requests.get(`/admin?searchText=${searchText}`);
+    console.log(d);
+    return d;
   },
 
   addAllUsers: async (body) => {

@@ -13,6 +13,7 @@ export const SidebarContext = createContext();
 export const SidebarProvider = ({ children }) => {
   const resultsPerPage = 20;
   const searchRef = useRef("");
+  const searchLocationRef = useRef("");
   const invoiceRef = useRef("");
   // const dispatch = useDispatch();
 
@@ -25,6 +26,7 @@ export const SidebarProvider = ({ children }) => {
   const [lang, setLang] = useState("en");
   const [time, setTime] = useState("");
   const [sortedField, setSortedField] = useState("");
+  const [location, setLocation] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchText, setSearchText] = useState(null);
   const [invoice, setInvoice] = useState(null);
@@ -40,8 +42,6 @@ export const SidebarProvider = ({ children }) => {
   const [navBar, setNavBar] = useState(true);
   const { i18n } = useTranslation();
   const [tabIndex, setTabIndex] = useState(0);
-
-  // const { socket } = useNotification();
 
   const closeSidebar = () => setIsSidebarOpen(false);
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -70,9 +70,18 @@ export const SidebarProvider = ({ children }) => {
 
   const handleSubmitForAll = (e) => {
     e.preventDefault();
-    if (!searchRef?.current?.value) return setSearchText(null);
-    setSearchText(searchRef?.current?.value);
+    if (!searchLocationRef?.current?.value) {
+      setLocation(null)
+    } else {
+      setLocation(searchLocationRef?.current?.value);
+    }
+    if (!searchRef?.current?.value) {
+      setSearchText(null)
+    } else {
+      setSearchText(searchRef?.current?.value);
+    }
     setCategory(null);
+    console.log(searchLocationRef?.current?.value);
   };
 
   useEffect(() => {
@@ -99,29 +108,6 @@ export const SidebarProvider = ({ children }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // useEffect(() => {
-  //   // Listen for the 'notification' event from the server
-  //   socket?.on("notification", (notification) => {
-  //     // Update data in real-time here
-  //     console.log("notification", notification);
-  //     if (notification?.option === "globalSetting") {
-  //       dispatch(removeSetting("globalSetting"));
-  //       const globalSettingData = {
-  //         ...res.globalSetting,
-  //         name: "globalSetting",
-  //       };
-  //       dispatch(addSetting(globalSettingData));
-  //     }
-  //     // if(notification?.option === 'storeCustomizationSetting'){
-
-  //     // }
-  //   });
-
-  //   return () => {
-  //     // Disconnect the socket when the component unmounts
-  //     socket?.disconnect();
-  //   };
-  // }, []);
 
   return (
     <SidebarContext.Provider
@@ -182,6 +168,9 @@ export const SidebarProvider = ({ children }) => {
         navBar,
         tabIndex,
         setTabIndex,
+        location,
+        setLocation,
+        searchLocationRef
       }}
     >
       {children}

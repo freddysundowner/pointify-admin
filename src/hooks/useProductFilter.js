@@ -43,6 +43,12 @@ const useProductFilter = (data) => {
   //service data filtering
   const serviceData = data;
 
+  //pagination functionality start
+  const resultsPerPage = 5;
+  const totalResults = serviceData?.length;
+  const handleChangePage = (p) => {
+    setCurrentPage(p);
+  };
   //  console.log('selectedFile',selectedFile)
 
   const handleOnDrop = (data) => {
@@ -232,7 +238,7 @@ const useProductFilter = (data) => {
     handleOnDrop,
     handleUploadProducts,
     handleRemoveSelectFile,
-    handleUploadMultiple,
+    handleUploadMultiple, handleChangePage, resultsPerPage, totalResults
   };
 };
 

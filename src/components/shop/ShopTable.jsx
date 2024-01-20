@@ -70,24 +70,21 @@ const ShopTable = ({ products, isCheck, setIsCheck }) => {
               <div className="flex items-center">
                 <div>
                   <h2
-                    className={`text-sm font-medium ${
-                      product?.name.length > 30 ? "wrap-long-title" : ""
-                    }`}
+                    className={`text-sm font-medium ${product?.name.length > 30 ? "wrap-long-title" : ""
+                      }`}
                   >
-                    {showingTranslateValue(product?.name)?.substring(0, 28)}
+                    {showingTranslateValue(product?.name)?.substring(0, 28)}<br/>
+                    <p>Category: {showingTranslateValue(product?.shopCategoryId?.name)}<br /></p>
+                    <p>Products: <span className="text-sm">{product.productCount}</span></p>
                   </h2>
                 </div>
               </div>
             </TableCell>
-
             <TableCell>
-              <span className="text-sm">
-                {showingTranslateValue(product?.shopCategoryId?.name)}
-              </span>
+              <span className="text-sm"><p>{product.adminId.username}</p><p className=" text-[12px]">{product.adminId.phone}</p></span>
             </TableCell>
-
             <TableCell>
-              <span className="text-sm">{product.adminId.username}</span>
+              <span className="text-[11px]"><p>{product.address}</p></span>
             </TableCell>
             <TableCell>
               <span className="text-sm">
