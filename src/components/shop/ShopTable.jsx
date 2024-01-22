@@ -81,7 +81,7 @@ const ShopTable = ({ products, isCheck, setIsCheck }) => {
               </div>
             </TableCell>
             <TableCell>
-              <span className="text-sm"><p>{product.adminId.username}</p><p className=" text-[12px]">{product.adminId.phone}</p></span>
+              <span className="text-sm"><p>{product.adminId?.username}</p><p className=" text-[12px]">{product.adminId?.phone}</p></span>
             </TableCell>
             <TableCell>
               <span className="text-[11px]"><p>{product.address}</p></span>
