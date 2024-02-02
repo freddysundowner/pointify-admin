@@ -126,7 +126,7 @@ const Users = () => {
               <tr>
                 <TableCell>{t("CustomersJoiningDate")}</TableCell>
                 <TableCell>{t("CustomersName")}</TableCell>
-                <TableCell>{t("CustomersEmail")}</TableCell>
+                <TableCell>Last Seen</TableCell>
                 <TableCell>Refered By</TableCell>
                     <TableCell>{t("CustomersPhone")}</TableCell>
                     <TableCell>Shops</TableCell>

@@ -74,10 +74,9 @@ const OrderInvoice = () => {
                   )}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  {globalSetting?.address} <br />
-                  {globalSetting?.contact} <br />{" "}
-                  <span> {globalSetting?.email} </span> <br />
-                  {globalSetting?.website}
+                  {data?.shopId?.address} <br />
+                  {data?.shopId?.adminId?.phone} <br />{" "}
+                  <span> {data?.shopId?.adminId?.email} </span>
                 </p>
               </div>
             </div>
@@ -95,7 +94,7 @@ const OrderInvoice = () => {
                   {t("InvoiceNo")}
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 block">
-                  #{data?.invoice}
+                  #{data?.receiptNo}
                 </span>
               </div>
               <div className="flex flex-col lg:text-right text-left">
@@ -103,14 +102,11 @@ const OrderInvoice = () => {
                   {t("InvoiceTo")}
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 block">
-                  {data?.user_info?.name} <br />
-                  {data?.user_info?.email}{" "}
-                  <span className="ml-2">{data?.user_info?.contact}</span>
+                  {data?.customerId?.name} <br />
+                  {data?.customerId?.email}{" "}
+                  <span className="ml-2">{data?.customerId?.contact}</span>
                   <br />
-                  {data?.user_info?.address?.substring(0, 30)}
-                  <br />
-                  {data?.user_info?.city}, {data?.user_info?.country},{" "}
-                  {data?.user_info?.zipCode}
+                  {data?.customerId?.address?.substring(0, 30)}
                 </span>
               </div>
             </div>
@@ -155,7 +151,7 @@ const OrderInvoice = () => {
                   {t("InvoicepaymentMethod")}
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold font-serif block">
-                  {data.paymentMethod}
+                  {data.paymentType}
                 </span>
               </div>
               <div className="mb-3 md:mb-0 lg:mb-0  flex flex-col sm:flex-wrap">
@@ -163,7 +159,8 @@ const OrderInvoice = () => {
                   {t("ShippingCost")}
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold font-serif block">
-                  {currency}
+
+                  {data.shopId?.currency}
                   {getNumberTwo(data.shippingCost)}
                 </span>
               </div>
@@ -172,8 +169,9 @@ const OrderInvoice = () => {
                   {t("InvoiceDicount")}
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold font-serif block">
-                  {currency}
-                  {getNumberTwo(data.discount)}
+
+                  {data.shopId?.currency}
+                  {getNumberTwo(data.totalDiscount)}
                 </span>
               </div>
               <div className="flex flex-col sm:flex-wrap">
@@ -181,8 +179,9 @@ const OrderInvoice = () => {
                   {t("InvoiceTotalAmount")}
                 </span>
                 <span className="text-xl font-serif font-bold text-red-500 dark:text-emerald-500 block">
-                  {currency}
-                  {getNumberTwo(data.total)}
+
+                  {data.shopId?.currency}
+                  {getNumberTwo(data.totalWithDiscount)}
                 </span>
               </div>
             </div>

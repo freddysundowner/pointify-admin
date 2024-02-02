@@ -36,10 +36,11 @@ const CustomerTable = ({ customers }) => {
               </span>
             </TableCell>
             <TableCell>
-              <span className="text-sm">{user.username}</span>
+              <span className="text-sm">{user.username}</span><br/>
+              <span className="text-sm">{user.email}</span>{" "}
             </TableCell>
             <TableCell>
-              <span className="text-sm">{user.email}</span>{" "}
+              <span className="text-sm">{dayjs(user.last_seen).format("MMM D, YYYY H:mm")}</span>
             </TableCell>
             <TableCell>
               <span className="text-sm">{user.referal?.username ?? "N/A"}</span>{" "}

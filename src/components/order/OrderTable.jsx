@@ -3,7 +3,7 @@ import { TableBody, TableCell, TableRow } from "@windmill/react-ui";
 import { useTranslation } from "react-i18next";
 import { FiZoomIn } from "react-icons/fi";
 import { Link } from "react-router-dom";
-
+import dayjs from "dayjs";
 //internal import
 
 import Status from "@/components/table/Status";
@@ -17,7 +17,7 @@ const OrderTable = ({ orders }) => {
   const { t } = useTranslation();
   const { showDateTimeFormat, currency, getNumberTwo } = useUtilsFunction();
 
-  // console.log('orders',orders)
+  console.log('orders',orders)
 
   return (
     <>
@@ -26,30 +26,33 @@ const OrderTable = ({ orders }) => {
           <TableRow key={i + 1}>
             <TableCell>
               <span className="font-semibold uppercase text-xs">
-                {order?.invoice}
+                {order?.receiptNo}
               </span>
             </TableCell>
 
             <TableCell>
               <span className="text-sm">
-                {showDateTimeFormat(order?.updatedDate)}
+                {dayjs(order.createdAt).format("MMM D, YYYY H:mm")}
               </span>
             </TableCell>
 
             <TableCell className="text-xs">
-              <span className="text-sm">{order?.user_info?.name}</span>{" "}
+              Shop: <span className="text-sm">{order?.shopId?.name}</span>{" "}<br/>
+              Attendant: <span className="text-sm">{order?.attendantId?.username}</span>{" "}<br />
+              Location: <span className="text-sm">{order?.shopId?.address}</span>{" "}
             </TableCell>
 
             <TableCell>
               <span className="text-sm font-semibold">
-                {order?.paymentMethod}
+                {order?.paymentType}
               </span>
             </TableCell>
 
             <TableCell>
               <span className="text-sm font-semibold">
-                {currency}
-                {getNumberTwo(order?.total)}
+                {order?.shopId?.currency}
+                {getNumberTwo(order?.totalWithDiscount)}<br/>
+                Items: {order.items?.length}
               </span>
             </TableCell>
 

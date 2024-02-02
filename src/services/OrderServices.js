@@ -16,15 +16,28 @@ const OrderServices = {
     // download = "",
   }) => {
     const searchName = customerName !== null ? customerName : "";
-    const searchStatus = status !== null ? status : "";
+    const searchStatus = status !== null ? status : "all";
     const searchDay = day !== null ? day : "";
     // const searchSource = source !== null ? source : "";
     const searchMethod = method !== null ? method : "";
     const startD = startDate !== null ? startDate : "";
     const endD = endDate !== null ? endDate : "";
+    let filter = `page=${page}&limit=${limit}`;
+    if (searchStatus !=='') { 
+      filter += `&status=${searchStatus}`
+    }
+    if (searchName !== '') {
+      filter += `&customerName=${searchName}`
+    }
+    if (startD !== '') {
+      filter += `&start=${startD}`
+    }
+    if (endD !== '') {
+      filter += `&end=${endD}`
+    }
 
     return requests.get(
-      `/orders?customerName=${searchName}&status=${searchStatus}&day=${searchDay}&page=${page}&limit=${limit}&startDate=${startD}&endDate=${endD}&method=${searchMethod}`,
+      `/sales/filter?${filter}`,
       body,
       headers
     );
@@ -51,7 +64,7 @@ const OrderServices = {
   },
 
   getOrderById: async (id, body) => {
-    return requests.get(`/orders/${id}`, body);
+    return requests.get(`/sales/single/receipt/${id}`, body);
   },
 
   updateOrder: async (id, body, headers) => {

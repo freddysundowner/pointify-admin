@@ -219,7 +219,7 @@ const useFilter = (data) => {
     if (searchUser) {
       services = services.filter(
         (search) =>
-          search?.name[lang]
+          search?.name
             ?.toLowerCase()
             .includes(searchUser.toLowerCase()) ||
           search?.phone?.toLowerCase().includes(searchUser.toLowerCase()) ||

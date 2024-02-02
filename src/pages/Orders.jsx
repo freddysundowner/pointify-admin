@@ -70,7 +70,7 @@ const Orders = () => {
 
   const { currency, getNumber, getNumberTwo } = useUtilsFunction();
 
-  const { dataTable, serviceData } = useFilter(data?.orders);
+  const { dataTable, serviceData } = useFilter(data?.sales);
 
   const handleDownloadOrders = async () => {
     try {
@@ -88,7 +88,7 @@ const Orders = () => {
       });
 
       // console.log("handleDownloadOrders", res);
-      const exportData = res?.orders?.map((order) => {
+      const exportData = res?.sales?.map((order) => {
         return {
           _id: order._id,
           invoice: order.invoice,
@@ -137,81 +137,6 @@ const Orders = () => {
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody>
           <form onSubmit={handleSubmitForAll}>
-            <div className="grid gap-4 lg:gap-4 xl:gap-6 md:gap-2 md:grid-cols-5 py-2">
-              <div>
-                <Input
-                  ref={searchRef}
-                  type="search"
-                  name="search"
-                  placeholder="Search by Customer Name"
-                />
-              </div>
-
-              <div>
-                <Select onChange={(e) => setStatus(e.target.value)}>
-                  <option value="Status" defaultValue hidden>
-                    {t("Status")}
-                  </option>
-                  <option value="Delivered">{t("PageOrderDelivered")}</option>
-                  <option value="Pending">{t("PageOrderPending")}</option>
-                  <option value="Processing">{t("PageOrderProcessing")}</option>
-                  <option value="Cancel">{t("OrderCancel")}</option>
-                </Select>
-              </div>
-
-              <div>
-                <Select onChange={(e) => setTime(e.target.value)}>
-                  <option value="Order limits" defaultValue hidden>
-                    {t("Orderlimits")}
-                  </option>
-                  <option value="5">{t("DaysOrders5")}</option>
-                  <option value="7">{t("DaysOrders7")}</option>
-                  <option value="15">{t("DaysOrders15")}</option>
-                  <option value="30">{t("DaysOrders30")}</option>
-                </Select>
-              </div>
-              <div>
-                <Select onChange={(e) => setMethod(e.target.value)}>
-                  <option value="Method" defaultValue hidden>
-                    {t("Method")}
-                  </option>
-
-                  <option value="Cash">{t("Cash")}</option>
-                  <option value="Card">{t("Card")}</option>
-                  <option value="Credit">{t("Credit")}</option>
-                </Select>
-              </div>
-              <div>
-                {loadingExport ? (
-                  <Button disabled={true} type="button" className="h-12 w-full">
-                    <img
-                      src={spinnerLoadingImage}
-                      alt="Loading"
-                      width={20}
-                      height={10}
-                    />{" "}
-                    <span className="font-serif ml-2 font-light">
-                      Processing
-                    </span>
-                  </Button>
-                ) : (
-                  <button
-                    onClick={handleDownloadOrders}
-                    disabled={data?.orders?.length <= 0 || loadingExport}
-                    type="button"
-                    className={`${
-                      (data?.orders?.length <= 0 || loadingExport) &&
-                      "opacity-50 cursor-not-allowed bg-emerald-600"
-                    } flex items-center justify-center text-sm leading-5 h-12 w-full text-center transition-colors duration-150 font-medium px-6 py-2 rounded-md text-white bg-emerald-500 border border-transparent active:bg-emerald-600 hover:bg-emerald-600 `}
-                  >
-                    Download All Orders
-                    <span className="ml-2 text-base">
-                      <IoCloudDownloadOutline />
-                    </span>
-                  </button>
-                )}
-              </div>
-            </div>
 
             <div className="grid gap-4 lg:gap-6 xl:gap-6 lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 py-2">
               <div>
@@ -288,7 +213,7 @@ const Orders = () => {
               <tr>
                 <TableCell>{t("InvoiceNo")}</TableCell>
                 <TableCell>{t("TimeTbl")}</TableCell>
-                <TableCell>{t("CustomerName")}</TableCell>
+                <TableCell>Shop Details</TableCell>
                 <TableCell>{t("MethodTbl")}</TableCell>
                 <TableCell>{t("AmountTbl")}</TableCell>
                 <TableCell>{t("OderStatusTbl")}</TableCell>
