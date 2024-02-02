@@ -41,6 +41,7 @@ const usePackagesSubmit = (id) => {
         durationValue: data.durationValue,
         durationUnit: data.durationUnit,
         discount: data.discount,
+        amountusd:data.amountusd
       };
 
       if (id) {
@@ -95,6 +96,8 @@ const usePackagesSubmit = (id) => {
             setValue("durationValue", res.durationValue);
             setValue("discount", res.discount);
             setValue("durationUnit", res.durationUnit);
+            setValue("amountusd", res.amountusd);
+            
             setPublished(res.status);
           }
         } catch (err) {

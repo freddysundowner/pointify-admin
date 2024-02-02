@@ -105,13 +105,31 @@ const PackageDrawer = ({ id }) => {
             </div>
 
             <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label="Discount" />
+              <LabelArea label="Amount USD" />
               <div className="col-span-8 sm:col-span-4">
                 <InputValue
                   product
                   register={register}
                   maxValue={discountType ? 99 : 1000}
                   minValue={1}
+                  label="Amount USD"
+                  name="amountusd"
+                  type="number"
+                  placeholder="Discount"
+                  currency={discountType ? "%" : currency}
+                />
+
+                <Error errorName={errors.amountusd} />
+              </div>
+            </div>
+            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+              <LabelArea label="Discount" />
+              <div className="col-span-8 sm:col-span-4">
+                <InputValue
+                  product
+                  register={register}
+                  maxValue={discountType ? 99 : 1000}
+                  minValue={0}
                   label="Discount"
                   name="discount"
                   type="number"
@@ -129,7 +147,7 @@ const PackageDrawer = ({ id }) => {
                 <InputValue
                   product
                   register={register}
-                  maxValue={discountType ? 99 : 1000}
+                  maxValue={discountType ? 99 : 10000}
                   minValue={1}
                   label="Amount"
                   name="amount"

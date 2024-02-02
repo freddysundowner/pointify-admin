@@ -85,11 +85,12 @@ const PackageTable = ({ isCheck, coupons, setIsCheck }) => {
               <div className="flex items-center">
                 <div>
                   <span className="text-sm">
-                    {showingTranslateValue(coupon?.amount)}
+                    KES {showingTranslateValue(coupon?.amount)}<br/>
+                    USD {showingTranslateValue(coupon?.amountusd)}
                   </span>{" "}
                 </div>
               </div>{" "}
-            </TableCell>
+            </TableCell> 
 
             <TableCell>
               {" "}
