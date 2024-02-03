@@ -100,9 +100,9 @@ const ShopTable = ({ products, isCheck, setIsCheck }) => {
             </TableCell>
             <TableCell>
               <span className="text-sm">
-                {product.subscription.packageId.type}(
-                {product.subscription.packageId.durationValue}-
-                {product.subscription.packageId.durationUnit})
+                {product.subscription.packageId?.type}(
+                {product.subscription.packageId?.durationValue}-
+                {product.subscription.packageId?.durationUnit})
               </span>
             </TableCell>
             <TableCell>
