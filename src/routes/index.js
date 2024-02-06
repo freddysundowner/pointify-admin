@@ -13,6 +13,7 @@ const ChildCategory = lazy(() => import("@/pages/ChildCategory"));
 const Staff = lazy(() => import("@/pages/Staff"));
 const Users = lazy(() => import("@/pages/Users"));
 const CustomerOrder = lazy(() => import("@/pages/CustomerOrder"));
+const SupportComp = lazy(() => import("@/pages/Support"));
 const Orders = lazy(() => import("@/pages/Orders"));
 const OrderInvoice = lazy(() => import("@/pages/OrderInvoice"));
 const Coupons = lazy(() => import("@/pages/Coupons"));
@@ -61,6 +62,10 @@ const routes = [
   {
     path: "/shops/categories",
     component: ShopCategory,
+  }, 
+  {
+    path: "/support",
+    component: SupportComp,
   },
   {
     path: "/shops",
