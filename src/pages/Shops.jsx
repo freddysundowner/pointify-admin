@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -35,10 +35,23 @@ import TableLoading from "@/components/preloader/TableLoading";
 import SelectCategory from "@/components/form/selectOption/SelectCategory";
 import ShopTable from "@/components/shop/ShopTable";
 import SelectShopCategory from "@/components/form/selectOption/SelectShopCategory";
+import { useLocation } from 'react-router-dom';
 
-const Shops = () => {
+const Shops = (props) => {
   const { title, allId, serviceId, handleDeleteMany, handleUpdateMany } =
     useToggleDrawer();
+  // const { id } = props.match.params;
+  // const {userid } = props.match.query;
+
+  const locationn = useLocation();
+  const [userid, setUserId] = useState(null);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(locationn.search);
+    const userid = searchParams.get('userid');
+    setUserId(userid);
+  }, [locationn]);
+  console.log("id ",userid )
 
   const { t } = useTranslation();
   const {
@@ -66,12 +79,9 @@ const Shops = () => {
       locationText: location,
       title: searchText,
       price: sortedField,
+      userid: props.match.params
     })
   );
-
-  // console.log("product page", data);
-
-  // react hooks
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
 

@@ -227,7 +227,7 @@ const Orders = () => {
 
           <TableFooter>
             <Pagination
-              totalResults={data?.totalDoc}
+              totalResults={serviceData?.length}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

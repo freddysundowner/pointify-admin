@@ -34,8 +34,9 @@ import DeleteModal from "@/components/modal/DeleteModal";
 import BulkActionDrawer from "@/components/drawer/BulkActionDrawer";
 import TableLoading from "@/components/preloader/TableLoading";
 import SelectCategory from "@/components/form/selectOption/SelectCategory";
+import useFilter from "@/hooks/useFilter";
 
-const Products = () => {
+const Products = (props) => {
   const { title, allId, serviceId, handleDeleteMany, handleUpdateMany } =
     useToggleDrawer();
 
@@ -44,7 +45,6 @@ const Products = () => {
     toggleDrawer,
     lang,
     currentPage,
-    handleChangePage,
     searchText,
     category,
     setCategory,
@@ -55,6 +55,8 @@ const Products = () => {
     limitData,
   } = useContext(SidebarContext);
 
+
+
   const { data, loading, error } = useAsync(() =>
     ProductServices.getAllProducts({
       page: currentPage,
@@ -62,8 +64,14 @@ const Products = () => {
       category: category,
       title: searchText,
       price: sortedField,
+      shop: props.match.params
     })
   );
+  const {
+    handleChangePage,
+    totalResults,
+    resultsPerPage,dataTable
+  } = useFilter(data);
 
   // console.log("product page", data);
 
@@ -260,14 +268,14 @@ const Products = () => {
             <ProductTable
               lang={lang}
               isCheck={isCheck}
-              products={data}
+              products={dataTable}
               setIsCheck={setIsCheck}
             />
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={data.length}
-              resultsPerPage={limitData}
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Product Page Navigation"
             />

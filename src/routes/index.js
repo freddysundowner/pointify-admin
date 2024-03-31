@@ -48,6 +48,10 @@ const routes = [
     component: Products,
   },
   {
+    path: "/products/:shopid",
+    component: Products,
+  },
+  {
     path: "/attributes",
     component: Attributes,
   },
@@ -96,6 +100,10 @@ const routes = [
   {
     path: "/customer-order/:id",
     component: CustomerOrder,
+  },
+  {
+    path: "/shops/:userid",
+    component: Shops,
   },
   {
     path: "/our-staff",

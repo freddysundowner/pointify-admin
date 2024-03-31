@@ -93,14 +93,14 @@ const ProductTable = ({ products, isCheck, setIsCheck }) => {
 
             <TableCell>
               <span className="text-sm font-semibold">
-                {product?.shopId.currency}
+                {product?.shopId?.currency}
                 {getNumberTwo(product?.buyingPrice)}
               </span>
             </TableCell>
 
             <TableCell>
               <span className="text-sm font-semibold">
-                {product?.shopId.currency}
+                {product?.shopId?.currency}
                 {getNumberTwo(product?.sellingPrice)}
               </span>
             </TableCell>

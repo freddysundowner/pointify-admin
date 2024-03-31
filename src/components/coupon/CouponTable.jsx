@@ -117,11 +117,43 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
             </TableCell>
 
             <TableCell className="align-middle ">
-              {dayjs().isAfter(dayjs(coupon.endDate)) ? (
-                <Badge type="danger">Expired</Badge>
-              ) : (
+              {
+                new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.status ==true  ? (
                 <Badge type="success">Active</Badge>
-              )}
+                ) :  ""
+              }
+              {
+                new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.paid ==false  && coupon.status ==false && coupon.packageId?.type !='trial'  ? (
+                <Badge type="danger">Payment Failed</Badge>
+                ) :  ""
+              }
+
+              {
+                new Date(coupon.endDate).getTime() < new Date().getTime() && coupon.packageId?.type !='trial'  ? (
+                <Badge type="danger">Expired</Badge>
+                ) :  ""
+              }
+              {
+                new Date(coupon.endDate).getTime() < new Date().getTime() && coupon.packageId?.type =='trial'  ? (
+                <Badge type="warning">Trial Expired</Badge>
+                ) :  ""
+              }
+
+              {
+                new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.packageId?.type =='trial'  ? (
+                <Badge type="success">Trial Active</Badge>
+                ) :  ""
+              }
+              {/* {dayjs().isAfter(dayjs(coupon.endDate)) ? (
+                <Badge type="danger">Expired</Badge>
+              ) :  ""}
+              {new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.status ==true ? (
+                <Badge type="success">Active</Badge>
+              ) : ""}
+
+              {new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.status ==false ? (
+                <Badge type="danger">Payment Failed</Badge>
+              ) : ""} */}
             </TableCell>
 
             <TableCell>

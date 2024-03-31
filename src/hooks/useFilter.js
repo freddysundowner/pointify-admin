@@ -230,12 +230,9 @@ const useFilter = (data) => {
     if (searchCoupon) {
       services = services?.filter(
         (search) =>
-          search?.title[lang]
+          search?.shop?.name
             ?.toLowerCase()
-            ?.includes(searchCoupon?.toLowerCase()) ||
-          search?.couponCode
-            ?.toLowerCase()
-            .includes(searchCoupon?.toLowerCase())
+            ?.includes(searchCoupon?.toLowerCase())
       );
     }
     // order filtering

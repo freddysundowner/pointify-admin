@@ -87,27 +87,7 @@ const sidebar = [
     path: "/settings?settingTab=common-settings",
     icon: FiSettings,
     name: "Settings",
-  },
-  {
-    icon: FiTarget,
-    name: "OnlineStore",
-    routes: [
-      {
-        name: "ViewStore",
-        path: "http://localhost:3000",
-        outside: "store",
-      },
-
-      {
-        path: "/store/customization",
-        name: "StoreCustomization",
-      },
-      {
-        path: "/store/store-settings",
-        name: "Store Settings",
-      },
-    ],
-  },
+  }
 ];
 
 export default sidebar;

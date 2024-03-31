@@ -1,4 +1,5 @@
-import { TableBody, TableCell, TableRow } from "@windmill/react-ui";
+import { TableBody, TableCell, TableRow,
+  Badge } from "@windmill/react-ui";
 import dayjs from "dayjs";
 import { t } from "i18next";
 import React from "react";
@@ -33,23 +34,34 @@ const CustomerTable = ({ customers }) => {
             <TableCell>
               <span className="text-sm">
                 {dayjs(user.createdAt).format("MMM D, YYYY H:mm")}
-              </span>
+              </span> <br/>
+              {/* <span className="text-sm font-medium">{user?.platform ==null ? "" : `Device: ${user?.platform} ~ ${user?.app_version ==null ? "" : user?.app_version}`}</span> */}
             </TableCell>
             <TableCell>
               <span className="text-sm">{user.username}</span><br/>
-              <span className="text-sm">{user.email}</span>{" "}
+              {/* <span className="text-sm">{user.email} <Badge type={user?.emailVerified !=null  && user?.emailVerified ==true ? "success": "danger"}>{user?.emailVerified !=null  && user?.emailVerified ==true ? "Verified": "Unverified"}</Badge></span><br/> */}
+              <span className="text-sm font-medium">{user.phone}</span>
+            </TableCell>
+            <TableCell>
+              <Link
+                to={`/products/${user?.primaryShop[0]?._id}`}
+                className="flex text-blue-400 hover:text-emerald-600"
+              >
+                 <span className="text-sm">{user?.primaryShop[0]?.name}</span><br/>
+              </Link>
+             
+              Refered By: <span className="text-sm">{user.referal?.username ?? "N/A"}</span>{" "}
             </TableCell>
             <TableCell>
               <span className="text-sm">{dayjs(user.last_seen).format("MMM D, YYYY H:mm")}</span>
             </TableCell>
             <TableCell>
-              <span className="text-sm">{user.referal?.username ?? "N/A"}</span>{" "}
-            </TableCell>
-            <TableCell>
-              <span className="text-sm font-medium">{user.phone}</span>
-            </TableCell>
-            <TableCell>
-              <span className="text-sm font-medium">{user.shopCount}</span>
+              <Link
+                to={`/shops/${user?._id}`}
+                className="flex text-blue-400 hover:text-emerald-600"
+              >
+                 <span className="text-sm">{user?.shopCount}</span><br/>
+              </Link>
             </TableCell>
 
             <TableCell>

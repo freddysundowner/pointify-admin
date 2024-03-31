@@ -107,7 +107,7 @@ const ShopTable = ({ products, isCheck, setIsCheck }) => {
             </TableCell>
             <TableCell>
               <Link
-                to={`/shop/${product._id}`}
+                to={`/products/${product?._id}`}
                 className="flex justify-center text-gray-400 hover:text-emerald-600"
               >
                 <Tooltip

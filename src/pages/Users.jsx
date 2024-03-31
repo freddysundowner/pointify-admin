@@ -25,8 +25,6 @@ import UserServices from "@/services/UserServices";
 
 const Users = () => {
   const { data, loading, error } = useAsync(UserServices.getAllUsers);
-
-  console.log(data);
   const {
     userRef,
     dataTable,
@@ -126,10 +124,9 @@ const Users = () => {
               <tr>
                 <TableCell>{t("CustomersJoiningDate")}</TableCell>
                 <TableCell>{t("CustomersName")}</TableCell>
+                <TableCell>Shop</TableCell>
                 <TableCell>Last Seen</TableCell>
-                <TableCell>Refered By</TableCell>
-                    <TableCell>{t("CustomersPhone")}</TableCell>
-                    <TableCell>Shops</TableCell>
+                <TableCell>Shops</TableCell>
                 <TableCell className="text-right">
                   {t("CustomersActions")}
                 </TableCell>
