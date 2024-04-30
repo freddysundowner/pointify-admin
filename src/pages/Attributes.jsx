@@ -29,38 +29,29 @@ import { SidebarContext } from "@/context/SidebarContext";
 import useAsync from "@/hooks/useAsync";
 import useFilter from "@/hooks/useFilter";
 import useToggleDrawer from "@/hooks/useToggleDrawer";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 
 //internal import
 
 const Attributes = () => {
   const { toggleDrawer, lang } = useContext(SidebarContext);
   const { data, loading, error } = useAsync(() =>
-    AttributeServices.getAllAttributes({
-      type: "attribute",
-      option: "Dropdown",
-      option1: "Radio",
-    })
+    MeasureServices.getAllMeasure({})
   );
 
-  const { handleDeleteMany, allId, handleUpdateMany } = useToggleDrawer();
+  const {  allId } = useToggleDrawer();
 
   const { t } = useTranslation();
 
   const {
-    filename,
-    isDisabled,
     dataTable,
     serviceData,
     totalResults,
     attributeRef,
     resultsPerPage,
-    handleSelectFile,
     handleChangePage,
     setAttributeTitle,
     handleSubmitAttribute,
-    handleUploadMultiple,
-    handleRemoveSelectFile,
   } = useFilter(data);
 
   // react hooks
@@ -82,7 +73,7 @@ const Attributes = () => {
 
   return (
     <>
-      <PageTitle>{t("AttributeTitle")}</PageTitle>
+      <PageTitle>Measure Unit</PageTitle>
       <DeleteModal
         ids={allId}
         setIsCheck={setIsCheck}
@@ -99,44 +90,9 @@ const Attributes = () => {
             onSubmit={handleSubmitAttribute}
             className="py-3  grid gap-4 lg:gap-6 xl:gap-6  xl:flex"
           >
-            <div className="flex justify-start xl:w-1/2  md:w-full">
-              <UploadManyTwo
-                title="Attribute"
-                exportData={data}
-                filename={filename}
-                isDisabled={isDisabled}
-                handleSelectFile={handleSelectFile}
-                handleUploadMultiple={handleUploadMultiple}
-                handleRemoveSelectFile={handleRemoveSelectFile}
-              />
-            </div>
+            <div className="flex justify-start xl:w-1/2  md:w-full"></div>
 
             <div className="lg:flex  md:flex xl:justify-end xl:w-1/2  md:w-full md:justify-start flex-grow-0">
-              <div className="w-full md:w-40 lg:w-40 xl:w-40 mr-3 mb-3 lg:mb-0">
-                <Button
-                  disabled={isCheck.length < 1}
-                  onClick={() => handleUpdateMany(isCheck)}
-                  className="w-full rounded-md h-12 btn-gray text-gray-600"
-                >
-                  <span className="mr-2">
-                    <FiEdit />
-                  </span>
-
-                  {t("BulkAction")}
-                </Button>
-              </div>
-              <div className="w-full md:w-32 lg:w-32 xl:w-32 mr-3 mb-3 lg:mb-0">
-                <Button
-                  disabled={isCheck.length < 1}
-                  onClick={() => handleDeleteMany(isCheck)}
-                  className="w-full rounded-md h-12 bg-red-500 btn-red"
-                >
-                  <span className="mr-2">
-                    <FiTrash2 />
-                  </span>
-                  {t("Delete")}
-                </Button>
-              </div>
               <div className="w-full md:w-48 lg:w-48 xl:w-48">
                 <Button
                   onClick={toggleDrawer}
@@ -145,7 +101,7 @@ const Attributes = () => {
                   <span className="mr-2">
                     <FiPlus />
                   </span>
-                  {t("CouponsAddAttributeBtn")}
+                  Add Measure Unit
                 </Button>
               </div>
             </div>
@@ -162,7 +118,7 @@ const Attributes = () => {
               <Input
                 ref={attributeRef}
                 type="search"
-                placeholder={t("SearchAttributePlaceholder")}
+                placeholder="search measure unit name"
               />
             </div>
             <div className="flex items-center gap-2 flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
@@ -205,16 +161,9 @@ const Attributes = () => {
                     isChecked={isCheckAll}
                   />
                 </TableCell>
-                <TableCell> {t("Id")} </TableCell>
                 <TableCell> {t("AName")}</TableCell>
-                <TableCell> {t("ADisplayName")}</TableCell>
-                <TableCell>{t("AOption")}</TableCell>
 
-                <TableCell className="text-center">
-                  {t("catPublishedTbl")}
-                </TableCell>
 
-                <TableCell className="text-center">{t("Avalues")}</TableCell>
 
                 <TableCell className="text-right">{t("AAction")}</TableCell>
               </tr>

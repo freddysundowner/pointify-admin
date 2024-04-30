@@ -9,10 +9,12 @@ import {
   TableContainer,
   TableFooter,
   TableHeader,
+  Select,
 } from "@windmill/react-ui";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
+import SelectCategory from "@/components/form/selectOption/SelectOption";
 
 //internal import
 import { SidebarContext } from "@/context/SidebarContext";
@@ -33,30 +35,26 @@ import UploadManyTwo from "@/components/common/UploadManyTwo";
 
 const Coupons = () => {
   const { t } = useTranslation();
-  const { toggleDrawer, lang } = useContext(SidebarContext);
-  const { data, loading, error } = useAsync(CouponServices.getAllCoupons);
-  // console.log('data',data)
+  const { lang, status, setStatus, type, setType } = useContext(SidebarContext);
+  const { data, loading, error } = useAsync(() =>
+    CouponServices.getAllCoupons(status,type)
+  );
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
 
-  const { allId, serviceId, handleDeleteMany, handleUpdateMany } =
-    useToggleDrawer();
+  const { allId, serviceId } = useToggleDrawer();
 
   const {
-    filename,
-    isDisabled,
     couponRef,
     dataTable,
     serviceData,
     totalResults,
     resultsPerPage,
     handleChangePage,
-    handleSelectFile,
     setSearchCoupon,
     handleSubmitCoupon,
-    handleUploadMultiple,
-    handleRemoveSelectFile,
   } = useFilter(data);
+
 
   const handleSelectAll = () => {
     setIsCheckAll(!isCheckAll);
@@ -74,7 +72,7 @@ const Coupons = () => {
 
   return (
     <>
-      <PageTitle>{t("CouponspageTitle")}</PageTitle>
+      <PageTitle>Subscriptions</PageTitle>
       <DeleteModal
         ids={allId}
         setIsCheck={setIsCheck}
@@ -99,6 +97,25 @@ const Coupons = () => {
                 placeholder="search by shop name"
               />
             </div>
+            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+              <Select onChange={(e) => setType(e.target.value)}>
+                <option value="type" defaultValue hidden>
+                  Select Type
+                </option>
+                <option value="trial">Trial Period</option>
+                <option value="production">Production</option>
+              </Select>
+            </div>
+            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+              <Select onChange={(e) => setStatus(e.target.value)}>
+                <option value="Status" defaultValue hidden>
+                  {t("Status")}
+                </option>
+                <option value="Active">Active</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Expired">Expired</option>
+              </Select>
+            </div>
             <div className="flex items-center gap-2 flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
               <div className="w-full mx-1">
                 <Button type="submit" className="h-12 w-full bg-emerald-700">
@@ -122,7 +139,6 @@ const Coupons = () => {
       </Card>
 
       {loading ? (
-        // <Loading loading={loading} />
         <TableLoading row={12} col={8} width={140} height={20} />
       ) : error ? (
         <span className="text-center mx-auto text-red-500">{error}</span>

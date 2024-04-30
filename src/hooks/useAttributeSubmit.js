@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 //internal import
 import { SidebarContext } from "@/context/SidebarContext";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import useToggleDrawer from "@/hooks/useToggleDrawer";
 // import useTranslationValue from "./useTranslationValue";
@@ -26,10 +26,6 @@ const useAttributeSubmit = (id) => {
 
   (async () => {
     for (let i = 0; i < variants.length; i++) {
-      // const variantsTranslates = await handlerTextTranslateHandler(
-      //   variants[i],
-      //   language
-      // );
 
       variantArrayOfObject = [
         ...variantArrayOfObject,
@@ -54,45 +50,19 @@ const useAttributeSubmit = (id) => {
   const onSubmit = async ({ title, name, option }) => {
     try {
       setIsSubmitting(true);
-      if (!id) {
-        if (variants.length === 0) {
-          notifyError("Minimum one value is required for add attribute!");
-          return;
-        }
-      }
-
-      // const titleTranslates = await handlerTextTranslateHandler(
-      //   title,
-      //   language
-      // );
-      // const nameTranslates = await handlerTextTranslateHandler(name, language);
 
       const attributeData = {
-        title: {
-          [language]: title,
-          // ...titleTranslates,
-        },
-        name: {
-          [language]: name,
-          // ...nameTranslates,
-        },
-        variants: variantArrayOfObject,
-        option: option,
-        type: "attribute",
-        lang: language,
+        name: name,
       };
-
-      // console.log("attributeData", attributeData);
-
       if (id) {
-        const res = await AttributeServices.updateAttributes(id, attributeData);
+        const res = await MeasureServices.updateMeasure(id, attributeData);
         setIsUpdate(true);
         setIsSubmitting(false);
         notifySuccess(res.message);
-        closeDrawer();
+        closeDrawer(); 
         setServiceId();
       } else {
-        const res = await AttributeServices.addAttribute(attributeData);
+        const res = await MeasureServices.addMeasure(attributeData);
         setIsUpdate(true);
         setIsSubmitting(false);
         notifySuccess(res.message);
@@ -112,7 +82,7 @@ const useAttributeSubmit = (id) => {
     try {
       setIsSubmitting(true);
       if (id) {
-        const res = await AttributeServices.updateChildAttributes(
+        const res = await MeasureServices.updateChildAttributes(
           { ids: location.pathname.split("/")[2], id },
           {
             name: {
@@ -126,12 +96,10 @@ const useAttributeSubmit = (id) => {
         notifySuccess(res.message);
         closeDrawer();
       } else {
-        const res = await AttributeServices.addChildAttribute(
+        const res = await MeasureServices.addMeasure(
           location.pathname.split("/")[2],
           {
-            name: {
-              [language]: name,
-            },
+            name: name,
             status: published ? "show" : "hide",
           }
         );
@@ -157,7 +125,6 @@ const useAttributeSubmit = (id) => {
     if (Object.keys(resData).length > 0) {
       setValue("title", resData.title[lang ? lang : "en"]);
       setValue("name", resData.name[lang ? lang : "en"]);
-      // console.log('change lang', lang);
     }
   };
 
@@ -188,26 +155,22 @@ const useAttributeSubmit = (id) => {
       return;
     }
 
-    if (location.pathname === "/attributes" && id) {
+    if (location.pathname === "/measures" && id) {
       (async () => {
         try {
-          const res = await AttributeServices.getAttributeById(id);
+          const res = await MeasureServices.getMeasureById(id);
           if (res) {
             setResData(res);
-            setValue("title", res.title[language ? language : "en"]);
-            setValue("name", res.name[language ? language : "en"]);
-            setValue("option", res.option);
+            setValue("name", res.name);
           }
         } catch (err) {
           notifyError(err?.response?.data?.message || err?.message);
         }
       })();
-    } else if (
-      location.pathname === `/attributes/${location.pathname.split("/")[2]}`
-    ) {
+    } else if (location.pathname === `/measures/${location.pathname.split("/")[2]}`) {
       (async () => {
         try {
-          const res = await AttributeServices.getChildAttributeById({
+          const res = await MeasureServices.getMeasureById({
             id: location.pathname.split("/")[2],
             ids: id,
           });

@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 //internal import
 import { SidebarContext } from "@/context/SidebarContext";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 import CategoryServices from "@/services/CategoryServices";
 import CouponServices from "@/services/CouponServices";
 import CurrencyServices from "@/services/CurrencyServices";
@@ -72,23 +72,6 @@ const ShowHideButton = ({ id, status, category, currencyStatusName ,type}) => {
         }
       }
 
-      if (location.pathname === "/attributes") {
-        const res = await AttributeServices.updateStatus(id, {
-          status: newStatus,
-        });
-        setIsUpdate(true);
-        notifySuccess(res.message);
-      }
-
-      if (
-        location.pathname === `/attributes/${location.pathname.split("/")[2]}`
-      ) {
-        const res = await AttributeServices.updateChildStatus(id, {
-          status: newStatus,
-        });
-        setIsUpdate(true);
-        notifySuccess(res.message);
-      }
 
       if (location.pathname === "/coupons") {
         // console.log('coupns',id)

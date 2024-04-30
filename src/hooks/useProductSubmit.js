@@ -7,7 +7,7 @@ import swal from "sweetalert";
 //internal import
 import useAsync from "@/hooks/useAsync";
 import { SidebarContext } from "@/context/SidebarContext";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 import ProductServices from "@/services/ProductServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import useUtilsFunction from "./useUtilsFunction";
@@ -17,7 +17,7 @@ const useProductSubmit = (id) => {
   const { isDrawerOpen, closeDrawer, setIsUpdate, lang } =
     useContext(SidebarContext);
 
-  const { data: attribue } = useAsync(AttributeServices.getShowingAttributes);
+  const { data: attribue } = useAsync(MeasureServices.getShowingAttributes);
 
   // react ref
   const resetRef = useRef([]);

@@ -72,51 +72,7 @@ const Orders = () => {
 
   const { dataTable, serviceData } = useFilter(data?.sales);
 
-  const handleDownloadOrders = async () => {
-    try {
-      setLoadingExport(true);
-      const res = await OrderServices.getAllOrders({
-        page: 1,
-        day: time,
-        method: method,
-        status: status,
-        endDate: endDate,
-        download: true,
-        startDate: startDate,
-        limit: data?.totalDoc,
-        customerName: searchText,
-      });
 
-      // console.log("handleDownloadOrders", res);
-      const exportData = res?.sales?.map((order) => {
-        return {
-          _id: order._id,
-          invoice: order.invoice,
-          subTotal: getNumberTwo(order.subTotal),
-          shippingCost: getNumberTwo(order.shippingCost),
-          discount: getNumberTwo(order?.discount),
-          total: getNumberTwo(order.total),
-          paymentMethod: order.paymentMethod,
-          status: order.status,
-          user_info: order?.user_info?.name,
-          createdAt: order.createdAt,
-          updatedAt: order.updatedAt,
-        };
-      });
-      // console.log("exportData", exportData);
-
-      exportFromJSON({
-        data: exportData,
-        fileName: "orders",
-        exportType: exportFromJSON.types.csv,
-      });
-      setLoadingExport(false);
-    } catch (err) {
-      setLoadingExport(false);
-      // console.log("err on orders download", err);
-      notifyError(err?.response?.data?.message || err?.message);
-    }
-  };
 
   // handle reset field
   const handleResetField = () => {
@@ -128,16 +84,13 @@ const Orders = () => {
     setSearchText("");
     searchRef.current.value = "";
   };
-  // console.log("data in orders page", data);
-
   return (
     <>
-      <PageTitle>{t("Orders")}</PageTitle>
+      <PageTitle>Sales</PageTitle>
 
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody>
           <form onSubmit={handleSubmitForAll}>
-
             <div className="grid gap-4 lg:gap-6 xl:gap-6 lg:grid-cols-3 xl:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 py-2">
               <div>
                 <Label>Start Date</Label>
@@ -211,14 +164,12 @@ const Orders = () => {
           <Table>
             <TableHeader>
               <tr>
-                <TableCell>{t("InvoiceNo")}</TableCell>
+                <TableCell>Receipt No </TableCell>
                 <TableCell>{t("TimeTbl")}</TableCell>
                 <TableCell>Shop Details</TableCell>
-                <TableCell>{t("MethodTbl")}</TableCell>
+                <TableCell>Payment {t("MethodTbl")}</TableCell>
                 <TableCell>{t("AmountTbl")}</TableCell>
-                <TableCell>{t("OderStatusTbl")}</TableCell>
-                <TableCell>{t("ActionTbl")}</TableCell>
-                <TableCell className="text-right">{t("InvoiceTbl")}</TableCell>
+                <TableCell className="text-right">Receipt</TableCell>
               </tr>
             </TableHeader>
 

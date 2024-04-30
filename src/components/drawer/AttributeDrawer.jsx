@@ -34,15 +34,13 @@ const AttributeDrawer = ({ id }) => {
           <Title
             register={register}
             handleSelectLanguage={handleSelectLanguage}
-            title={t("UpdateAttribute")}
-            description={t("UpdateAttributeDesc")}
+            title="Update"
           />
         ) : (
           <Title
             register={register}
             handleSelectLanguage={handleSelectLanguage}
-            title={t("AddAttribute")}
-            description={t("AddAttributeDesc")}
+            title="Add"
           />
         )}
       </div>
@@ -51,80 +49,22 @@ const AttributeDrawer = ({ id }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="px-6 pt-8 flex-grow scrollbar-hide w-full max-h-full">
             <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("DrawerAttributeTitle")} />
-              <div className="col-span-8 sm:col-span-4">
-                {/* <SelectAttribute
-                  register={register}
-                  label="Attribute Title"
-                  name="title"
-                /> */}
-                <InputArea
-                  register={register}
-                  label="Attribute Title"
-                  name="title"
-                  type="text"
-                  placeholder="Color or Size or Dimension or Material or Fabric"
-                />
-                <Error errorName={errors.title} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6 relative">
-              <LabelArea label={t("DisplayName")} />
+              <LabelArea label="Measure Name" />
               <div className="col-span-8 sm:col-span-4">
                 <InputArea
                   register={register}
-                  label="Display Name"
+                  label="Measure Name"
                   name="name"
                   type="text"
-                  placeholder="Display Name"
+                  placeholder="kg, ml, etc."
                 />
                 <Error errorName={errors.name} />
               </div>
             </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 relative">
-              <LabelArea label={t("DrawerOptions")} />
-              <div className="col-span-8 sm:col-span-4 ">
-                <Select
-                  name="option"
-                  {...register(`option`, {
-                    required: `Option is required!`,
-                  })}
-                >
-                  <option value="" defaultValue hidden>
-                    {t("DrawerSelecttype")}
-                  </option>
-                  <option value="Dropdown">{t("Dropdown")}</option>
-                  <option value="Radio">{t("Radio")}</option>
-                  {/* <option value="Checkbox">Checkbox</option> */}
-                </Select>
-                <Error errorName={errors.option} />
-              </div>
-            </div>
           </div>
 
-          <DrawerButton id={id} title="Attribute" isSubmitting={isSubmitting} />
+          <DrawerButton id={id} title="Measure Unit" isSubmitting={isSubmitting} />
         </form>
-        <div className="px-6 pt-8 flex-grow scrollbar-hide w-full max-h-full pb-40 ">
-          {!id && (
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6 relative">
-              <LabelArea label={t("Variants")} />
-              <div className="col-span-8 sm:col-span-4">
-                <TagInputTwo
-                  notes={variants}
-                  addNote={addVariant}
-                  removeNote={removeVariant}
-                />
-                {/* <ReactTagInput
-                    placeholder="White or S or Cotton or 40X60 or Premium...(Write then press enter to add new color)"
-                    tags={variants}
-                    onChange={(variant) => setVariants(variant)}
-                  /> */}
-              </div>
-            </div>
-          )}
-        </div>
       </Scrollbars>
     </>
   );

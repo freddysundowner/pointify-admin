@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 //internal import
 import { SidebarContext } from "@/context/SidebarContext";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 import CategoryServices from "@/services/CategoryServices";
 import CouponServices from "@/services/CouponServices";
 import CurrencyServices from "@/services/CurrencyServices";
@@ -150,23 +150,7 @@ const useBulkActionSubmit = (ids, lang = "en", childId) => {
         closeBulkDrawer();
       }
 
-      if (location.pathname === "/attributes") {
-        const res = await AttributeServices.updateManyAttribute(attributeData);
-        setIsUpdate(true);
-        notifySuccess(res.message);
-        closeBulkDrawer();
-      }
-
-      if (
-        location.pathname === `/attributes/${location.pathname.split("/")[2]}`
-      ) {
-        const res = await AttributeServices.updateManyChildAttribute(
-          childAttributeData
-        );
-        setIsUpdate(true);
-        notifySuccess(res.message);
-        closeBulkDrawer();
-      }
+      
     } catch (err) {
       // console.log("err on bulk action", err);
       notifyError(err?.response?.data?.message || err?.message);

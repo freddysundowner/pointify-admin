@@ -9,9 +9,7 @@ const CardItemTwo = ({
   Icon,
   className,
   price,
-  cash,
-  card,
-  credit,
+  count = 0,
   loading,
   title2,
 }) => {
@@ -29,7 +27,8 @@ const CardItemTwo = ({
         />
       ) : (
         <>
-          {title === "Today Order" || title === "Yesterday Order" ? (
+          {title === "Today Subscriptions" ||
+          title === "Yesterday Subscriptions" ? (
             <Card className={`flex justify-center h-full`}>
               <CardBody
                 className={`border border-gray-200 justify-between dark:border-gray-800 w-full p-6 rounded-lg ${className}`}
@@ -54,18 +53,9 @@ const CardItemTwo = ({
                       {getNumberTwo(price)}
                     </p>
                   </div>
-                  <div className="flex text-center text-xs font-normal text-gray-50 dark:text-gray-100">
+                  <div className=" text-center text-xs font-normal text-gray-50 dark:text-gray-100">
                     <div className="px-1 mt-3">
-                      {t("Cash")} : {currency}
-                      {getNumberTwo(cash)}
-                    </div>
-                    <div className="px-1 mt-3">
-                      {t("Card")} : {currency}
-                      {getNumberTwo(card)}
-                    </div>
-                    <div className="px-1 mt-3">
-                      {t("Credit")} : {currency}
-                      {getNumberTwo(credit)}
+                      {t("Count")} : {count}
                     </div>
                   </div>
                 </div>
@@ -90,6 +80,11 @@ const CardItemTwo = ({
                     {currency}
                     {getNumberTwo(price)}
                   </p>
+                </div>{" "}
+                <div className=" text-center text-xs font-normal text-gray-50 dark:text-gray-100">
+                  <div className="px-1 mt-3">
+                    {t("Count")} : {count}
+                  </div>
                 </div>
               </CardBody>
             </Card>

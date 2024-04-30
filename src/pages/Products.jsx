@@ -33,7 +33,7 @@ import useProductFilter from "@/hooks/useProductFilter";
 import DeleteModal from "@/components/modal/DeleteModal";
 import BulkActionDrawer from "@/components/drawer/BulkActionDrawer";
 import TableLoading from "@/components/preloader/TableLoading";
-import SelectCategory from "@/components/form/selectOption/SelectCategory";
+import SelectCategory from "@/components/form/selectOption";
 import useFilter from "@/hooks/useFilter";
 
 const Products = (props) => {
@@ -111,64 +111,6 @@ const Products = (props) => {
       <MainDrawer>
         <ProductDrawer id={serviceId} />
       </MainDrawer>
-      <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
-        <CardBody className="">
-          <form
-            onSubmit={handleSubmitForAll}
-            className="py-3 md:pb-0 grid gap-4 lg:gap-6 xl:gap-6 xl:flex"
-          >
-            <div className="flex-grow-0 sm:flex-grow md:flex-grow lg:flex-grow xl:flex-grow">
-              <UploadManyTwo
-                title="Products"
-                filename={filename}
-                isDisabled={isDisabled}
-                totalDoc={data?.totalDoc}
-                handleSelectFile={handleSelectFile}
-                handleUploadMultiple={handleUploadMultiple}
-                handleRemoveSelectFile={handleRemoveSelectFile}
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-                <Button
-                  disabled={isCheck.length < 1}
-                  onClick={() => handleUpdateMany(isCheck)}
-                  className="w-full rounded-md h-12 btn-gray text-gray-600"
-                >
-                  <span className="mr-2">
-                    <FiEdit />
-                  </span>
-                  {t("BulkAction")}
-                </Button>
-              </div>
-              <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-                <Button
-                  disabled={isCheck?.length < 1}
-                  onClick={() => handleDeleteMany(isCheck, data.products)}
-                  className="w-full rounded-md h-12 bg-red-300 disabled btn-red"
-                >
-                  <span className="mr-2">
-                    <FiTrash2 />
-                  </span>
-
-                  {t("Delete")}
-                </Button>
-              </div>
-              <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-                <Button
-                  onClick={toggleDrawer}
-                  className="w-full rounded-md h-12"
-                >
-                  <span className="mr-2">
-                    <FiPlus />
-                  </span>
-                  {t("AddProduct")}
-                </Button>
-              </div>
-            </div>
-          </form>
-        </CardBody>
-      </Card>
 
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 rounded-t-lg rounded-0 mb-4">
         <CardBody>
@@ -189,29 +131,6 @@ const Products = (props) => {
               ></button>
             </div>
 
-            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-              <SelectCategory setCategory={setCategory} lang={lang} />
-            </div>
-
-            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-              <Select onChange={(e) => setSortedField(e.target.value)}>
-                <option value="All" defaultValue hidden>
-                  {t("Price")}
-                </option>
-                <option value="low">{t("LowtoHigh")}</option>
-                <option value="high">{t("HightoLow")}</option>
-                <option value="published">{t("Published")}</option>
-                <option value="unPublished">{t("Unpublished")}</option>
-                <option value="status-selling">{t("StatusSelling")}</option>
-                <option value="status-out-of-stock">{t("StatusStock")}</option>
-                <option value="date-added-asc">{t("DateAddedAsc")}</option>
-                <option value="date-added-desc">{t("DateAddedDesc")}</option>
-                <option value="date-updated-asc">{t("DateUpdatedAsc")}</option>
-                <option value="date-updated-desc">
-                  {t("DateUpdatedDesc")}
-                </option>
-              </Select>
-            </div>
             <div className="flex items-center gap-2 flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
               <div className="w-full mx-1">
                 <Button type="submit" className="h-12 w-full bg-emerald-700">

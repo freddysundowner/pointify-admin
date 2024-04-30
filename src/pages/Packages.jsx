@@ -92,46 +92,9 @@ const Packages = () => {
             onSubmit={handleSubmitCoupon}
             className="py-3 grid gap-4 lg:gap-6 xl:gap-6  xl:flex"
           >
-            <div className="flex justify-start xl:w-1/2  md:w-full">
-              <UploadManyTwo
-                title="Coupon"
-                exportData={data}
-                filename={filename}
-                isDisabled={isDisabled}
-                handleSelectFile={handleSelectFile}
-                handleUploadMultiple={handleUploadMultiple}
-                handleRemoveSelectFile={handleRemoveSelectFile}
-              />
-            </div>
+            <div className="flex justify-start xl:w-1/2  md:w-full"></div>
 
             <div className="lg:flex  md:flex xl:justify-end xl:w-1/2  md:w-full md:justify-start flex-grow-0">
-              <div className="w-full md:w-40 lg:w-40 xl:w-40 mr-3 mb-3 lg:mb-0">
-                <Button
-                  disabled={isCheck.length < 1}
-                  onClick={() => handleUpdateMany(isCheck)}
-                  className="w-full rounded-md h-12 btn-gray text-gray-600"
-                >
-                  <span className="mr-2">
-                    <FiEdit />
-                  </span>
-                  {t("BulkAction")}
-                </Button>
-              </div>
-
-              <div className="w-full md:w-32 lg:w-32 xl:w-32 mr-3 mb-3 lg:mb-0">
-                <Button
-                  disabled={isCheck.length < 1}
-                  onClick={() => handleDeleteMany(isCheck)}
-                  className="w-full rounded-md h-12 bg-red-500 btn-red"
-                >
-                  <span className="mr-2">
-                    <FiTrash2 />
-                  </span>
-
-                  {t("Delete")}
-                </Button>
-              </div>
-
               <div className="w-full md:w-48 lg:w-48 xl:w-48">
                 <Button
                   onClick={toggleDrawer}
@@ -140,7 +103,7 @@ const Packages = () => {
                   <span className="mr-2">
                     <FiPlus />
                   </span>
-                  {t("AddCouponsBtn")}
+                  Add Packages
                 </Button>
               </div>
             </div>

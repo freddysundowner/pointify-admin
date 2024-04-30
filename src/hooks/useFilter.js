@@ -9,7 +9,7 @@ import * as XLSX from "xlsx";
 
 //internal import
 import { SidebarContext } from "@/context/SidebarContext";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 import CategoryServices from "@/services/CategoryServices";
 import CouponServices from "@/services/CouponServices";
 import CurrencyServices from "@/services/CurrencyServices";
@@ -219,20 +219,15 @@ const useFilter = (data) => {
     if (searchUser) {
       services = services.filter(
         (search) =>
-          search?.name
-            ?.toLowerCase()
-            .includes(searchUser.toLowerCase()) ||
+          search?.name?.toLowerCase().includes(searchUser.toLowerCase()) ||
           search?.phone?.toLowerCase().includes(searchUser.toLowerCase()) ||
           search?.email?.toLowerCase().includes(searchUser.toLowerCase())
       );
     }
     //Coupon filtering
     if (searchCoupon) {
-      services = services?.filter(
-        (search) =>
-          search?.shop?.name
-            ?.toLowerCase()
-            ?.includes(searchCoupon?.toLowerCase())
+      services = services?.filter((search) =>
+        search?.shop?.name?.toLowerCase()?.includes(searchCoupon?.toLowerCase())
       );
     }
     // order filtering
@@ -413,20 +408,6 @@ const useFilter = (data) => {
             };
           });
         }
-        if (location.pathname === "/attributes") {
-          data = text.map((value) => {
-            return {
-              _id: value._id,
-              status: value.status,
-              title: value.title,
-              name: value.name,
-              variants: value.variants,
-              option: value.option,
-              type: value.type,
-            };
-          });
-        }
-
         if (location.pathname === "/coupons") {
           data = text.map((value) => {
             return {
@@ -475,18 +456,6 @@ const useFilter = (data) => {
               parentName: value.parentName,
               parentId: value.parentId,
               icon: value.icon,
-            };
-          });
-        }
-        if (location.pathname === "/attributes") {
-          data = json.map((value) => {
-            return {
-              status: value.status,
-              title: JSON.parse(value.title),
-              name: JSON.parse(value.name),
-              variants: JSON.parse(value.variants),
-              option: value.option,
-              type: value.type,
             };
           });
         }
@@ -555,18 +524,6 @@ const useFilter = (data) => {
               parentName: value.parentName,
               parentId: value.parentId,
               icon: value.icon,
-            };
-          });
-        }
-        if (location.pathname === "/attributes") {
-          data = json.map((value) => {
-            return {
-              status: value.status,
-              title: JSON.parse(value.title),
-              name: JSON.parse(value.name),
-              variants: JSON.parse(value.variants),
-              option: value.option,
-              type: value.type,
             };
           });
         }
@@ -686,7 +643,7 @@ const useFilter = (data) => {
           notifyError("Please enter valid data!");
         }
       }
-      if (location.pathname === "/attributes") {
+      if (location.pathname === "/measures") {
         setLoading(true);
         let attributeDataValidation = selectedFile.map((value) =>
           ajv.validate(attributeSchema, value)
@@ -696,7 +653,7 @@ const useFilter = (data) => {
         const validationData = attributeDataValidation.every(isBelowThreshold);
 
         if (validationData) {
-          AttributeServices.addAllAttributes(selectedFile)
+          MeasureServices.addMeasure(selectedFile)
             .then((res) => {
               setLoading(false);
               setIsUpdate(true);

@@ -35,38 +35,10 @@ const useCouponSubmit = (id) => {
     // console.log("coupon data", data);
     try {
       setIsSubmitting(true);
-      // const titleTranslates = await handlerTextTranslateHandler(
-      //   data.title,
-      //   language
-      // );
 
       const couponData = {
-        title: {
-          [language]: data.title,
-          // ...titleTranslates,
-        },
-        couponCode: data.couponCode,
-        endTime: data.endTime,
-        minimumAmount: data.minimumAmount,
-        logo: imageUrl,
-        lang: language,
-        status: published ? "show" : "hide",
-        discountType: {
-          type: discountType ? "percentage" : "fixed",
-          value: data.discountPercentage,
-        },
-        productType: data.productType,
+        endDate: data.endDate,
       };
-      // console.log(
-      //   "couponData",
-      //   couponData,
-      //   "titleTranslates",
-      //   titleTranslates,
-      //   "language",
-      //   language
-      // );
-      // setIsSubmitting(false);
-      // return;
 
       if (id) {
         const res = await CouponServices.updateCoupon(id, couponData);
@@ -98,21 +70,7 @@ const useCouponSubmit = (id) => {
   useEffect(() => {
     if (!isDrawerOpen) {
       setResData({});
-      setValue("title");
-      setValue("productType");
-      setValue("couponCode");
-      setValue("endTime");
-      setValue("discountPercentage");
-      setValue("minimumAmount");
-      setImageUrl("");
-      clearErrors("title");
-      clearErrors("productType");
-      clearErrors("couponCode");
-      clearErrors("endTime");
-      clearErrors("discountPercentage");
-      clearErrors("minimumAmount");
-      setLanguage(lang);
-      setValue("language", language);
+      setValue("endDate");
       return;
     }
     if (id) {
@@ -122,18 +80,8 @@ const useCouponSubmit = (id) => {
           if (res) {
             console.log('res coupon', res);
             setResData(res);
-            setValue("title", res.title[language ? language : "en"]);
-            setValue("productType", res.productType);
-            setValue("couponCode", res.couponCode);
-
-            setValue("endTime", dayjs(res.endTime).format("YYYY-MM-DD HH:mm"));
-            setValue("discountPercentage", res.discountType?.value);
-            setValue("minimumAmount", res.minimumAmount);
-            setPublished(res.status === "show" ? true : false);
-            setDiscountType(
-              res.discountType?.type === "percentage" ? true : false
-            );
-            setImageUrl(res.logo);
+            
+            setValue("endDate", dayjs(res.endDate).format("YYYY-MM-DD HH:mm"));
           }
         } catch (err) {
           notifyError(err?.response?.data?.message || err?.message);

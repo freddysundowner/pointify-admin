@@ -52,39 +52,12 @@ const AttributeTable = ({ isCheck, setIsCheck, attributes }) => {
               />
             </TableCell>
 
-            <TableCell className="font-semibold uppercase text-xs">
-              {attribute?._id?.substring(20, 24)}
-            </TableCell>
-
-            <TableCell className="font-medium text-sm">
-              {showingTranslateValue(attribute.title)}
-            </TableCell>
 
             <TableCell className="font-medium text-sm">
               {showingTranslateValue(attribute.name)}
             </TableCell>
 
-            <TableCell className="font-medium text-sm">
-              {attribute.option}
-            </TableCell>
 
-            <TableCell className="text-center">
-              <ShowHideButton id={attribute._id} status={attribute.status} />
-            </TableCell>
-
-            <TableCell className="flex justify-center">
-              <Link
-                to={`/attributes/${attribute._id}`}
-                className="p-2 cursor-pointer text-gray-400 hover:text-emerald-600 focus:outline-none"
-              >
-                <Tooltip
-                  id="edit values"
-                  Icon={FiEdit}
-                  title="Edit Values"
-                  bgColor="#10B981"
-                />
-              </Link>
-            </TableCell>
 
             <TableCell>
               <EditDeleteButton

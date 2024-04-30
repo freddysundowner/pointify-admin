@@ -38,8 +38,7 @@ const CouponDrawer = ({ id }) => {
           <Title
             register={register}
             handleSelectLanguage={handleSelectLanguage}
-            title={t("UpdateCoupon")}
-            description={t("UpdateCouponDescription")}
+            title="Update Subscription"
           />
         ) : (
           <Title
@@ -55,117 +54,19 @@ const CouponDrawer = ({ id }) => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="px-6 pt-8 flex-grow scrollbar-hide w-full max-h-full pb-40">
             <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("CouponBannerImage")} />
-              <div className="col-span-8 sm:col-span-4">
-                <Uploader
-                  imageUrl={imageUrl}
-                  setImageUrl={setImageUrl}
-                  folder="coupon"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("CampaignName")} />
-              <div className="col-span-8 sm:col-span-4">
-                <InputArea
-                  register={register}
-                  label="Coupon title"
-                  name="title"
-                  type="text"
-                  placeholder={t("CampaignName")}
-                />
-                <Error errorName={errors.title} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("CampaignCode")} />
-              <div className="col-span-8 sm:col-span-4">
-                <InputArea
-                  register={register}
-                  label="Coupon Code"
-                  name="couponCode"
-                  type="text"
-                  placeholder={t("CampaignCode")}
-                />
-                <Error errorName={errors.couponCode} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("CouponValidityTime")} />
+              <LabelArea label="Subscription Validation Till" />
               <div className="col-span-8 sm:col-span-4">
                 <Input
-                  {...register(`endTime`, {
-                    required: "Coupon Validation End Time",
+                  {...register(`endDate`, {
+                    required: "Subscription Validation End Time",
                   })}
-                  label="Coupon Validation End Time"
-                  name="endTime"
+                  label="Subscription Validation End Time"
+                  name="endDate"
                   type="datetime-local"
                   placeholder={t("CouponValidityTime")}
                 />
 
-                <Error errorName={errors.endTime} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("DiscountType")} />
-              <div className="col-span-8 sm:col-span-4">
-                <SwitchToggleFour
-                  handleProcess={setDiscountType}
-                  processOption={discountType}
-                />
-                <Error errorName={errors.discountType} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("Discount")} />
-              <div className="col-span-8 sm:col-span-4">
-                <InputValue
-                  product
-                  register={register}
-                  maxValue={discountType ? 99 : 1000}
-                  minValue={1}
-                  label="Discount"
-                  name="discountPercentage"
-                  type="number"
-                  placeholder={discountType ? "Percentage" : "Fixed Amount"}
-                  currency={discountType ? "%" : currency}
-                />
-
-                <Error errorName={errors.discountPercentage} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("MinimumAmount")} />
-              <div className="col-span-8 sm:col-span-4">
-                <InputValue
-                  product
-                  register={register}
-                  maxValue={200000}
-                  minValue={100}
-                  label="Minimum Amount"
-                  name="minimumAmount"
-                  type="number"
-                  placeholder={t("MinimumAmountPlasholder")}
-                  currency={currency}
-                />
-                <Error errorName={errors.minimumAmount} />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label={t("Published")} />
-              <div className="col-span-8 sm:col-span-4">
-                <SwitchToggle
-                  handleProcess={setPublished}
-                  processOption={published}
-                />
-                <Error errorName={errors.productType} />
+                <Error errorName={errors.endDate} />
               </div>
             </div>
           </div>
