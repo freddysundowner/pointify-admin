@@ -19,6 +19,7 @@ import AttributeServices from "@/services/AttributeServices";
 import CurrencyServices from "@/services/CurrencyServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import ShopCategoryServices from "@/services/ShopCategoryServices";
+import PartnersServices from "@/services/PartnersServices";
 
 const DeleteModal = ({ id, ids, setIsCheck, category, title, useParamId }) => {
   const { isModalOpen, closeModal, setIsUpdate } = useContext(SidebarContext);
@@ -31,6 +32,16 @@ const DeleteModal = ({ id, ids, setIsCheck, category, title, useParamId }) => {
     // return notifyError("This feature is disabled for demo!");
     try {
       setIsSubmitting(true);
+
+      if (location.pathname === "/partners") {
+        
+          const res = await PartnersServices.deletePartner(id);
+          setIsUpdate(true);
+          notifySuccess(res.message);
+          setServiceId();
+          closeModal();
+          setIsSubmitting(false);
+      }
       if (location.pathname === "/products") {
         if (ids) {
           const res = await ProductServices.deleteManyProducts({

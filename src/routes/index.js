@@ -6,6 +6,7 @@ const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Attributes = lazy(() => import("@/pages/Attributes"));
 const ChildAttributes = lazy(() => import("@/pages/ChildAttributes"));
 const Products = lazy(() => import("@/pages/Products"));
+const Partners = lazy(() => import("@/pages/Partners")); 
 const Shops = lazy(() => import("@/pages/Shops"));
 const Category = lazy(() => import("@/pages/Category"));
 const ShopCategory = lazy(() => import("@/pages/ShopCategory"));
@@ -16,6 +17,7 @@ const CustomerOrder = lazy(() => import("@/pages/CustomerOrder"));
 const SupportComp = lazy(() => import("@/pages/Support"));
 const Orders = lazy(() => import("@/pages/Orders"));
 const OrderInvoice = lazy(() => import("@/pages/OrderInvoice"));
+const Partner = lazy(() => import("@/pages/PartnerDetails"));
 const Coupons = lazy(() => import("@/pages/Coupons"));
 const Packages = lazy(() => import("@/pages/Packages"));
 // const Setting = lazy(() => import("@/pages/Setting"));
@@ -42,6 +44,10 @@ const routes = [
   {
     path: "/dashboard",
     component: Dashboard,
+  },
+  {
+    path: "/partners",
+    component: Partners,
   },
   {
     path: "/products",
@@ -88,7 +94,19 @@ const routes = [
     path: "/currencies",
     component: Currencies,
   },
-
+  {
+    path: "/shops/partner/:affliate",
+    component: Shops,
+  },
+  {
+    path: "/users/partners/:affliated",
+    component: Users,
+  },
+  {
+    path: "/partner/:id",
+    component: Partner,
+  },
+  
   {
     path: "/categories/:id",
     component: ChildCategory,

@@ -10,7 +10,6 @@ import { SidebarContext } from "@/context/SidebarContext";
 import AttributeServices from "@/services/AttributeServices";
 import ProductServices from "@/services/ProductServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
-// import useTranslationValue from "./useTranslationValue";
 import useUtilsFunction from "./useUtilsFunction";
 
 const useProductSubmit = (id) => {

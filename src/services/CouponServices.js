@@ -7,6 +7,13 @@ const CouponServices = {
   addAllCoupon: async (body) => {
     return requests.post('/coupon/add/all', body);
   },
+  getTransactions: async ({ userId }) => {
+    return requests.get("/payments/transactions?id=" + userId);
+  },
+  getEarnings: async ({ userId }) => {
+    return requests.get("/payments/awards?user=" + userId);
+  },
+  
   getAllCoupons: async () => {
     return requests.get("/subscriptions");
   },

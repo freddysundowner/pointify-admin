@@ -88,11 +88,11 @@ const ShopTable = ({ products, isCheck, setIsCheck }) => {
             </TableCell>
             <TableCell>
               <span className="text-sm">
-                {showDateTimeFormat(product.subscription.endDate)}
+                {showDateTimeFormat(product?.subscription?.endDate)}
               </span>
             </TableCell>
             <TableCell>
-              {shopExpired(product.subscription.endDate) == true ? (
+              {shopExpired(product?.subscription?.endDate) == true ? (
                 <Badge type="success">Active</Badge>
               ) : (
                 <Badge type="danger">Expired</Badge>
@@ -100,9 +100,9 @@ const ShopTable = ({ products, isCheck, setIsCheck }) => {
             </TableCell>
             <TableCell>
               <span className="text-sm">
-                {product.subscription.packageId?.type}(
-                {product.subscription.packageId?.durationValue}-
-                {product.subscription.packageId?.durationUnit})
+                {product?.subscription?.packageId?.type}(
+                {product?.subscription?.packageId?.durationValue}-
+                {product?.subscription?.packageId?.durationUnit})
               </span>
             </TableCell>
             <TableCell>

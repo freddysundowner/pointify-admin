@@ -70,6 +70,13 @@ const Shops = (props) => {
     location,
     searchLocationRef
   } = useContext(SidebarContext);
+  const [affliate, setAffliate] = useState(null);
+  useEffect(() => {
+    const searchParams = new URLSearchParams(locationn.search);
+    const affliateId = searchParams.get('affliate');
+    setAffliate(affliateId);
+  }, [locationn]);
+  console.log("affliateId ", userid)
 
   const { data, loading, error } = useAsync(() =>
     ShopService.getAllShops({
@@ -79,7 +86,8 @@ const Shops = (props) => {
       locationText: location,
       title: searchText,
       price: sortedField,
-      userid: props.match.params
+      userid: props.match.params?.userid,
+      affliate: props.match.params?.affliate,
     })
   );
   const [isCheckAll, setIsCheckAll] = useState(false);

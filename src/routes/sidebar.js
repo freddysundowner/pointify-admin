@@ -41,7 +41,6 @@ const sidebar = [
       },
     ],
   },
-
   {
     path: "/coupons", // the url
     icon: FiGrid, // icon
@@ -77,6 +76,11 @@ const sidebar = [
     ],
   },
 
+  {
+    path: "/partners",
+    icon: FiUsers,
+    name: "Partners",
+  },
   {
     path: "/users",
     icon: FiUsers,

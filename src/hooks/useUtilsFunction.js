@@ -35,7 +35,7 @@ const useUtilsFunction = () => {
   };
 
   const showDateTimeFormat = (data) => {
-    return dayjs(data).format(`MM-DD-YYYY`);
+    return dayjs(data).format(`DD-MM-YYYY H:m a`);
   };
 
   //for formatting number

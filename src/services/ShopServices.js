@@ -1,16 +1,17 @@
 import requests from "./httpService";
 
 const ShopServices = {
-  getAllShops: async ({ page, limit, category, title, price, locationText,userid }) => {
+  getAllShops: async ({ page, limit, category, title, price, locationText,userid,affliate }) => {
     const searchCategory = category !== null ? category : "";
     const searchTitle = title !== null ? title : "";
     const searchPrice = price !== null ? price : "";
     const address = locationText !== null ? locationText : "";
-    const ownerid = userid?.userid !== null ? userid?.userid : "";
+    const ownerid = userid !== null && userid != undefined ? userid : "";
+    const affliateid = affliate !== null && affliate  !=undefined ? affliate : "";
     console.log("userid ",ownerid);
     
     return requests.get(
-      `/shop?page=${page}&ownerid=${ownerid??""}&address=${address}&limit=${limit}&category=${searchCategory}&title=${searchTitle}&price=${searchPrice}`
+      `/shop?page=${page}&affliate=${affliateid}&ownerid=${ownerid??""}&address=${address}&limit=${limit}&category=${searchCategory}&title=${searchTitle}&price=${searchPrice}`
     );
   },
 

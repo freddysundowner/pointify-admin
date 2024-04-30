@@ -11,13 +11,13 @@ import CurrencyServices from "@/services/CurrencyServices";
 import LanguageServices from "@/services/LanguageServices";
 import ProductServices from "@/services/ProductServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
+import PartnersServices from "@/services/PartnersServices";
 
-const ShowHideButton = ({ id, status, category, currencyStatusName }) => {
+const ShowHideButton = ({ id, status, category, currencyStatusName ,type}) => {
   const location = useLocation();
   const { setIsUpdate } = useContext(SidebarContext);
 
   const handleChangeStatus = async (id) => {
-    // return notifyError("This feature is disabled for demo!");
     try {
       let newStatus;
       if (status === "show") {
@@ -42,6 +42,13 @@ const ShowHideButton = ({ id, status, category, currencyStatusName }) => {
         notifySuccess(res.message);
       }
 
+      if (location.pathname === "/partners") {
+        const res = await PartnersServices.updatePartner(id, {
+          blocked: status,
+        });
+        setIsUpdate(true);
+        notifySuccess(res.message);
+      }
       if (location.pathname === "/languages") {
         const res = await LanguageServices.updateStatus(id, {
           status: newStatus,
@@ -104,11 +111,11 @@ const ShowHideButton = ({ id, status, category, currencyStatusName }) => {
       notifyError(err ? err?.response?.data?.message : err?.message);
     }
   };
-
+  console.log(status)
   return (
     <Switch
       onChange={() => handleChangeStatus(id)}
-      checked={status === "show" ? true : false}
+      checked={type =="blocked" ? status : status === "show" ? true : false}
       className="react-switch md:ml-0"
       uncheckedIcon={
         <div
