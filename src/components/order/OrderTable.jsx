@@ -13,11 +13,8 @@ import PrintReceipt from "@/components/form/others/PrintReceipt";
 import SelectStatus from "@/components/form/selectOption/SelectStatus";
 
 const OrderTable = ({ orders }) => {
-  // console.log('globalSetting',globalSetting)
   const { t } = useTranslation();
-  const { showDateTimeFormat, currency, getNumberTwo } = useUtilsFunction();
-
-  console.log('orders',orders)
+  const { getNumberTwo } = useUtilsFunction();
 
   return (
     <>
@@ -37,9 +34,15 @@ const OrderTable = ({ orders }) => {
             </TableCell>
 
             <TableCell className="text-xs">
-              Shop: <span className="text-sm">{order?.shopId?.name}</span>{" "}<br/>
-              Attendant: <span className="text-sm">{order?.attendantId?.username}</span>{" "}<br />
-              Location: <span className="text-sm">{order?.shopId?.address}</span>{" "}
+              Shop: <span className="text-sm">{order?.shopId?.name}</span>{" "}
+              <br />
+              Attendant:{" "}
+              <span className="text-sm">
+                {order?.attendantId?.username}
+              </span>{" "}
+              <br />
+              Location:{" "}
+              <span className="text-sm">{order?.shopId?.address}</span>{" "}
             </TableCell>
 
             <TableCell>
@@ -51,23 +54,14 @@ const OrderTable = ({ orders }) => {
             <TableCell>
               <span className="text-sm font-semibold">
                 {order?.shopId?.currency}
-                {getNumberTwo(order?.totalWithDiscount)}<br/>
+                {getNumberTwo(order?.totalWithDiscount)}
+                <br />
                 Items: {order.items?.length}
               </span>
             </TableCell>
 
-            <TableCell className="text-xs">
-              <Status status={order?.status} />
-            </TableCell>
-
-            <TableCell className="text-center">
-              <SelectStatus id={order._id} order={order} />
-            </TableCell>
-
             <TableCell className="text-right flex justify-end">
               <div className="flex justify-between items-center">
-                <PrintReceipt orderId={order._id} />
-
                 <span className="p-2 cursor-pointer text-gray-400 hover:text-emerald-600">
                   <Link to={`/order/${order._id}`}>
                     <Tooltip

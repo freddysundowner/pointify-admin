@@ -46,7 +46,7 @@ const OrderInvoice = () => {
 
   return (
     <>
-      <PageTitle> {t("InvoicePageTittle")} </PageTitle>
+      <PageTitle> Receipt </PageTitle>
 
       <div
         ref={printRef}
@@ -56,23 +56,9 @@ const OrderInvoice = () => {
           <div className="">
             <div className="flex lg:flex-row md:flex-row flex-col lg:items-center justify-between pb-4 border-b border-gray-50 dark:border-gray-700 dark:text-gray-300">
               <h1 className="font-bold font-serif text-xl uppercase">
-                {t("InvoicePageTittle")}
-                <p className="text-xs mt-1 text-gray-500">
-                  {t("InvoiceStatus")}
-                  <span className="pl-2 font-medium text-xs capitalize">
-                    {" "}
-                    <Status status={data.status} />
-                  </span>
-                </p>
+                Receipt
               </h1>
               <div className="lg:text-right text-left">
-                <h2 className="lg:flex lg:justify-end text-lg font-serif font-semibold mt-4 lg:mt-0 lg:ml-0 md:mt-0">
-                  {mode === "dark" ? (
-                    <img src={logoDark} alt="kachabazar" width="110" />
-                  ) : (
-                    <img src={logoLight} alt="kachabazar" width="110" />
-                  )}
-                </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                   {data?.shopId?.address} <br />
                   {data?.shopId?.adminId?.phone} <br />{" "}
@@ -91,7 +77,7 @@ const OrderInvoice = () => {
               </div>
               <div className="mb-3 md:mb-0 lg:mb-0 flex flex-col">
                 <span className="font-bold font-serif text-sm uppercase text-gray-600 dark:text-gray-500 block">
-                  {t("InvoiceNo")}
+                  Receipt No.
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 block">
                   #{data?.receiptNo}
@@ -99,7 +85,7 @@ const OrderInvoice = () => {
               </div>
               <div className="flex flex-col lg:text-right text-left">
                 <span className="font-bold font-serif text-sm uppercase text-gray-600 dark:text-gray-500 block">
-                  {t("InvoiceTo")}
+                  Receipt To
                 </span>
                 <span className="text-sm text-gray-500 dark:text-gray-400 block">
                   {data?.customerId?.name} <br />
@@ -146,40 +132,12 @@ const OrderInvoice = () => {
         {!loading && (
           <div className="border rounded-xl border-gray-100 p-8 py-6 bg-gray-50 dark:bg-gray-900 dark:border-gray-800">
             <div className="flex lg:flex-row md:flex-row flex-col justify-between">
-              <div className="mb-3 md:mb-0 lg:mb-0  flex flex-col sm:flex-wrap">
-                <span className="mb-1 font-bold font-serif text-sm uppercase text-gray-600 dark:text-gray-500 block">
-                  {t("InvoicepaymentMethod")}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold font-serif block">
-                  {data.paymentType}
-                </span>
-              </div>
-              <div className="mb-3 md:mb-0 lg:mb-0  flex flex-col sm:flex-wrap">
-                <span className="mb-1 font-bold font-serif text-sm uppercase text-gray-600 dark:text-gray-500 block">
-                  {t("ShippingCost")}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold font-serif block">
-
-                  {data.shopId?.currency}
-                  {getNumberTwo(data.shippingCost)}
-                </span>
-              </div>
-              <div className="mb-3 md:mb-0 lg:mb-0  flex flex-col sm:flex-wrap">
-                <span className="mb-1 font-bold font-serif text-sm uppercase text-gray-600 dark:text-gray-500 block">
-                  {t("InvoiceDicount")}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold font-serif block">
-
-                  {data.shopId?.currency}
-                  {getNumberTwo(data.totalDiscount)}
-                </span>
-              </div>
+              
               <div className="flex flex-col sm:flex-wrap">
                 <span className="mb-1 font-bold font-serif text-sm uppercase text-gray-600 dark:text-gray-500 block">
                   {t("InvoiceTotalAmount")}
                 </span>
                 <span className="text-xl font-serif font-bold text-red-500 dark:text-emerald-500 block">
-
                   {data.shopId?.currency}
                   {getNumberTwo(data.totalWithDiscount)}
                 </span>
@@ -188,48 +146,6 @@ const OrderInvoice = () => {
           </div>
         )}
       </div>
-      {!loading && (
-        <div className="mb-4 mt-3 flex justify-between">
-          <PDFDownloadLink
-            document={
-              <InvoiceForDownload
-                t={t}
-                data={data}
-                currency={currency}
-                getNumberTwo={getNumberTwo}
-                showDateFormat={showDateFormat}
-              />
-            }
-            fileName="Invoice"
-          >
-            {({ blob, url, loading, error }) =>
-              loading ? (
-                "Loading..."
-              ) : (
-                <button className="flex items-center text-sm leading-5 transition-colors duration-150 font-medium focus:outline-none px-5 py-2 rounded-md text-white bg-emerald-500 border border-transparent active:bg-emerald-600 hover:bg-emerald-600  w-auto cursor-pointer">
-                  Download Invoice
-                  <span className="ml-2 text-base">
-                    <IoCloudDownloadOutline />
-                  </span>
-                </button>
-              )
-            }
-          </PDFDownloadLink>
-
-          <ReactToPrint
-            trigger={() => (
-              <button className="flex items-center text-sm leading-5 transition-colors duration-150 font-medium focus:outline-none px-5 py-2 rounded-md text-white bg-emerald-500 border border-transparent active:bg-emerald-600 hover:bg-emerald-600  w-auto">
-                {t("PrintInvoice")}
-                <span className="ml-2">
-                  <FiPrinter />
-                </span>
-              </button>
-            )}
-            content={() => printRef.current}
-            documentTitle="Invoice"
-          />
-        </div>
-      )}
     </>
   );
 };

@@ -11,6 +11,9 @@ const PackagesServices = {
     return requests.get("/packages");
   },
   getCouponById: async (id) => {
+    return requests.get(`/subscriptions/${id}`);
+  },
+  getPackageId: async (id) => {
     return requests.get(`/packages/${id}`);
   },
   updateCoupon: async (id, body) => {

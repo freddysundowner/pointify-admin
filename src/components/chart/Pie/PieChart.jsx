@@ -6,12 +6,12 @@ const PieChart = ({ data }) => {
     data: {
       datasets: [
         {
-          data: data?.bestSellingProduct?.map((selling) => selling.count),
-          backgroundColor: ["#10B981", "#3B82F6", "#F97316", "#0EA5E9"],
-          label: "Dataset 1",
+          data: data?.counts?.map((selling) => selling.count),
+          backgroundColor: ["#10B981", "#3B82F6"],
+          label: "Subscriptions",
         },
       ],
-      labels: data?.bestSellingProduct?.map((selling) => selling._id),
+      labels: data?.lables?.map((selling) => selling.label),
     },
     options: {
       responsive: true,

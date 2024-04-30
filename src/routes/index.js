@@ -16,7 +16,7 @@ const CustomerOrder = lazy(() => import("@/pages/CustomerOrder"));
 const SupportComp = lazy(() => import("@/pages/Support"));
 const Orders = lazy(() => import("@/pages/Orders"));
 const OrderInvoice = lazy(() => import("@/pages/OrderInvoice"));
-const Coupons = lazy(() => import("@/pages/Coupons"));
+const Subscriptions = lazy(() => import("@/pages/Coupons"));
 const Packages = lazy(() => import("@/pages/Packages"));
 // const Setting = lazy(() => import("@/pages/Setting"));
 const Page404 = lazy(() => import("@/pages/404"));
@@ -52,11 +52,11 @@ const routes = [
     component: Products,
   },
   {
-    path: "/attributes",
+    path: "/measures",
     component: Attributes,
   },
   {
-    path: "/attributes/:id",
+    path: "/measures/:id",
     component: ChildAttributes,
   },
   {
@@ -66,7 +66,7 @@ const routes = [
   {
     path: "/shops/categories",
     component: ShopCategory,
-  }, 
+  },
   {
     path: "/support",
     component: SupportComp,
@@ -118,8 +118,8 @@ const routes = [
     component: OrderInvoice,
   },
   {
-    path: "/coupons",
-    component: Coupons,
+    path: "/subscriptions",
+    component: Subscriptions,
   },
   {
     path: "/packages",

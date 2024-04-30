@@ -1,23 +1,23 @@
-import requests from './httpService';
+import requests from "./httpService";
 
 const CouponServices = {
   addCoupon: async (body) => {
-    return requests.post('/coupon/add', body);
+    return requests.post("/coupon/add", body);
   },
   addAllCoupon: async (body) => {
-    return requests.post('/coupon/add/all', body);
+    return requests.post("/coupon/add/all", body);
   },
-  getAllCoupons: async () => {
-    return requests.get("/subscriptions");
+  getAllCoupons: async (status,type) => {
+    return requests.get("/subscriptions?status=" + status+"&type="+type);
   },
   getCouponById: async (id) => {
     return requests.get(`/coupon/${id}`);
   },
   updateCoupon: async (id, body) => {
-    return requests.put(`/coupon/${id}`, body);
+    return requests.put(`/subscriptions/extend/${id}`, body);
   },
   updateManyCoupons: async (body) => {
-    return requests.patch('/coupon/update/many', body);
+    return requests.patch("/coupon/update/many", body);
   },
   updateStatus: async (id, body) => {
     return requests.put(`/coupon/status/${id}`, body);

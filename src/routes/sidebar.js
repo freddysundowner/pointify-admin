@@ -36,14 +36,14 @@ const sidebar = [
         name: "Categories",
       },
       {
-        path: "/attributes",
+        path: "/measures",
         name: "Measure Units",
       },
     ],
   },
 
   {
-    path: "/coupons", // the url
+    path: "/subscriptions", // the url
     icon: FiGrid, // icon
     name: "Subscriptions", // name that appear in Sidebar
   },
@@ -87,7 +87,7 @@ const sidebar = [
     path: "/settings?settingTab=common-settings",
     icon: FiSettings,
     name: "Settings",
-  }
+  },
 ];
 
 export default sidebar;

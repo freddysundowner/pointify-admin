@@ -18,6 +18,9 @@ import CouponDrawer from "@/components/drawer/CouponDrawer";
 import ShowHideButton from "@/components/table/ShowHideButton";
 import EditDeleteButton from "@/components/table/EditDeleteButton";
 
+import { FiEdit, FiTrash2, FiZoomIn } from "react-icons/fi";
+
+import Tooltip from "@/components/tooltip/Tooltip";
 const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
   const [updatedCoupons, setUpdatedCoupons] = useState([]);
 
@@ -103,7 +106,6 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
               </span>
             </TableCell>
 
-
             <TableCell>
               <span className="text-sm">
                 {showDateTimeFormat(coupon.startDate)}
@@ -117,53 +119,55 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
             </TableCell>
 
             <TableCell className="align-middle ">
-              {
-                new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.status ==true  ? (
+              {new Date(coupon.endDate).getTime() > new Date().getTime() &&
+              coupon.status == true ? (
                 <Badge type="success">Active</Badge>
-                ) :  ""
-              }
-              {
-                new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.paid ==false  && coupon.status ==false && coupon.packageId?.type !='trial'  ? (
+              ) : (
+                ""
+              )}
+              {new Date(coupon.endDate).getTime() > new Date().getTime() &&
+              coupon.paid == false &&
+              coupon.status == false &&
+              coupon.packageId?.type != "trial" ? (
                 <Badge type="danger">Payment Failed</Badge>
-                ) :  ""
-              }
+              ) : (
+                ""
+              )}
 
-              {
-                new Date(coupon.endDate).getTime() < new Date().getTime() && coupon.packageId?.type !='trial'  ? (
+              {new Date(coupon.endDate).getTime() < new Date().getTime() &&
+              coupon.packageId?.type != "trial" ? (
                 <Badge type="danger">Expired</Badge>
-                ) :  ""
-              }
-              {
-                new Date(coupon.endDate).getTime() < new Date().getTime() && coupon.packageId?.type =='trial'  ? (
+              ) : (
+                ""
+              )}
+              {new Date(coupon.endDate).getTime() < new Date().getTime() &&
+              coupon.packageId?.type == "trial" ? (
                 <Badge type="warning">Trial Expired</Badge>
-                ) :  ""
-              }
+              ) : (
+                ""
+              )}
 
-              {
-                new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.packageId?.type =='trial'  ? (
+              {new Date(coupon.endDate).getTime() > new Date().getTime() &&
+              coupon.packageId?.type == "trial" ? (
                 <Badge type="success">Trial Active</Badge>
-                ) :  ""
-              }
-              {/* {dayjs().isAfter(dayjs(coupon.endDate)) ? (
-                <Badge type="danger">Expired</Badge>
-              ) :  ""}
-              {new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.status ==true ? (
-                <Badge type="success">Active</Badge>
-              ) : ""}
-
-              {new Date(coupon.endDate).getTime() > new Date().getTime() && coupon.status ==false ? (
-                <Badge type="danger">Payment Failed</Badge>
-              ) : ""} */}
+              ) : (
+                ""
+              )}
             </TableCell>
 
             <TableCell>
-              <EditDeleteButton
-                id={coupon?._id}
-                isCheck={isCheck}
-                handleUpdate={handleUpdate}
-                handleModalOpen={handleModalOpen}
-                title={showingTranslateValue(coupon?.title)}
-              />
+              <button
+                disabled={isCheck?.length > 0}
+                onClick={() => handleUpdate(coupon?._id)}
+                className="p-2 cursor-pointer text-gray-400 hover:text-emerald-600 focus:outline-none"
+              >
+                <Tooltip
+                  id="edit"
+                  Icon={FiEdit}
+                  title="Edit"
+                  bgColor="#10B981"
+                />
+              </button>
             </TableCell>
           </TableRow>
         ))}

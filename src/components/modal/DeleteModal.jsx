@@ -15,7 +15,7 @@ import CustomerServices from "@/services/UserServices";
 import LanguageServices from "@/services/LanguageServices";
 import ProductServices from "@/services/ProductServices";
 import useToggleDrawer from "@/hooks/useToggleDrawer";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 import CurrencyServices from "@/services/CurrencyServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import ShopCategoryServices from "@/services/ShopCategoryServices";
@@ -142,54 +142,27 @@ const DeleteModal = ({ id, ids, setIsCheck, category, title, useParamId }) => {
         setIsSubmitting(false);
       }
 
-      if (location.pathname === "/attributes") {
-        if (ids) {
-          const res = await AttributeServices.deleteManyAttribute({
-            ids: ids,
-          });
-          setIsUpdate(true);
-          notifySuccess(res.message);
-          setIsCheck([]);
-          setServiceId();
-          closeModal();
-          setIsSubmitting(false);
-        } else {
-          const res = await AttributeServices.deleteAttribute(id);
-          setIsUpdate(true);
-          notifySuccess(res.message);
-          setServiceId();
-          closeModal();
-          setIsSubmitting(false);
-        }
+      if (location.pathname === "/measures") {
+        const res = await MeasureServices.deleteMeasure(id);
+        setIsUpdate(true);
+        notifySuccess(res.message);
+        setServiceId();
+        closeModal();
+        setIsSubmitting(false);
       }
 
       if (
-        location.pathname === `/attributes/${location.pathname.split("/")[2]}`
+        location.pathname === `/measures/${location.pathname.split("/")[2]}`
       ) {
-        if (ids) {
-          const res = await AttributeServices.deleteManyChildAttribute({
-            id: location.pathname.split("/")[2],
-            ids: ids,
-          });
-          setIsUpdate(true);
-          notifySuccess(res.message);
-          setServiceId();
-          setIsCheck([]);
-          closeModal();
-          setIsSubmitting(false);
-        } else {
-          // console.log("att value delete", id, location.pathname.split("/")[2]);
-
-          const res = await AttributeServices.deleteChildAttribute({
-            id: id,
-            ids: location.pathname.split("/")[2],
-          });
-          setIsUpdate(true);
-          notifySuccess(res.message);
-          setServiceId();
-          closeModal();
-          setIsSubmitting(false);
-        }
+        const res = await MeasureServices.deleteMeasure({
+          id: id,
+          ids: location.pathname.split("/")[2],
+        });
+        setIsUpdate(true);
+        notifySuccess(res.message);
+        setServiceId();
+        closeModal();
+        setIsSubmitting(false);
       }
 
       if (location.pathname === "/our-staff") {

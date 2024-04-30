@@ -88,7 +88,7 @@ const usePackagesSubmit = (id) => {
     if (id) {
       (async () => {
         try {
-          const res = await PackagesServices.getCouponById(id);
+          const res = await PackagesServices.getPackageId(id);
           if (res) {
             setResData(res);
             setValue("title", res.title);

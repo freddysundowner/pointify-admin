@@ -27,7 +27,7 @@ import { SidebarContext } from "@/context/SidebarContext";
 import useAsync from "@/hooks/useAsync";
 import useFilter from "@/hooks/useFilter";
 import useToggleDrawer from "@/hooks/useToggleDrawer";
-import AttributeServices from "@/services/AttributeServices";
+import MeasureServices from "@/services/MeasureServices";
 import useUtilsFunction from "@/hooks/useUtilsFunction";
 
 const ChildAttributes = () => {
@@ -37,13 +37,13 @@ const ChildAttributes = () => {
     useToggleDrawer();
   const { toggleDrawer, lang } = useContext(SidebarContext);
   const { data, loading, error } = useAsync(() =>
-    AttributeServices.getAttributeById(id)
+    MeasureServices.getAttributeById(id)
   );
 
   const { showingTranslateValue } = useUtilsFunction();
 
   const { data: attributes } = useAsync(() =>
-    AttributeServices.getAllAttributes({
+    MeasureServices.getAllAttributes({
       type: "attribute",
       option: "Dropdown",
       option1: "Radio",

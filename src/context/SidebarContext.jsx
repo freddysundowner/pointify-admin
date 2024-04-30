@@ -23,6 +23,7 @@ export const SidebarProvider = ({ children }) => {
   const [isBulkDrawerOpen, setIsBulkDrawerOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [type, setType] = useState("");
   const [lang, setLang] = useState("en");
   const [time, setTime] = useState("");
   const [sortedField, setSortedField] = useState("");
@@ -71,12 +72,12 @@ export const SidebarProvider = ({ children }) => {
   const handleSubmitForAll = (e) => {
     e.preventDefault();
     if (!searchLocationRef?.current?.value) {
-      setLocation(null)
+      setLocation(null);
     } else {
       setLocation(searchLocationRef?.current?.value);
     }
     if (!searchRef?.current?.value) {
-      setSearchText(null)
+      setSearchText(null);
     } else {
       setSearchText(searchRef?.current?.value);
     }
@@ -108,7 +109,6 @@ export const SidebarProvider = ({ children }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-
   return (
     <SidebarContext.Provider
       value={{
@@ -128,6 +128,8 @@ export const SidebarProvider = ({ children }) => {
         toggleModal,
         closeModal,
         isUpdate,
+        type,
+        setType,
         setIsUpdate,
         lang,
         setLang,
@@ -170,7 +172,7 @@ export const SidebarProvider = ({ children }) => {
         setTabIndex,
         location,
         setLocation,
-        searchLocationRef
+        searchLocationRef,
       }}
     >
       {children}
