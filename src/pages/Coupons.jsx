@@ -10,6 +10,7 @@ import {
   TableFooter,
   TableHeader,
   Select,
+  Label,
 } from "@windmill/react-ui";
 import { useContext, useEffect, useState } from "react";
 import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
@@ -35,26 +36,47 @@ import UploadManyTwo from "@/components/common/UploadManyTwo";
 
 const Coupons = () => {
   const { t } = useTranslation();
-  const { lang, status, setStatus, type, setType,currentPage,
+  const {
+    lang,
+    currentPage,
     handleChangePage,
-    resultsPerPage, } = useContext(SidebarContext);
-  const { data, loading, error } = useAsync(() =>
-    CouponServices.getAllCoupons(status,type,currentPage,)
-  );
+    resultsPerPage,
+    setCurrentPage,
+    loading,
+    setLoading,
+  } = useContext(SidebarContext);
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
 
   const { allId, serviceId } = useToggleDrawer();
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+  const [createAt, setStartDate] = useState("");
+  const [expiryperiodTo, setExpiryperiodTo] = useState(null);
+  const [expiryperiodFrom, setExpiryperiodFrom] = useState(null);
+  const [alldata, setAllData] = useState({ count: 0, data: [] });
+  const [name, setName] = useState("");
+  console.log(expiryperiodTo, expiryperiodFrom);
+  useEffect(() => {
+    handleSubmitCoupon();
+  }, [status, type, currentPage]);
+  const handleSubmitCoupon = async (event) => {
+    if (event) event.preventDefault();
+    setLoading(true);
 
-  const {
-    couponRef,
-    dataTable,
-    serviceData,
-    totalResults,
-    setSearchCoupon,
-    handleSubmitCoupon,
-  } = useFilter(data);
-
+    const response = await CouponServices.getAllCoupons(
+      status,
+      type,
+      currentPage,
+      20,
+      name,
+      createAt,
+      expiryperiodTo,
+      expiryperiodFrom
+    );
+    setLoading(false);
+    setAllData(response);
+  };
 
   const handleSelectAll = () => {
     setIsCheckAll(!isCheckAll);
@@ -66,8 +88,14 @@ const Coupons = () => {
 
   // handle reset field function
   const handleResetField = () => {
-    setSearchCoupon("");
-    couponRef.current.value = "";
+    // setSearchCoupon("");
+    // couponRef.current.value = "";
+    setExpiryperiodTo(null);
+    setExpiryperiodFrom(null);
+    setStatus("");
+    setType("");
+    setStartDate("");
+    setCurrentPage(1), handleSubmitCoupon();
   };
 
   return (
@@ -88,50 +116,87 @@ const Coupons = () => {
         <CardBody>
           <form
             onSubmit={handleSubmitCoupon}
-            className="py-3 grid gap-4 lg:gap-6 xl:gap-6 md:flex xl:flex"
+            className="py-3 gap-2 flex flex-col"
           >
-            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-              <Input
-                ref={couponRef}
-                type="search"
-                placeholder="search by shop name"
-              />
-            </div>
-            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-              <Select onChange={(e) => setType(e.target.value)}>
-                <option value="type" defaultValue hidden>
-                  Select Type
-                </option>
-                <option value="trial">Trial Period</option>
-                <option value="production">Production</option>
-              </Select>
-            </div>
-            <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-              <Select onChange={(e) => setStatus(e.target.value)}>
-                <option value="Status" defaultValue hidden>
-                  {t("Status")}
-                </option>
-                <option value="Active">Active</option>
-                <option value="Cancelled">Cancelled</option>
-                <option value="Expired">Expired</option>
-              </Select>
-            </div>
-            <div className="flex items-center gap-2 flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
-              <div className="w-full mx-1">
-                <Button type="submit" className="h-12 w-full bg-emerald-700">
-                  Filter
-                </Button>
+            <div className="grid  gap-4 lg:gap-6 xl:gap-6 md:flex xl:flex">
+              <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+                <Input
+                  onChange={(e) => setName(e.target.value)}
+                  type="search"
+                  placeholder="search by shop name"
+                />
               </div>
+              <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+                <Select onChange={(e) => setType(e.target.value)}>
+                  <option value="type" defaultValue hidden>
+                    Select Type
+                  </option>
+                  <option value="trial">Trial Period</option>
+                  <option value="production">Production</option>
+                </Select>
+              </div>
+              <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+                <Select onChange={(e) => setStatus(e.target.value)}>
+                  <option value="Status" defaultValue hidden>
+                    {t("Status")}
+                  </option>
+                  <option value="Active">Active</option>
+                  <option value="Cancelled">Cancelled</option>
+                  <option value="Expired">Expired</option>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2 flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+                <div className="w-full mx-1">
+                  <Button type="submit" className="h-12 w-full bg-emerald-700">
+                    Filter
+                  </Button>
+                </div>
 
-              <div className="w-full mx-1">
-                <Button
-                  layout="outline"
-                  onClick={handleResetField}
-                  type="reset"
-                  className="px-4 md:py-1 py-2 h-12 text-sm dark:bg-gray-700"
-                >
-                  <span className="text-black dark:text-gray-200">Reset</span>
-                </Button>
+                <div className="w-full mx-1">
+                  <Button
+                    layout="outline"
+                    onClick={() => handleResetField()}
+                    type="reset"
+                    className="px-4 md:py-1 py-2 h-12 text-sm dark:bg-gray-700"
+                  >
+                    <span className="text-black dark:text-gray-200">Reset</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="flex lg:gap-6 xl:gap-6 md:flex xl:flex">
+              <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+                <Label>Subscription Date</Label>
+                <Input
+                  type="date"
+                  name="startDate"
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div>
+              <Label>Expiry Period Date</Label>
+              <div className=" grid gap-4 lg:gap-6 xl:gap-6 md:flex xl:flex">
+                <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+                  <Input
+                    type="date"
+                    name="expiryperiodFrom"
+                    onChange={(e) => {
+                      setExpiryperiodFrom(null); // Temporarily set to null
+                      setExpiryperiodFrom(e.target.value); // Then set the actual value
+                    }}
+                  />
+                </div>
+                <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
+                  <Input
+                    type="date"
+                    name="expiryperiodTo"
+                    onChange={(e) => {
+                      setExpiryperiodTo(null); // Temporarily set to null
+                      setExpiryperiodTo(e.target.value); // Then set the actual value
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </form>
@@ -139,10 +204,8 @@ const Coupons = () => {
       </Card>
 
       {loading ? (
-        <TableLoading row={12} col={8} width={140} height={20} />
-      ) : error ? (
-        <span className="text-center mx-auto text-red-500">{error}</span>
-      ) : serviceData?.length !== 0 ? (
+        <TableLoading row={12} col={7} width={160} height={20} />
+      ) : alldata?.data?.length > 0 ? (
         <TableContainer className="mb-8">
           <Table>
             <TableHeader>
@@ -172,14 +235,14 @@ const Coupons = () => {
             <CouponTable
               lang={lang}
               isCheck={isCheck}
-              coupons={dataTable}
+              coupons={alldata?.data}
               setIsCheck={setIsCheck}
             />
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={data?.count}
-              resultsPerPage={resultsPerPage}
+              totalResults={alldata.count}
+              resultsPerPage={20}
               onChange={handleChangePage}
               label="Table navigation"
             />

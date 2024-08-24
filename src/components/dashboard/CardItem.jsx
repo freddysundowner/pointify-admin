@@ -14,6 +14,8 @@ const CardItem = ({
   pending,
   todayPending,
   olderPending,
+  smallContent,
+  smallContentText,
 }) => {
   const { getNumberTwo } = useUtilsFunction();
 
@@ -38,12 +40,16 @@ const CardItem = ({
 
             <div>
               <h6 className="text-sm mb-1 font-medium text-gray-600 dark:text-gray-400">
-                <span>{title}</span>{" "}
-                {amount && (
-                  <span className="text-red-500 text-sm font-semibold">
-                    ({getNumberTwo(amount)})
-                  </span>
-                )}
+                <div className="flex flex-col">
+                  <div className="flex flex-row">
+                    <span>{title}</span>{" "}
+                    {quantity && (
+                      <span className="text-red-500 text-sm font-semibold">
+                        ({quantity})
+                      </span>
+                    )}
+                  </div>
+                </div>
               </h6>
               {pending && (
                 <div className="grid grid-cols-2 gap-4 w-full mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
@@ -62,9 +68,14 @@ const CardItem = ({
                 </div>
               )}
 
-              <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">
-                {quantity}
-              </p>
+              {smallContent && smallContentText && (
+                <span className="text-gray-500 text-sm font-semibold flex flex-row gap-2">
+                  {smallContentText}
+                  <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">
+                    {smallContent}
+                  </p>
+                </span>
+              )}
             </div>
           </CardBody>
         </Card>

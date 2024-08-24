@@ -95,17 +95,21 @@ const Dashboard = () => {
         <CardItemTwo
           mode={mode}
           title="Today Subscriptions"
-          title2="Today Subscriptions" 
-          data={dashboardOrderCount?.today?.length > 0 ? dashboardOrderCount?.today : [
-            {
-              "amount": 0,
-              "count": 0
-            },
-            {
-              "amount": 0,
-              "count": 0
-            }
-          ]}
+          title2="Today Subscriptions"
+          data={
+            dashboardOrderCount?.today?.length > 0
+              ? dashboardOrderCount?.today
+              : [
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                ]
+          }
           count={dashboardOrderAmount?.today?.subscriptionsCount || 0}
           Icon={ImStack}
           bigTotal={dashboardOrderAmount?.today?.amount || 0}
@@ -125,16 +129,20 @@ const Dashboard = () => {
             dashboardOrderAmount?.yesterday?.yesterdaysubscriptionsCount || 0
           }
           Icon={ImStack}
-          data={dashboardOrderCount?.yesterday?.length > 0 ? dashboardOrderCount?.yesterday : [
-            {
-              "amount": 0,
-              "count": 0
-            },
-            {
-              "amount": 0,
-              "count": 0
-            }
-          ]}
+          data={
+            dashboardOrderCount?.yesterday?.length > 0
+              ? dashboardOrderCount?.yesterday
+              : [
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                ]
+          }
           bigTotal={dashboardOrderAmount?.yesterday?.amount || 0}
           leftTotal={dashboardOrderAmount?.yesterday?.amount || 0}
           leftText="Applied"
@@ -146,18 +154,51 @@ const Dashboard = () => {
 
         <CardItemTwo
           mode={mode}
+          title="This Week"
+          title2="This Week"
+          count={dashboardOrderAmount?.thisWeekSummary?.subscriptionsCount || 0}
+          Icon={ImStack}
+          data={
+            dashboardOrderCount?.thisWeekSummary?.length > 0
+              ? dashboardOrderCount?.thisWeekSummary
+              : [
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                ]
+          }
+          bigTotal={dashboardOrderAmount?.thisWeekSummary?.amount || 0}
+          leftTotal={dashboardOrderAmount?.thisWeekSummary?.amount || 0}
+          leftText="Applied"
+          rightTotal={dashboardOrderAmount?.thisWeekSummary?.amount || 0}
+          rightText="Disbursed"
+          className="text-white dark:text-orange-100 bg-orange-400"
+          loading={loadingOrderAmount}
+        />
+
+        <CardItemTwo
+          mode={mode}
           title="Yesterday Subscriptions"
           title2="This Month Subscriptions"
-          data={dashboardOrderCount?.thisMonth?.length > 0 ? dashboardOrderCount?.thisMonth : [
-            {
-              "amount": 0,
-              "count": 0
-            },
-            {
-              "amount": 0,
-              "count": 0
-            }
-          ]}
+          data={
+            dashboardOrderCount?.thisMonth?.length > 0
+              ? dashboardOrderCount?.thisMonth
+              : [
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                ]
+          }
           count={dashboardOrderAmount?.thisMonth?.thisMonthSubscriptions || 0}
           Icon={FiShoppingCart}
           bigTotal={dashboardOrderAmount?.thisMonth?.thisMonthAmount || 0}
@@ -169,16 +210,20 @@ const Dashboard = () => {
           mode={mode}
           title2="LastMonth"
           Icon={ImCreditCard}
-          data={dashboardOrderCount?.lastMonth?.length > 0 ? dashboardOrderCount?.lastMonth : [
-            {
-              "amount": 0,
-              "count": 0
-            },
-            {
-              "amount": 0,
-              "count": 0
-            }
-          ]}
+          data={
+            dashboardOrderCount?.lastMonth?.length > 0
+              ? dashboardOrderCount?.lastMonth
+              : [
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                ]
+          }
           loading={loadingOrderAmount}
           count={dashboardOrderAmount?.lastMonth?.lastMonthSubscriptions || 0}
           price={dashboardOrderAmount?.lastMonth?.lastMonthAmount || 0}
@@ -189,16 +234,20 @@ const Dashboard = () => {
           mode={mode}
           title2="All Time Subscriptions"
           Icon={ImCreditCard}
-          data={dashboardOrderCount?.allTime?.length > 0 ? dashboardOrderCount?.allTime : [
-            {
-              "amount": 0,
-              "count": 0
-            },
-            {
-              "amount": 0,
-              "count": 0
-            }
-          ]}
+          data={
+            dashboardOrderCount?.allTime?.length > 0
+              ? dashboardOrderCount?.allTime
+              : [
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                  {
+                    amount: 0,
+                    count: 0,
+                  },
+                ]
+          }
           count={dashboardOrderAmount?.allTime?.allTimeSubscriptions || 0}
           price={dashboardOrderAmount?.allTime?.allTimeAmount || 0}
           className="text-white dark:text-emerald-100 bg-emerald-600"
@@ -218,6 +267,8 @@ const Dashboard = () => {
         <CardItem
           title="Total Shops"
           Icon={FiRefreshCw}
+          smallContent={dashboardOrderCount.totalActiveShops}
+          smallContentText="Active"
           loading={loadingOrderCount}
           quantity={dashboardOrderCount?.totalShops || 0}
           className="text-blue-600 dark:text-blue-100 bg-blue-100 dark:bg-blue-500"
@@ -225,12 +276,14 @@ const Dashboard = () => {
         <CardItem
           title="Active Subscriptions"
           Icon={FiTruck}
+          smallContent={dashboardOrderCount.yearlySubscribers}
+          smallContentText="Yearly"
           loading={loadingOrderCount}
           quantity={dashboardOrderCount?.activeCount || 0}
           className="text-teal-600 dark:text-teal-100 bg-teal-100 dark:bg-teal-500"
         />
         <CardItem
-          title="Active Trials"
+          title="Active Trials "
           Icon={FiCheck}
           loading={loadingOrderCount}
           quantity={dashboardOrderCount?.trialCount || 0}
@@ -346,9 +399,11 @@ const Dashboard = () => {
                       {dayjs(
                         new Date(transaction?.subscriptionDetails[0]?.startDate)
                       ).format("MM/D/YYYY")}
-                    </span> - 
+                    </span>{" "}
+                    -
                     <span className="text-sm">
-                      {" "}{dayjs(
+                      {" "}
+                      {dayjs(
                         new Date(transaction?.subscriptionDetails[0]?.endDate)
                       ).format("MM/D/YYYY")}
                     </span>

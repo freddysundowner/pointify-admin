@@ -98,6 +98,8 @@ const useFilter = (data) => {
   const [filename, setFileName] = useState("");
   const [isDisabled, setIsDisable] = useState(false);
   const [shipping, setShipping] = useState("");
+  const [subscriptions, setSubscriptions] = useState([]);
+
   const [newProducts] = useState([]);
   const currencyRef = useRef("");
   const searchRef = useRef("");
@@ -117,20 +119,37 @@ const useFilter = (data) => {
   const { lang, setIsUpdate, setLoading } = useContext(SidebarContext);
   const { globalSetting } = useUtilsFunction();
 
+  useEffect(() => {}, [subscriptions]);
+
   //service data filtering
   const serviceData = useMemo(() => {
     const date = new Date();
     date.setDate(date.getDate() - time);
-    let services = data?.data?.map((el) => {
-      const newDate = new Date(el?.updatedAt).toLocaleString("en-US", {
-        timeZone: globalSetting?.default_time_zone,
+    console.log(subscriptions);
+    let services;
+    if (subscriptions) {
+      services = subscriptions?.data?.map((el) => {
+        const newDate = new Date(el?.updatedAt).toLocaleString("en-US", {
+          timeZone: globalSetting?.default_time_zone,
+        });
+        const newObj = {
+          ...el,
+          updatedDate: newDate === "Invalid Date" ? "" : newDate,
+        };
+        return newObj;
       });
-      const newObj = {
-        ...el,
-        updatedDate: newDate === "Invalid Date" ? "" : newDate,
-      };
-      return newObj;
-    });
+    } else {
+      services = data?.data?.map((el) => {
+        const newDate = new Date(el?.updatedAt).toLocaleString("en-US", {
+          timeZone: globalSetting?.default_time_zone,
+        });
+        const newObj = {
+          ...el,
+          updatedDate: newDate === "Invalid Date" ? "" : newDate,
+        };
+        return newObj;
+      });
+    }
     if (location.pathname === "/dashboard") {
       const orderPending = services?.filter(
         (statusP) => statusP.status === "Pending"
@@ -299,6 +318,7 @@ const useFilter = (data) => {
     categoryRef,
     globalSetting?.default_time_zone,
     lang,
+    subscriptions,
   ]);
 
   //pagination functionality start
@@ -327,6 +347,10 @@ const useFilter = (data) => {
   };
   const handleSubmitCoupon = (e) => {
     e.preventDefault();
+    console.log(e.target);
+
+    console.log(couponRef.current.value);
+
     setSearchCoupon(couponRef.current.value);
   };
   const handleSubmitOrder = (e) => {
@@ -757,6 +781,8 @@ const useFilter = (data) => {
     handleSubmitLanguage,
     handleUploadMultiple,
     handleRemoveSelectFile,
+    subscriptions,
+    setSubscriptions,
   };
 };
 

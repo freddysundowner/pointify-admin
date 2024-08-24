@@ -7,10 +7,38 @@ const CouponServices = {
   addAllCoupon: async (body) => {
     return requests.post("/coupon/add/all", body);
   },
-  getAllCoupons: async (status,type, page = 1, limit =20) => {
-    return requests.get("/subscriptions?status=" + status+"&type="+type+"&limit="+limit+"&page="+page);
+  getAllCoupons: async (
+    status = "",
+    type = "",
+    page = 1,
+    limit = 20,
+    shop = "",
+    createAt = "",
+    expiryperiodTo = '',
+    expiryperiodFrom = ''
+  ) => {
+    console.log("getAllCoupons");
+
+    return requests.get(
+      "/subscriptions?status=" +
+        status +
+        "&type=" +
+        type +
+        "&limit=" +
+        limit +
+        "&page=" +
+        page +
+        "&shop=" +
+        shop +
+        "&createAt=" +
+        createAt +
+        "&expiryperiodTo=" +
+        expiryperiodTo +
+        "&expiryperiodFrom=" +
+        expiryperiodFrom
+    );
   },
-  getEarnings: async (id,page = 1) => {
+  getEarnings: async (id, page = 1) => {
     return requests.get(`/payments/awards?user=${id}&page=${page}`);
   },
   getTransactions: async (id) => {
