@@ -1,14 +1,9 @@
 import requests from "./httpService";
 
 const ShopCategoryServices = {
-  getAllCategory: async () => {
-    return requests.get("/shop/category");
+  getAllCategory: async (page) => {
+    return requests.get("/shop/category?page="+page+"&limit=20");
   },
-
-  getAllCategories: async () => {
-    return requests.get("/shop/category");
-  },
-
   getCategoryById: async (id) => {
     return requests.get(`/shop/category/${id}`);
   },

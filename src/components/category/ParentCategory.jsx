@@ -38,7 +38,7 @@ const ParentCategory = ({
 
   const renderCategories = (categories) => {
     let myCategories = [];
-    for (let category of categories) {
+    for (let category of categories?.data) {
       myCategories.push({
         title: showingTranslateValue(category.name),
         key: category._id,

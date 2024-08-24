@@ -33,16 +33,14 @@ import useProductFilter from "@/hooks/useProductFilter";
 import DeleteModal from "@/components/modal/DeleteModal";
 import BulkActionDrawer from "@/components/drawer/BulkActionDrawer";
 import TableLoading from "@/components/preloader/TableLoading";
-import SelectCategory from "@/components/form/selectOption";
 import useFilter from "@/hooks/useFilter";
 
 const Products = (props) => {
-  const { title, allId, serviceId, handleDeleteMany, handleUpdateMany } =
+  const { title, allId, serviceId} =
     useToggleDrawer();
 
   const { t } = useTranslation();
   const {
-    toggleDrawer,
     lang,
     currentPage,
     searchText,
@@ -53,6 +51,7 @@ const Products = (props) => {
     sortedField,
     setSortedField,
     limitData,
+    handleChangePage,
   } = useContext(SidebarContext);
 
 
@@ -68,7 +67,6 @@ const Products = (props) => {
     })
   );
   const {
-    handleChangePage,
     totalResults,
     resultsPerPage,dataTable
   } = useFilter(data);
@@ -118,6 +116,17 @@ const Products = (props) => {
             onSubmit={handleSubmitForAll}
             className="py-3 grid gap-4 lg:gap-6 xl:gap-6 md:flex xl:flex"
           >
+          <div className="flex-grow-0 sm:flex-grow md:flex-grow lg:flex-grow xl:flex-grow">
+              <UploadManyTwo
+                title="Products"
+                filename={filename}
+                isDisabled={isDisabled}
+                totalDoc={data?.totalDoc}
+                handleSelectFile={handleSelectFile}
+                handleUploadMultiple={handleUploadMultiple}
+                handleRemoveSelectFile={handleRemoveSelectFile}
+              />
+            </div>
             <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
               <Input
                 ref={searchRef}
@@ -193,7 +202,7 @@ const Products = (props) => {
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data?.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Product Page Navigation"

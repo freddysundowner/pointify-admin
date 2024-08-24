@@ -34,12 +34,9 @@ import CategoryTable from "@/components/category/CategoryTable";
 import NotFound from "@/components/table/NotFound";
 
 const Category = () => {
-  const { toggleDrawer, lang } = useContext(SidebarContext);
+  const { toggleDrawer, lang, currentPage,handleChangePage, } = useContext(SidebarContext);
 
-  const { data, loading, error } = useAsync(CategoryServices.getAllCategory);
-  const { data: getAllCategories } = useAsync(
-    CategoryServices.getAllCategories
-  );
+  const { data, loading, error } = useAsync(()=>CategoryServices.getAllCategory(currentPage));
 
   const { handleDeleteMany, allId, handleUpdateMany, serviceId } =
     useToggleDrawer();
@@ -49,11 +46,10 @@ const Category = () => {
   const {
     handleSubmitCategory,
     categoryRef,
-    totalResults,
+    totalResults, 
     resultsPerPage,
     dataTable,
     serviceData,
-    handleChangePage,
     filename,
     isDisabled,
     setCategoryType,
@@ -88,17 +84,17 @@ const Category = () => {
       <PageTitle>{t("Category")}</PageTitle>
       <DeleteModal ids={allId} setIsCheck={setIsCheck} />
 
-      <BulkActionDrawer
+      {/* <BulkActionDrawer
         ids={allId}
         title="Categories"
         lang={lang}
         data={data}
         isCheck={isCheck}
-      />
+      /> */}
 
-      <MainDrawer>
+      {/* <MainDrawer>
         <CategoryDrawer id={serviceId} data={data} lang={lang} />
-      </MainDrawer>
+      </MainDrawer> */}
 
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody className="">
@@ -111,7 +107,7 @@ const Category = () => {
             <div className="flex justify-start w-1/2 xl:w-1/2 md:w-full">
               <UploadManyTwo
                 title="Categories"
-                exportData={getAllCategories}
+                exportData={data?.data}
                 filename={filename}
                 isDisabled={isDisabled}
                 handleSelectFile={handleSelectFile}
@@ -232,7 +228,7 @@ const Category = () => {
             </TableHeader>
 
             <CategoryTable
-              data={data}
+              data={data?.data}
               lang={lang}
               isCheck={isCheck}
               categories={dataTable}
@@ -243,7 +239,7 @@ const Category = () => {
 
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data?.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

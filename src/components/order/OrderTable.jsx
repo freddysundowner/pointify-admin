@@ -3,8 +3,7 @@ import { TableBody, TableCell, TableRow } from "@windmill/react-ui";
 import { useTranslation } from "react-i18next";
 import { FiZoomIn } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import dayjs from "dayjs";
-//internal import
+import moment from 'moment';
 
 import Status from "@/components/table/Status";
 import Tooltip from "@/components/tooltip/Tooltip";
@@ -29,7 +28,9 @@ const OrderTable = ({ orders }) => {
 
             <TableCell>
               <span className="text-sm">
-                {dayjs(order.createdAt).format("MMM D, YYYY H:mm")}
+                 {moment(order.createdAt).utc().format('MMMM Do YYYY, h:mm:ss a')} 
+                 {/* <Moment date={new Date(order.createdAt)} /> */}
+                {/* {dayjs(order.createdAt).format("MMM D, YYYY H:mm")} */}
               </span>
             </TableCell>
 

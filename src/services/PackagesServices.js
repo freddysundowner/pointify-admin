@@ -7,8 +7,8 @@ const PackagesServices = {
   addAllCoupon: async (body) => {
     return requests.post("/packages/add/all", body);
   },
-  getAllCoupons: async () => {
-    return requests.get("/packages");
+  getAllCoupons: async (currentPage) => {
+    return requests.get("/packages?page="+currentPage+"&limit=20&admin=true");
   },
   getCouponById: async (id) => {
     return requests.get(`/subscriptions/${id}`);

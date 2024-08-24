@@ -1,17 +1,9 @@
-import combinate from "combinate";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation } from "react-router-dom";
-import swal from "sweetalert";
 
-//internal import
-import useAsync from "@/hooks/useAsync";
 import { SidebarContext } from "@/context/SidebarContext";
-import AttributeServices from "@/services/AttributeServices";
-import ProductServices from "@/services/ProductServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
-// import useTranslationValue from "./useTranslationValue";
-import useUtilsFunction from "./useUtilsFunction";
 import PartnersServices from "@/services/PartnersServices";
 
 const usePartnerSubmit = (id) => {
@@ -45,6 +37,8 @@ const usePartnerSubmit = (id) => {
         name: data.name,
         email: data.email,
         phonenumber: data.phonenumber,
+        wallet: data.wallet,
+        password: data.password ? data.password : ""
       };
 
       if (partnerId) {
@@ -52,7 +46,9 @@ const usePartnerSubmit = (id) => {
         if (res) {
             setIsUpdate(true);
             notifySuccess(res.message);
-            setIsSubmitting(false);
+            setIsSubmitting(false); 
+            notifySuccess("Affliate Updated Successfully!");
+            closeDrawer();
         }
       } else {
         const res = await PartnersServices.addAffliate(partnerData);
@@ -92,7 +88,7 @@ const usePartnerSubmit = (id) => {
 
           if (res) {
             setResData(res);
-            setUpdatedId(res._id);
+            setPartnerId(res._id);
             setValue("name", res.name);
             setValue("email", res.email);
             setValue("phonenumber", res.phonenumber);

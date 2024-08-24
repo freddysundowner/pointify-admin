@@ -2,8 +2,7 @@ import dayjs from "dayjs";
 import { useParams } from "react-router";
 import ReactToPrint from "react-to-print";
 import React, { useContext, useRef, useState } from "react";
-import { FiPrinter } from "react-icons/fi";
-import { IoCloudDownloadOutline } from "react-icons/io5";
+import { SidebarContext } from "@/context/SidebarContext";
 import {
   TableCell,
   TableHeader,
@@ -39,24 +38,23 @@ const PartnerDetails = () => {
   const [isCheck, setIsCheck] = useState([]);
   const { id } = useParams();
   const printRef = useRef();
+  const { lang, status, setStatus, type, setType,currentPage,
+    handleChangePage,
+    resultsPerPage, } = useContext(SidebarContext);
   const { data: earnings} = useAsync(() =>
-    CouponServices.getEarnings({
-      userId: id,
-    })
+    CouponServices.getEarnings(id,currentPage)
   );
   const { data: transactions} = useAsync(() =>
-    CouponServices.getTransactions({
-      userId: id,
-    })
+    CouponServices.getTransactions(id)
   );
   const { data, loading, error } = useAsync(() =>
     PartnersServices.getPartnerById(id)
   );
+  console.log(earnings);
   const {
     dataTable,
     serviceData,
     totalResults,
-    resultsPerPage, handleChangePage
   } = useFilter(earnings);
 
   console.log(transactions);
@@ -149,7 +147,7 @@ const PartnerDetails = () => {
             </Table>
             <TableFooter>
               <Pagination
-                totalResults={totalResults}
+                totalResults={earnings?.count}
                 resultsPerPage={resultsPerPage}
                 onChange={handleChangePage}
                 label="Table navigation"
@@ -190,7 +188,7 @@ const PartnerDetails = () => {
             </Table>
             <TableFooter>
               <Pagination
-                  totalResults={transactions.length}
+                  totalResults={transactions?.length}
                 resultsPerPage={resultsPerPage}
                 onChange={handleChangePage}
                 label="Table navigation"

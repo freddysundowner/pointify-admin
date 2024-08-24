@@ -50,7 +50,7 @@ const useProductFilter = (data) => {
   const serviceData = useMemo(() => {
     const date = new Date();
     date.setDate(date.getDate() - time);
-    let services = data?.map((el) => {
+    let services = data?.shops?.map((el) => {
       const newObj = {
         ...el,
       };
@@ -103,8 +103,9 @@ const useProductFilter = (data) => {
   ]);
 
   //pagination functionality start
+  console.log(serviceData)
   const resultsPerPage = 20;
-  const totalResults = serviceData?.length;
+  const totalResults = serviceData?.totalShops;
   const handleChangePage = (p) => {
     setCurrentPage(p);
   };

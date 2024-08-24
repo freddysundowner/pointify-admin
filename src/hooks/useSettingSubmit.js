@@ -14,8 +14,14 @@ const useSettingSubmit = (id) => {
   const { setIsUpdate } = useContext(SidebarContext);
   const [isSave, setIsSave] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [stripe, setStripe] = useState(false);
+  const [paystack, setPaystack] = useState(false);
+  const [flutterwave, setFlutterWave] = useState(false);
+  
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [discovershops, setDiscoverShops] = useState(false);
+  const [verifyemail, setVerifyEmail] = useState(false);
 
   // const { socket } = useNotification();
 
@@ -32,52 +38,45 @@ const useSettingSubmit = (id) => {
       const settingData = {
         name: "globalSetting",
         setting: {
-          //for common setting
-          number_of_image_per_product: data.number_of_image_per_product,
-          shop_name: data.shop_name,
           android_version: data.android_version,
           ios_version: data.ios_version,
-          address: data.address,
           demolink: data.demolink,
-          company_name: data.company_name,
-          vat_number: data.vat_number,
-          post_code: data.post_code,
           contact: data.contact,
           email: data.email,
           website: data.website,
-          receipt_size: data.receipt_size,
-          default_currency: data.default_currency,
-          default_time_zone: data.default_time_zone,
-          default_date_format: data.default_date_format,
           forceUpdate: forceUpdate,
+          stripe_secret_key: data.stripe_secret_key,
+          stripe_publishable_key: data.stripe_publishable_key,
+          paystack_secret_key: data.paystack_secret_key,
+          paystack_public_key: data.paystack_public_key,
+          SmtpType: data.SmtpType,
+          SmtpPassword: data.SmtpPassword,
+          SmtpEmail: data.SmtpEmail,
+          google_api_key: data.google_api_key,
+          enablepaystack: paystack,
+          enablestripe: stripe,
+          discovershops: discovershops,
+          verifyemail:verifyemail,
+          appName: data.appName,
+          flutterwavepublickey:data.flutterwavepublickey,
+          enableflutterwave: flutterwave,
         },
       };
 
-      // console.log("global setting", settingData, "data", data);
-      // return;
-
       if (!isSave) {
         const res = await SettingServices.updateGlobalSetting(settingData);
-        // await socket.emit("notification", {
-        //   message: `Global setting updated`,
-        //   option: "globalSetting",
-        // });
         setIsUpdate(true);
         setIsSubmitting(false);
         dispatch(removeSetting("globalSetting"));
 
-        window.location.reload();
+        // window.location.reload();
         notifySuccess(res.message);
       } else {
         const res = await SettingServices.addGlobalSetting(settingData);
-        // await socket.emit("notification", {
-        //   message: `Global setting added`,
-        //   option: "globalSetting",
-        // });
         setIsUpdate(true);
         setIsSubmitting(false);
 
-        window.location.reload();
+        // window.location.reload();
         notifySuccess(res.message);
       }
     } catch (err) {
@@ -91,30 +90,28 @@ const useSettingSubmit = (id) => {
     (async () => {
       try {
         const res = await SettingServices.getGlobalSetting();
-        // console.log("res>>>", res);
         if (res) {
           setIsSave(false);
-          setValue(
-            "number_of_image_per_product",
-            res.number_of_image_per_product
-          );
           setValue("ios_version", res.ios_version);
           setValue("android_version", res.android_version);
-          setValue("shop_name", res.shop_name);
-          setValue("address", res.address);
-          setValue("company_name", res.company_name);
-          setValue("vat_number", res.vat_number);
-          setValue("post_code", res.post_code);
-          setValue("contact", res.contact);
-          setValue("email", res.email);
-          setValue("demolink", res.demolink);
           setValue("website", res.website);
           setValue("forceUpdate", res.forceUpdate);
-          setValue("receipt_size", res.receipt_size);
-          setValue("default_currency", res.default_currency);
-          setValue("default_time_zone", res?.default_time_zone);
-          setValue("default_date_format", res?.default_date_format);
+          setValue("stripe_secret_key", res.stripe_secret_key);
+          setValue("stripe_publishable_key", res.stripe_publishable_key);
+          setValue("paystack_secret_key", res.paystack_secret_key);
+          setValue("paystack_public_key", res.paystack_public_key);
+          setValue("google_api_key", res.google_api_key);
+          setValue("verifyemail", res.verifyemail);
+          setValue("SmtpType", res.SmtpType);
+          setValue("SmtpEmail", res.SmtpEmail);
+          setValue("SmtpPassword", res.SmtpPassword);
+          setValue("appName", res.appName);
+          setFlutterWave("flutterwavepublickey", res.flutterwavepublickey);
+          
+          setStripe(res.enablestripe);
+          setPaystack(res.enablepaystack);
           setForceUpdate(res.forceUpdate);
+          setDiscoverShops(res.discovershops);
         }
       } catch (err) {
         notifyError(err?.response?.data?.message || err?.message);
@@ -131,6 +128,15 @@ const useSettingSubmit = (id) => {
     handleSubmit,
     setForceUpdate,
     forceUpdate,
+    paystack,
+    stripe,
+    setStripe,
+    setPaystack,
+    setDiscoverShops,
+    discovershops,
+    verifyemail, setVerifyEmail,
+    setFlutterWave,
+    flutterwave
   };
 };
 

@@ -41,7 +41,8 @@ const usePackagesSubmit = (id) => {
         durationValue: data.durationValue,
         durationUnit: data.durationUnit,
         discount: data.discount,
-        amountusd:data.amountusd
+        amountusd: data.amountusd,
+        status: published
       };
 
       if (id) {

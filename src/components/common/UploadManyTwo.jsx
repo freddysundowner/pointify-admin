@@ -11,13 +11,15 @@ import {
   FiXCircle,
 } from "react-icons/fi";
 // import { ImFileExcel } from "react-icons/im";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 //internal import
 import spinnerLoadingImage from "@/assets/img/spinner.gif";
 import { SidebarContext } from "@/context/SidebarContext";
 import ProductServices from "@/services/ProductServices";
-
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 const UploadManyTwo = ({
   title,
   totalDoc,
@@ -36,11 +38,15 @@ const UploadManyTwo = ({
     name: "",
     status: false,
   });
+  const query = useQuery();
+  const type = query.get('type');
+  const { shopid } = useParams();
+  
 
-  // console.log(exportData);
 
   const handleExportCSV = () => {
-    if (location.pathname === "/products") {
+    if (type =='products') {
+  console.log(type,shopid);
       setLoadingExport({ name: "csv", status: true });
       ProductServices.getAllProducts({
         page: 1,
@@ -48,12 +54,26 @@ const UploadManyTwo = ({
         category: null,
         title: null,
         price: 0,
+        shop:{
+          shopid
+        }
       })
         .then((res) => {
+          console.log(res);
           setDropDown(false);
           setLoadingExport({ name: "", status: false });
+          const fields = ['name',"buyingPrice","sellingPrice","minSellingPrice","quantity","maxDiscount","reorderLevel","measureUnit","taxable","wholesalePrice","wholesalePrice","productCategoryId.name","measureUnit.name"]; // Specify the fields you want to export
+          const filteredData = res.map(item => {
+            let filteredItem = {};
+            fields.forEach(field => {
+               if (item.hasOwnProperty(field)) {
+                  filteredItem[field] = item[field];
+                }
+            });
+            return filteredItem;
+          });
           exportFromJSON({
-            data: res.products,
+            data: filteredData,
             fileName: "products",
             exportType: exportFromJSON.types.csv,
           });
@@ -79,10 +99,10 @@ const UploadManyTwo = ({
       });
     }
 
-    if (location.pathname === "/coupons") {
+    if (location.pathname === "/users") {
       exportFromJSON({
         data: exportData,
-        fileName: "coupons",
+        fileName: "users",
         exportType: exportFromJSON.types.csv,
       });
     }
@@ -135,10 +155,10 @@ const UploadManyTwo = ({
       });
     }
 
-    if (location.pathname === "/coupons") {
+    if (location.pathname === "/users") {
       exportFromJSON({
         data: exportData,
-        fileName: "coupons",
+        fileName: "users",
         exportType: exportFromJSON.types.json,
       });
     }

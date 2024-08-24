@@ -23,40 +23,18 @@ import MainDrawer from "@/components/drawer/MainDrawer";
 import ProductDrawer from "@/components/drawer/ProductDrawer";
 import Loading from "@/components/preloader/Loading";
 import PageTitle from "@/components/Typography/PageTitle";
-import { SidebarContext } from "@/context/SidebarContext";
 import ShopServices from "@/services/ShopServices";
 
 const ShopDetails = () => {
   const { id } = useParams();
   const { t } = useTranslation();
   const { handleUpdate } = useToggleDrawer();
-  const { attribue } = useProductSubmit(id);
-  const [variantTitle, setVariantTitle] = useState([]);
-  const { lang } = useContext(SidebarContext);
 
   const { data, loading } = useAsync(() => ShopServices.getProductById(id));
 
-  const { currency, showingTranslateValue, getNumberTwo, shopExpired } =
+  const {  showingTranslateValue, shopExpired } =
     useUtilsFunction();
 
-  const { handleChangePage, totalResults, resultsPerPage, dataTable } =
-    useFilter(data?.variants);
-  // console.log('data',data)
-
-  // useEffect(() => {
-  //   if (!loading) {
-  //     const res = Object.keys(Object.assign({}, ...data?.variants));
-
-  //     const varTitle = attribue?.filter((att) =>
-  //       // res.includes(att.title.replace(/[^a-zA-Z0-9]/g, ''))
-  //       res.includes(att._id)
-  //     );
-
-  //     setVariantTitle(varTitle);
-  //   }
-  // }, [attribue, data?.variants, loading, lang]);
-
-  console.log("product", data);
 
   return (
     <>

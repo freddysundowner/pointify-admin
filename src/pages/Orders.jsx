@@ -29,6 +29,7 @@ import OrderTable from "@/components/order/OrderTable";
 import TableLoading from "@/components/preloader/TableLoading";
 import spinnerLoadingImage from "@/assets/img/spinner.gif";
 import useUtilsFunction from "@/hooks/useUtilsFunction";
+import { useParams } from 'react-router-dom';
 
 const Orders = () => {
   const {
@@ -50,6 +51,7 @@ const Orders = () => {
     handleSubmitForAll,
     resultsPerPage,
   } = useContext(SidebarContext);
+  const {id} = useParams();
 
   const { t } = useTranslation();
 
@@ -65,12 +67,13 @@ const Orders = () => {
       startDate: startDate,
       limit: resultsPerPage,
       customerName: searchText,
+      shop:id
     })
   );
 
   const { currency, getNumber, getNumberTwo } = useUtilsFunction();
 
-  const { dataTable, serviceData } = useFilter(data?.sales);
+  const { dataTable, serviceData } = useFilter(data);
 
 
 
@@ -178,7 +181,7 @@ const Orders = () => {
 
           <TableFooter>
             <Pagination
-              totalResults={serviceData?.length}
+              totalResults={data?.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

@@ -36,7 +36,8 @@ const ChildCategory = () => {
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
 
-  const { toggleDrawer, lang } = useContext(SidebarContext);
+  const { toggleDrawer, lang,
+    handleChangePage, } = useContext(SidebarContext);
   const { handleDeleteMany, allId, handleUpdateMany } = useToggleDrawer();
   const { data, loading, error } = useAsync(CategoryServices.getAllCategory);
 
@@ -89,7 +90,6 @@ const ChildCategory = () => {
     resultsPerPage,
     dataTable,
     serviceData,
-    handleChangePage,
   } = useFilter(childCategory);
 
   const handleSelectAll = () => {

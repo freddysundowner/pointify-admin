@@ -10,7 +10,8 @@ import {
   TableFooter,
   TableHeader,
 } from "@windmill/react-ui";
-import React from "react";
+import { SidebarContext } from "@/context/SidebarContext";
+import React,{useContext,userRef} from "react";
 import { useTranslation } from "react-i18next";
 
 //internal import
@@ -24,22 +25,24 @@ import useFilter from "@/hooks/useFilter";
 import UserServices from "@/services/UserServices";
 
 const Users = () => {
-  const { data, loading, error } = useAsync(UserServices.getAllUsers);
   const {
-    userRef,
-    dataTable,
-    serviceData,
-    filename,
-    isDisabled,
-    setSearchUser,
-    totalResults,
-    resultsPerPage,
-    handleSubmitUser,
-    handleSelectFile,
+    currentPage,
     handleChangePage,
-    handleUploadMultiple,
-    handleRemoveSelectFile,
-  } = useFilter(data);
+    resultsPerPage,
+    searchText,
+    setSearchText
+  } = useContext(SidebarContext);
+  console.log(searchText);
+
+  const { data, loading, error } = useAsync(()=>UserServices.getAllUsers(
+    {
+      page: currentPage,
+      limit: resultsPerPage,
+      name: searchText,
+    }
+  ));
+
+  const { dataTable, serviceData,handleSubmitUser } = useFilter(data);
 
   const { t } = useTranslation();
   const handleResetField = () => {
@@ -51,7 +54,7 @@ const Users = () => {
     <>
       <PageTitle>Users</PageTitle>
 
-      <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
+      {/* <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody>
           <form
             onSubmit={handleSubmitUser}
@@ -70,7 +73,7 @@ const Users = () => {
             </div>
           </form>
         </CardBody>
-      </Card>
+      </Card> */}
 
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody>
@@ -80,7 +83,7 @@ const Users = () => {
           >
             <div className="flex-grow-0 md:flex-grow lg:flex-grow xl:flex-grow">
               <Input
-                ref={userRef}
+                onChange={(c) => setSearchText(c.target.value)}
                 type="search"
                 name="search"
                 placeholder={t("CustomersPageSearchPlaceholder")}
@@ -132,11 +135,11 @@ const Users = () => {
                 </TableCell>
               </tr>
             </TableHeader>
-            <CustomerTable customers={dataTable} />
+            <CustomerTable customers={data?.data} />
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data?.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

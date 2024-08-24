@@ -33,7 +33,7 @@ const EditDeleteButton = ({
               />
             </Link>
 
-            <button
+            {isCheck?.length > 0 ? <button
               disabled={isCheck?.length > 0}
               onClick={() => handleUpdate(id)}
               className="p-2 cursor-pointer text-gray-400 hover:text-emerald-600 focus:outline-none"
@@ -44,7 +44,7 @@ const EditDeleteButton = ({
                 title={t("Edit")}
                 bgColor="#10B981"
               />
-            </button>
+            </button>: ""}
           </>
         ) : (
           <button

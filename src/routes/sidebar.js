@@ -52,6 +52,22 @@ const sidebar = [
     name: "Packages", // name that appear in Sidebar
   },
   {
+    icon: FiSlack,
+    name: "Emails",
+    path: "/email", // the url
+    icon: FiGrid, // icon
+    routes: [
+      {
+        path: "/newemail",
+        name: "New Email",
+      },
+      {
+        path: "/emails",
+        name: "AllEmails",
+      },
+    ],
+  },
+  {
     path: "/orders", // the url
     icon: FiGrid, // icon
     name: "Sales", // name that appear in Sidebar

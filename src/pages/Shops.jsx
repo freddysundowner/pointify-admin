@@ -119,6 +119,7 @@ const Shops = (props) => {
 
     dataTable,
   } = useShopFilter(data);
+  console.log(totalResults);
 
   return (
     <>
@@ -277,6 +278,7 @@ const Shops = (props) => {
                 <TableCell>Expiry Date</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell>Subscription</TableCell>
+                <TableCell className="text-center">Sales</TableCell>
                 <TableCell className="text-center">{t("DetailsTbl")}</TableCell>
                 <TableCell className="text-center">
                   {t("PublishedTbl")}
@@ -287,13 +289,13 @@ const Shops = (props) => {
             <ShopTable
               lang={lang}
               isCheck={isCheck}
-              products={data}
+              products={data?.shops}
               setIsCheck={setIsCheck}
             />
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data?.totalShops}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

@@ -79,7 +79,7 @@ const Dashboard = () => {
     DashboardService.getDashboardAmount
   );
 
-  console.log("dashboardRecentPayments", dashboardRecentPayments);
+  console.log("dashboardRecentPayments", dashboardOrderCount);
 
   const { dataTable, serviceData } = useFilter(
     dashboardRecentPayments?.payments
@@ -95,7 +95,17 @@ const Dashboard = () => {
         <CardItemTwo
           mode={mode}
           title="Today Subscriptions"
-          title2="Today Subscriptions"
+          title2="Today Subscriptions" 
+          data={dashboardOrderCount?.today?.length > 0 ? dashboardOrderCount?.today : [
+            {
+              "amount": 0,
+              "count": 0
+            },
+            {
+              "amount": 0,
+              "count": 0
+            }
+          ]}
           count={dashboardOrderAmount?.today?.subscriptionsCount || 0}
           Icon={ImStack}
           bigTotal={dashboardOrderAmount?.today?.amount || 0}
@@ -115,6 +125,16 @@ const Dashboard = () => {
             dashboardOrderAmount?.yesterday?.yesterdaysubscriptionsCount || 0
           }
           Icon={ImStack}
+          data={dashboardOrderCount?.yesterday?.length > 0 ? dashboardOrderCount?.yesterday : [
+            {
+              "amount": 0,
+              "count": 0
+            },
+            {
+              "amount": 0,
+              "count": 0
+            }
+          ]}
           bigTotal={dashboardOrderAmount?.yesterday?.amount || 0}
           leftTotal={dashboardOrderAmount?.yesterday?.amount || 0}
           leftText="Applied"
@@ -128,6 +148,16 @@ const Dashboard = () => {
           mode={mode}
           title="Yesterday Subscriptions"
           title2="This Month Subscriptions"
+          data={dashboardOrderCount?.thisMonth?.length > 0 ? dashboardOrderCount?.thisMonth : [
+            {
+              "amount": 0,
+              "count": 0
+            },
+            {
+              "amount": 0,
+              "count": 0
+            }
+          ]}
           count={dashboardOrderAmount?.thisMonth?.thisMonthSubscriptions || 0}
           Icon={FiShoppingCart}
           bigTotal={dashboardOrderAmount?.thisMonth?.thisMonthAmount || 0}
@@ -139,6 +169,16 @@ const Dashboard = () => {
           mode={mode}
           title2="LastMonth"
           Icon={ImCreditCard}
+          data={dashboardOrderCount?.lastMonth?.length > 0 ? dashboardOrderCount?.lastMonth : [
+            {
+              "amount": 0,
+              "count": 0
+            },
+            {
+              "amount": 0,
+              "count": 0
+            }
+          ]}
           loading={loadingOrderAmount}
           count={dashboardOrderAmount?.lastMonth?.lastMonthSubscriptions || 0}
           price={dashboardOrderAmount?.lastMonth?.lastMonthAmount || 0}
@@ -149,6 +189,16 @@ const Dashboard = () => {
           mode={mode}
           title2="All Time Subscriptions"
           Icon={ImCreditCard}
+          data={dashboardOrderCount?.allTime?.length > 0 ? dashboardOrderCount?.allTime : [
+            {
+              "amount": 0,
+              "count": 0
+            },
+            {
+              "amount": 0,
+              "count": 0
+            }
+          ]}
           count={dashboardOrderAmount?.allTime?.allTimeSubscriptions || 0}
           price={dashboardOrderAmount?.allTime?.allTimeAmount || 0}
           className="text-white dark:text-emerald-100 bg-emerald-600"

@@ -109,10 +109,10 @@ const PackageTable = ({ isCheck, coupons, setIsCheck }) => {
             </TableCell>
 
             <TableCell className="align-middle ">
-              {dayjs().isAfter(dayjs(coupon.endDate)) ? (
-                <Badge type="danger">Expired</Badge>
-              ) : (
+              {coupon.status == true ? (
                 <Badge type="success">Active</Badge>
+              ) : (
+                <Badge type="danger">Inactive</Badge>
               )}
             </TableCell>
 

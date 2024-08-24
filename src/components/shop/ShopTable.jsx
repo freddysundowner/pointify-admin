@@ -107,7 +107,20 @@ const ShopTable = ({ products, isCheck, setIsCheck }) => {
             </TableCell>
             <TableCell>
               <Link
-                to={`/products/${product?._id}`}
+                to={`/orders/${product?._id}?type=sales`}
+                className="flex justify-center text-gray-400 hover:text-emerald-600"
+              >
+                <Tooltip
+                  id="view"
+                  Icon={FiZoomIn}
+                  title={t("DetailsTbl")}
+                  bgColor="#10B981"
+                />
+              </Link>
+            </TableCell>
+            <TableCell>
+              <Link
+                to={`/products/${product?._id}?type=products`}
                 className="flex justify-center text-gray-400 hover:text-emerald-600"
               >
                 <Tooltip

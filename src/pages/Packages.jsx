@@ -33,29 +33,24 @@ import PackageTable from "@/components/packages/PackageTable";
 
 const Packages = () => {
   const { t } = useTranslation();
-  const { toggleDrawer, lang } = useContext(SidebarContext);
-  const { data, loading, error } = useAsync(PackagesServices.getAllCoupons);
+  const { toggleDrawer, lang,currentPage,
+    handleChangePage,
+    resultsPerPage } = useContext(SidebarContext);
+  const { data, loading, error } = useAsync(()=>PackagesServices.getAllCoupons(currentPage));
   // console.log('data',data)
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
 
-  const { allId, serviceId, handleDeleteMany, handleUpdateMany } =
+  const { allId, serviceId,  } =
     useToggleDrawer();
 
   const {
-    filename,
-    isDisabled,
     couponRef,
     dataTable,
     serviceData,
     totalResults,
-    resultsPerPage,
-    handleChangePage,
-    handleSelectFile,
     setSearchCoupon,
     handleSubmitCoupon,
-    handleUploadMultiple,
-    handleRemoveSelectFile,
   } = useFilter(data);
 
   const handleSelectAll = () => {
@@ -186,7 +181,7 @@ const Packages = () => {
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data?.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

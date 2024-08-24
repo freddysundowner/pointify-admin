@@ -20,6 +20,8 @@ import CurrencyServices from "@/services/CurrencyServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import ShopCategoryServices from "@/services/ShopCategoryServices";
 import PartnersServices from "@/services/PartnersServices";
+import ShopServices from "@/services/ShopServices";
+import CommunicationService from "@/services/Communication"
 
 const DeleteModal = ({ id, ids, setIsCheck, category, title, useParamId }) => {
   const { isModalOpen, closeModal, setIsUpdate } = useContext(SidebarContext);
@@ -41,6 +43,18 @@ const DeleteModal = ({ id, ids, setIsCheck, category, title, useParamId }) => {
           setServiceId();
           closeModal();
           setIsSubmitting(false);
+      }
+      if (location.pathname === "/emails") {
+        console.log(id);
+        if (id) {
+          const res = await CommunicationService.deleteTemplates(id);
+          setIsUpdate(true);
+          notifySuccess(res.message);
+          setIsCheck([]);
+          setServiceId();
+          closeModal();
+          setIsSubmitting(false);
+        }
       }
       if (location.pathname === "/products") {
         if (ids) {
@@ -153,8 +167,8 @@ const DeleteModal = ({ id, ids, setIsCheck, category, title, useParamId }) => {
         setIsSubmitting(false);
       }
 
-      if (location.pathname === "/measures") {
-        const res = await MeasureServices.deleteMeasure(id);
+      if (location.pathname === "/shops") {
+        const res = await ShopServices.deleteShop(id);
         setIsUpdate(true);
         notifySuccess(res.message);
         setServiceId();
@@ -227,7 +241,6 @@ const DeleteModal = ({ id, ids, setIsCheck, category, title, useParamId }) => {
     } catch (err) {
       notifyError(err ? err?.response?.data?.message : err?.message);
       setServiceId();
-      setIsCheck([]);
       closeModal();
       setIsSubmitting(false);
     }

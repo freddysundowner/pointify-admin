@@ -22,19 +22,12 @@ const PackageDrawer = ({ id }) => {
     handleSubmit,
     onSubmit,
     errors,
-    setImageUrl,
-    imageUrl,
     published,
     setPublished,
     currency,
     discountType,
-    setDiscountType,
     isSubmitting,
-    resetRefTwo,
     handleSelectLanguage,
-    setDefaultCategory,
-    defaultCategory,
-    selectedCategory,
   } = usePackagesSubmit(id);
 
   return (
@@ -44,8 +37,7 @@ const PackageDrawer = ({ id }) => {
           <Title
             register={register}
             handleSelectLanguage={handleSelectLanguage}
-            title={t("UpdateCoupon")}
-            description={t("UpdateCouponDescription")}
+            title={t("Update Package")}
           />
         ) : (
           <Title
@@ -110,8 +102,6 @@ const PackageDrawer = ({ id }) => {
                 <InputValue
                   product
                   register={register}
-                  maxValue={discountType ? 99 : 1000}
-                  minValue={1}
                   label="Amount USD"
                   name="amountusd"
                   type="number"
@@ -128,8 +118,6 @@ const PackageDrawer = ({ id }) => {
                 <InputValue
                   product
                   register={register}
-                  maxValue={discountType ? 99 : 1000}
-                  minValue={0}
                   label="Discount"
                   name="discount"
                   type="number"
@@ -147,8 +135,6 @@ const PackageDrawer = ({ id }) => {
                 <InputValue
                   product
                   register={register}
-                  maxValue={discountType ? 99 : 10000}
-                  minValue={1}
                   label="Amount"
                   name="amount"
                   type="number"
@@ -172,7 +158,7 @@ const PackageDrawer = ({ id }) => {
             </div>
           </div>
 
-          <DrawerButton id={id} title="Coupon" isSubmitting={isSubmitting} />
+          <DrawerButton id={id} title="Package" isSubmitting={isSubmitting} />
         </form>
       </Scrollbars>
     </>

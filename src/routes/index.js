@@ -7,19 +7,21 @@ const Attributes = lazy(() => import("@/pages/Attributes"));
 const ChildAttributes = lazy(() => import("@/pages/ChildAttributes"));
 const Products = lazy(() => import("@/pages/Products"));
 const Partners = lazy(() => import("@/pages/Partners")); 
+const PartnerDetails = lazy(() => import("@/pages/PartnerDetails")); 
 const Shops = lazy(() => import("@/pages/Shops"));
 const Category = lazy(() => import("@/pages/Category"));
 const ShopCategory = lazy(() => import("@/pages/ShopCategory"));
 const ChildCategory = lazy(() => import("@/pages/ChildCategory"));
 const Staff = lazy(() => import("@/pages/Staff"));
 const Users = lazy(() => import("@/pages/Users"));
+const Emails = lazy(() => import("@/pages/Emails")); 
 const CustomerOrder = lazy(() => import("@/pages/CustomerOrder"));
 const SupportComp = lazy(() => import("@/pages/Support"));
 const Orders = lazy(() => import("@/pages/Orders"));
 const OrderInvoice = lazy(() => import("@/pages/OrderInvoice"));
 const Subscriptions = lazy(() => import("@/pages/Coupons"));
 const Packages = lazy(() => import("@/pages/Packages"));
-// const Setting = lazy(() => import("@/pages/Setting"));
+const EmailsArchive = lazy(() => import("@/pages/EmailsArchive"));
 const Page404 = lazy(() => import("@/pages/404"));
 const ComingSoon = lazy(() => import("@/pages/ComingSoon"));
 const EditProfile = lazy(() => import("@/pages/EditProfile"));
@@ -59,6 +61,14 @@ const routes = [
   {
     path: "/measures",
     component: Attributes,
+  },
+  {
+    path: "/newemail",
+    component: Emails,
+  },
+  {
+    path: "/emails",
+    component: EmailsArchive,
   },
   {
     path: "/measures/:id",
@@ -103,7 +113,7 @@ const routes = [
   },
   {
     path: "/partner/:id",
-    component: Partner,
+    component: PartnerDetails,
   },
   
   {
@@ -128,6 +138,10 @@ const routes = [
   },
   {
     path: "/orders",
+    component: Orders,
+  },
+  {
+    path: "/orders/:id",
     component: Orders,
   },
   {

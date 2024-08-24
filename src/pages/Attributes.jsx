@@ -34,9 +34,9 @@ import MeasureServices from "@/services/MeasureServices";
 //internal import
 
 const Attributes = () => {
-  const { toggleDrawer, lang } = useContext(SidebarContext);
+  const { toggleDrawer, lang, currentPage,handleChangePage } = useContext(SidebarContext);
   const { data, loading, error } = useAsync(() =>
-    MeasureServices.getAllMeasure({})
+    MeasureServices.getAllMeasure({page: currentPage})
   );
 
   const {  allId } = useToggleDrawer();
@@ -44,12 +44,9 @@ const Attributes = () => {
   const { t } = useTranslation();
 
   const {
-    dataTable,
     serviceData,
-    totalResults,
     attributeRef,
     resultsPerPage,
-    handleChangePage,
     setAttributeTitle,
     handleSubmitAttribute,
   } = useFilter(data);
@@ -173,12 +170,12 @@ const Attributes = () => {
               lang={lang}
               isCheck={isCheck}
               setIsCheck={setIsCheck}
-              attributes={dataTable}
+              attributes={data?.data}
             />
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

@@ -35,9 +35,11 @@ import UploadManyTwo from "@/components/common/UploadManyTwo";
 
 const Coupons = () => {
   const { t } = useTranslation();
-  const { lang, status, setStatus, type, setType } = useContext(SidebarContext);
+  const { lang, status, setStatus, type, setType,currentPage,
+    handleChangePage,
+    resultsPerPage, } = useContext(SidebarContext);
   const { data, loading, error } = useAsync(() =>
-    CouponServices.getAllCoupons(status,type)
+    CouponServices.getAllCoupons(status,type,currentPage,)
   );
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
@@ -49,8 +51,6 @@ const Coupons = () => {
     dataTable,
     serviceData,
     totalResults,
-    resultsPerPage,
-    handleChangePage,
     setSearchCoupon,
     handleSubmitCoupon,
   } = useFilter(data);
@@ -178,7 +178,7 @@ const Coupons = () => {
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data?.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

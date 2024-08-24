@@ -7,11 +7,14 @@ const CouponServices = {
   addAllCoupon: async (body) => {
     return requests.post("/coupon/add/all", body);
   },
-  getAllCoupons: async (status,type) => {
-    return requests.get("/subscriptions?status=" + status+"&type="+type);
+  getAllCoupons: async (status,type, page = 1, limit =20) => {
+    return requests.get("/subscriptions?status=" + status+"&type="+type+"&limit="+limit+"&page="+page);
   },
-  getCouponById: async (id) => {
-    return requests.get(`/coupon/${id}`);
+  getEarnings: async (id,page = 1) => {
+    return requests.get(`/payments/awards?user=${id}&page=${page}`);
+  },
+  getTransactions: async (id) => {
+    return requests.get(`/payments/transactions?id=${id}`);
   },
   updateCoupon: async (id, body) => {
     return requests.put(`/subscriptions/extend/${id}`, body);

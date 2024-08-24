@@ -29,7 +29,7 @@ export const SidebarProvider = ({ children }) => {
   const [sortedField, setSortedField] = useState("");
   const [location, setLocation] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchText, setSearchText] = useState(null);
+  const [searchText, setSearchText] = useState('');
   const [invoice, setInvoice] = useState(null);
   const [zone, setZone] = useState("");
   const [status, setStatus] = useState("");

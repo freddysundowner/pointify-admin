@@ -34,6 +34,10 @@ const ShopServices = {
     return requests.put(`/products/status/${id}`, body);
   },
 
+  deleteShop: async (id) => {
+    return requests.delete(`/shop/${id}`);
+  },
+
   deleteProduct: async (id) => {
     return requests.delete(`/products/${id}`);
   },

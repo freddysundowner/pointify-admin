@@ -1,9 +1,9 @@
 import requests from "./httpService";
 
 const MeasureServices = {
-  getAllMeasure: async ({ type, option, option1 }) => {
+  getAllMeasure: async ({ type, option, option1,page }) => {
     return requests.get(
-      `/measures?type=${type}&option=${option}&option1=${option1}`
+      `/measures?type=${type}&option=${option}&option1=${option1}&page=${page}&limit=20`
     );
   },
 

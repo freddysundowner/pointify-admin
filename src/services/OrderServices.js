@@ -8,20 +8,16 @@ const OrderServices = {
     status,
     page = 1,
     limit = 8,
-    day,
-    // source,
-    method,
     startDate,
     endDate,
-    // download = "",
+    shop
   }) => {
     const searchName = customerName !== null ? customerName : "";
     const searchStatus = status !== null ? status : "all";
-    const searchDay = day !== null ? day : "";
-    // const searchSource = source !== null ? source : "";
-    const searchMethod = method !== null ? method : "";
     const startD = startDate !== null ? startDate : "";
     const endD = endDate !== null ? endDate : "";
+    const shopid = shop !== null ? shop : "";
+    console.log(shopid);
     let filter = `page=${page}&limit=${limit}`;
     if (searchStatus !=='') { 
       filter += `&status=${searchStatus}`
@@ -31,6 +27,9 @@ const OrderServices = {
     }
     if (startD !== '') {
       filter += `&start=${startD}`
+    }
+    if (shopid !== '' && shopid != undefined) {
+      filter += `&shopId=${shopid}`
     }
     if (endD !== '') {
       filter += `&end=${endD}`

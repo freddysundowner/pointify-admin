@@ -34,13 +34,11 @@ import ShopCategoryTable from "@/components/category/ShopCategoryTable";
 import NotFound from "@/components/table/NotFound";
 
 const ShopCategory = () => {
-  const { toggleDrawer, lang } = useContext(SidebarContext);
+  const { toggleDrawer, lang,
+    handleChangePage,currentPage } = useContext(SidebarContext);
 
   const { data, loading, error } = useAsync(
-    ShopCategoryServices.getAllCategory
-  );
-  const { data: getAllCategories } = useAsync(
-    ShopCategoryServices.getAllCategories
+    () => ShopCategoryServices.getAllCategory(currentPage)
   );
 
   const { handleDeleteMany, allId, handleUpdateMany, serviceId } =
@@ -55,13 +53,9 @@ const ShopCategory = () => {
     resultsPerPage,
     dataTable,
     serviceData,
-    handleChangePage,
     filename,
     isDisabled,
     setCategoryType,
-    handleSelectFile,
-    handleUploadMultiple,
-    handleRemoveSelectFile,
   } = useFilter(data[0]?.children ? data[0]?.children : data);
 
   // react hooks
@@ -90,16 +84,8 @@ const ShopCategory = () => {
       <PageTitle>{t("Category")}</PageTitle>
       <DeleteModal ids={allId} setIsCheck={setIsCheck} />
 
-      <BulkActionDrawer
-        ids={allId}
-        title="Categories"
-        lang={lang}
-        data={data}
-        isCheck={isCheck}
-      />
-
       <MainDrawer>
-        <ShopCategoryDrawer id={serviceId} data={data} lang={lang} />
+        <ShopCategoryDrawer id={serviceId} data={data?.data} lang={lang} />
       </MainDrawer>
 
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
@@ -109,18 +95,6 @@ const ShopCategory = () => {
             onSubmit={handleSubmitCategory}
             className="py-3  grid gap-4 lg:gap-6 xl:gap-6  xl:flex"
           >
-            {/* </div> */}
-            <div className="flex justify-start w-1/2 xl:w-1/2 md:w-full">
-              <UploadManyTwo
-                title="Categories"
-                exportData={getAllCategories}
-                filename={filename}
-                isDisabled={isDisabled}
-                handleSelectFile={handleSelectFile}
-                handleUploadMultiple={handleUploadMultiple}
-                handleRemoveSelectFile={handleRemoveSelectFile}
-              />
-            </div>
 
             <div className="lg:flex  md:flex xl:justify-end xl:w-1/2  md:w-full md:justify-start flex-grow-0">
               <div className="w-full md:w-40 lg:w-40 xl:w-40 mr-3 mb-3 lg:mb-0">
@@ -236,7 +210,7 @@ const ShopCategory = () => {
             </TableHeader>
 
             <ShopCategoryTable
-              data={data}
+              data={data?.data}
               lang={lang}
               isCheck={isCheck}
               categories={dataTable}
@@ -247,7 +221,7 @@ const ShopCategory = () => {
 
           <TableFooter>
             <Pagination
-              totalResults={totalResults}
+              totalResults={data?.count}
               resultsPerPage={resultsPerPage}
               onChange={handleChangePage}
               label="Table navigation"

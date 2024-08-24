@@ -75,7 +75,10 @@ const EarningsTable = ({ isCheck, coupons, setIsCheck }) => {
               <div className="flex items-center">
                 <div>
                   <span className="text-sm">
-                     {coupon?.shop?.name}
+                    {/* {coupon?.shops?.name} */}
+                     {coupon?.shops.map(function(object, i){
+                          return object?.name+", ";
+                      })}
                   </span>{" "}
                 </div>
               </div>{" "}

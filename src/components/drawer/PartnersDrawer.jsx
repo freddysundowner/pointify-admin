@@ -92,6 +92,34 @@ const PartnersDrawer = ({ id }) => {
                   <Error errorName={errors.phonenumber} />
                 </div>
               </div>
+              <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                <LabelArea label="Wallet" />
+                <div className="col-span-8 sm:col-span-4">
+                  <InputArea
+                    register={register}
+                    required="false"
+                    label="wallet"
+                    name="wallet"
+                    type="text"
+                    placeholder="Wallet"
+                  />
+                  <Error errorName={errors.wallet} />
+                </div>
+              </div>
+              <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                <LabelArea label="Password" />
+                <div className="col-span-8 sm:col-span-4">
+                  <InputArea
+                    register={register}
+                    required="false"
+                    label="password"
+                    name="password"
+                    type="text"
+                    placeholder="Password"
+                  />
+                  <Error errorName={errors.password} />
+                </div>
+              </div>
             </div>
           
 
