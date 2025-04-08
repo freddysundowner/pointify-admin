@@ -35,11 +35,12 @@ import PieChart from "@/components/chart/Pie/PieChart";
 import CardItem from "@/components/dashboard/CardItem";
 import CardItemTwo from "@/components/dashboard/CardItemTwo";
 import ChartCard from "@/components/chart/ChartCard";
-// import OrderTable from "@/components/loans/LoanTable";
 import TableLoading from "@/components/preloader/TableLoading";
 import NotFound from "@/components/table/NotFound";
 import PageTitle from "@/components/Typography/PageTitle";
 import { SidebarContext } from "@/context/SidebarContext";
+import { AdminContext } from "@/context/AdminContext";
+
 import DashboardService from "@/services/DashboardService";
 import useUtilsFunction from "@/hooks/useUtilsFunction";
 import Status from "@/components/table/Status";
@@ -49,6 +50,8 @@ const Dashboard = () => {
   const { t } = useTranslation();
   const { currency } = useUtilsFunction();
   const { mode } = useContext(WindmillContext);
+  const { state } = useContext(AdminContext);
+  const { adminInfo } = state;
 
   dayjs.extend(isBetween);
   dayjs.extend(isToday);
@@ -79,19 +82,17 @@ const Dashboard = () => {
     DashboardService.getDashboardAmount
   );
 
-  console.log("dashboardRecentPayments", dashboardOrderCount);
 
   const { dataTable, serviceData } = useFilter(
     dashboardRecentPayments?.payments
   );
 
-  console.log("dashboardRecentPayments", error);
-
+  console.log(adminInfo?.permissions)
   return (
     <>
       <PageTitle>{t("DashboardOverview")}</PageTitle>
 
-      <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-2">
+      {adminInfo?.permissions == "all" && <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-2">
         <CardItemTwo
           mode={mode}
           title="Today Subscriptions"
@@ -100,15 +101,15 @@ const Dashboard = () => {
             dashboardOrderCount?.today?.length > 0
               ? dashboardOrderCount?.today
               : [
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                ]
+                {
+                  amount: 0,
+                  count: 0,
+                },
+                {
+                  amount: 0,
+                  count: 0,
+                },
+              ]
           }
           count={dashboardOrderAmount?.today?.subscriptionsCount || 0}
           Icon={ImStack}
@@ -133,15 +134,15 @@ const Dashboard = () => {
             dashboardOrderCount?.yesterday?.length > 0
               ? dashboardOrderCount?.yesterday
               : [
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                ]
+                {
+                  amount: 0,
+                  count: 0,
+                },
+                {
+                  amount: 0,
+                  count: 0,
+                },
+              ]
           }
           bigTotal={dashboardOrderAmount?.yesterday?.amount || 0}
           leftTotal={dashboardOrderAmount?.yesterday?.amount || 0}
@@ -162,15 +163,15 @@ const Dashboard = () => {
             dashboardOrderCount?.thisWeekSummary?.length > 0
               ? dashboardOrderCount?.thisWeekSummary
               : [
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                ]
+                {
+                  amount: 0,
+                  count: 0,
+                },
+                {
+                  amount: 0,
+                  count: 0,
+                },
+              ]
           }
           bigTotal={dashboardOrderAmount?.thisWeekSummary?.amount || 0}
           leftTotal={dashboardOrderAmount?.thisWeekSummary?.amount || 0}
@@ -189,15 +190,15 @@ const Dashboard = () => {
             dashboardOrderCount?.thisMonth?.length > 0
               ? dashboardOrderCount?.thisMonth
               : [
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                ]
+                {
+                  amount: 0,
+                  count: 0,
+                },
+                {
+                  amount: 0,
+                  count: 0,
+                },
+              ]
           }
           count={dashboardOrderAmount?.thisMonth?.thisMonthSubscriptions || 0}
           Icon={FiShoppingCart}
@@ -214,15 +215,15 @@ const Dashboard = () => {
             dashboardOrderCount?.lastMonth?.length > 0
               ? dashboardOrderCount?.lastMonth
               : [
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                ]
+                {
+                  amount: 0,
+                  count: 0,
+                },
+                {
+                  amount: 0,
+                  count: 0,
+                },
+              ]
           }
           loading={loadingOrderAmount}
           count={dashboardOrderAmount?.lastMonth?.lastMonthSubscriptions || 0}
@@ -238,22 +239,22 @@ const Dashboard = () => {
             dashboardOrderCount?.allTime?.length > 0
               ? dashboardOrderCount?.allTime
               : [
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                  {
-                    amount: 0,
-                    count: 0,
-                  },
-                ]
+                {
+                  amount: 0,
+                  count: 0,
+                },
+                {
+                  amount: 0,
+                  count: 0,
+                },
+              ]
           }
           count={dashboardOrderAmount?.allTime?.allTimeSubscriptions || 0}
           price={dashboardOrderAmount?.allTime?.allTimeAmount || 0}
           className="text-white dark:text-emerald-100 bg-emerald-600"
           loading={loadingOrderAmount}
         />
-      </div>
+      </div>}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <CardItem
