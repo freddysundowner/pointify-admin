@@ -53,28 +53,6 @@ const Users = () => {
   return (
     <>
       <PageTitle>Users</PageTitle>
-
-      {/* <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
-        <CardBody>
-          <form
-            onSubmit={handleSubmitUser}
-            className="py-3 grid gap-4 lg:gap-6 xl:gap-6 md:flex xl:flex"
-          >
-            <div className="items-center">
-              <UploadManyTwo
-                title="Customers"
-                exportData={data}
-                filename={filename}
-                isDisabled={isDisabled}
-                handleSelectFile={handleSelectFile}
-                handleUploadMultiple={handleUploadMultiple}
-                handleRemoveSelectFile={handleRemoveSelectFile}
-              />
-            </div>
-          </form>
-        </CardBody>
-      </Card> */}
-
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody>
           <form

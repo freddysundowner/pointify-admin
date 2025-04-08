@@ -10,6 +10,9 @@ const useCustomerSubmit = (id) => {
   const [imageUrl, setImageUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { closeDrawer, setIsUpdate } = useContext(SidebarContext);
+  const [members, setMembers] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [defaultCategory, setDefaultCategory] = useState([]);
 
   const {
     register,
@@ -59,6 +62,12 @@ const useCustomerSubmit = (id) => {
     }
   }, [id, setValue]);
 
+    const setSearchedText = async (v) => {
+      let res = await CustomerServices.searchAdmin(v);
+      console.log("setSearchedText ", v, res);
+      setMembers(res);
+    };
+
   return {
     register,
     handleSubmit,
@@ -67,6 +76,11 @@ const useCustomerSubmit = (id) => {
     setImageUrl,
     imageUrl,
     isSubmitting,
+    setSearchedText,
+    members,
+    selectedCategory,
+    setSelectedCategory,
+    setDefaultCategory,
   };
 };
 

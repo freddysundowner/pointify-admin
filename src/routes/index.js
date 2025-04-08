@@ -30,6 +30,7 @@ const Currencies = lazy(() => import("@/pages/Currencies"));
 const Setting = lazy(() => import("@/pages/Setting"));
 const StoreHome = lazy(() => import("@/pages/StoreHome"));
 const StoreSetting = lazy(() => import("@/pages/StoreSetting"));
+const Sms = lazy(() => import("@/pages/Sms")); 
 /*
 //  * ⚠ These are internal routes!
 //  * They will be rendered inside the app, using the default `containers/Layout`.
@@ -61,6 +62,10 @@ const routes = [
   {
     path: "/measures",
     component: Attributes,
+  },
+  {
+    path: "/bulksms",
+    component: Sms,
   },
   {
     path: "/newemail",

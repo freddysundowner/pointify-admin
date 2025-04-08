@@ -21,7 +21,7 @@ const SidebarSubMenu = ({ route }) => {
         >
           <span className="inline-flex items-center">
             <route.icon className="w-5 h-5" aria-hidden="true" />
-            <span className="ml-4 mt-1">{t(`${route.name}`)}</span>
+            <span className="ml-4 mt-1">{route.name}</span>
             <span className="pl-4 mt-1">
               {open ? <IoChevronDownOutline /> : <IoChevronForwardOutline />}
             </span>
@@ -56,7 +56,7 @@ const SidebarSubMenu = ({ route }) => {
                       <IoRemoveSharp />
                     </span>
                     <span className="text-gray-500 hover:text-emerald-600 dark:hover:text-gray-200">
-                      {t(`${child.name}`)}
+                      {child.name}
                     </span>
                     {/* <span className="ml-4">{route.name}</span> */}
                   </a>
@@ -80,7 +80,7 @@ const SidebarSubMenu = ({ route }) => {
                       <IoRemoveSharp />
                     </span>
                     <span className="text-gray-500 hover:text-emerald-600 dark:hover:text-gray-200">
-                      {t(`${child.name}`)}
+                      {child.name}
                     </span>
                   </NavLink>
                 )}

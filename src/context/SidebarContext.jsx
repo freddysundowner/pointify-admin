@@ -82,7 +82,6 @@ export const SidebarProvider = ({ children }) => {
       setSearchText(searchRef?.current?.value);
     }
     setCategory(null);
-    console.log(searchLocationRef?.current?.value);
   };
 
   useEffect(() => {

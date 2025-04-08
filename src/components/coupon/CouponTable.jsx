@@ -120,7 +120,7 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
 
             <TableCell className="align-middle ">
               {new Date(coupon.endDate).getTime() > new Date().getTime() &&
-              coupon.status == true ? (
+              coupon.status == true && coupon.packageId?.type !== "trial"? (
                 <Badge type="success">Active</Badge>
               ) : (
                 ""

@@ -125,9 +125,9 @@ const useFilter = (data) => {
   const serviceData = useMemo(() => {
     const date = new Date();
     date.setDate(date.getDate() - time);
-    console.log(subscriptions);
+    console.log(data,subscriptions);
     let services;
-    if (subscriptions) {
+    if (subscriptions && subscriptions.length> 0) {
       services = subscriptions?.data?.map((el) => {
         const newDate = new Date(el?.updatedAt).toLocaleString("en-US", {
           timeZone: globalSetting?.default_time_zone,

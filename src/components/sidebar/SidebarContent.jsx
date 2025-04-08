@@ -5,17 +5,12 @@ import { useTranslation } from "react-i18next";
 import { Button, WindmillContext } from "@windmill/react-ui";
 import { IoLogOutOutline } from "react-icons/io5";
 
-//internal import
 import sidebar from "@/routes/sidebar";
-// import SidebarSubMenu from "SidebarSubMenu";
-import logoDark from "@/assets/img/logo/logo-dark.png";
-import logoLight from "@/assets/img/logo/logo-light.png";
 import { AdminContext } from "@/context/AdminContext";
 import SidebarSubMenu from "@/components/sidebar/SidebarSubMenu";
 
 const SidebarContent = () => {
   const { t } = useTranslation();
-  const { mode } = useContext(WindmillContext);
   const { dispatch } = useContext(AdminContext);
 
   const handleLogOut = () => {
@@ -50,7 +45,7 @@ const SidebarContent = () => {
                   ></span>
                 </Route>
                 <route.icon className="w-5 h-5" aria-hidden="true" />
-                <span className="ml-4">{t(`${route.name}`)}</span>
+                <span className="ml-4">{route.name}</span>
               </NavLink>
             </li>
           )

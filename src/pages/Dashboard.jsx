@@ -285,6 +285,8 @@ const Dashboard = () => {
         <CardItem
           title="Active Trials "
           Icon={FiCheck}
+          smallContent={dashboardOrderCount.expiredCount}
+          smallContentText="Expired"
           loading={loadingOrderCount}
           quantity={dashboardOrderCount?.trialCount || 0}
           className="text-emerald-600 dark:text-emerald-100 bg-emerald-100 dark:bg-emerald-500"

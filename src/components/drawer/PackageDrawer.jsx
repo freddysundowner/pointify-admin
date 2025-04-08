@@ -147,6 +147,22 @@ const PackageDrawer = ({ id }) => {
             </div>
 
             <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+              <LabelArea label="Maximum Shops" />
+              <div className="col-span-8 sm:col-span-4">
+                <InputValue
+                  product
+                  register={register}
+                  label="Maximum Shops"
+                  name="maxShops"
+                  type="number"
+                  placeholder="Maximum Shops"
+                />
+
+                <Error errorName={errors.maxShops} />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
               <LabelArea label={t("Published")} />
               <div className="col-span-8 sm:col-span-4">
                 <SwitchToggle

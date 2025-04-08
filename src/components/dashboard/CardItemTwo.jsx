@@ -83,11 +83,11 @@ const CardItemTwo = ({
                     {getNumberTwo(data[0]['amount']) } ({data[0]['subscriptionsCount']})
                   </p>
                 </div>{" "}
-                <div className=" text-center text-xs font-normal text-gray-50 dark:text-gray-100">
-                  <div className="px-1 mt-3">
-                    {t("Trial")} : {data[1]['subscriptionsCount']}
-                  </div>
-                </div>
+                    {data[1] ? <div className=" text-center text-xs font-normal text-gray-50 dark:text-gray-100">
+                      <div className="px-1 mt-3">
+                        {t("Trial")} : {data[1]['subscriptionsCount']}
+                      </div>
+                    </div> : ""}
               </CardBody>
             </Card>
           )}

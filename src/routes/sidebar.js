@@ -53,6 +53,11 @@ const sidebar = [
   },
   {
     icon: FiSlack,
+    name: "Bulk Sms",
+    path: "/bulksms", // the url
+  },
+  {
+    icon: FiSlack,
     name: "Emails",
     path: "/email", // the url
     icon: FiGrid, // icon

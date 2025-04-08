@@ -18,6 +18,9 @@ const UserServices = {
   filterCustomer: async (email) => {
     return requests.post(`/customer/filter/${email}`);
   },
+  searchAdmin: async (text) => {
+    return requests.get(`/admin/search?text=${text}`);
+  },
 
   getCustomerById: async (id) => {
     return requests.get(`/customer/${id}`);

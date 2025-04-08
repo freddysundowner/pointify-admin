@@ -32,7 +32,6 @@ import TableLoading from "@/components/preloader/TableLoading";
 import CheckBox from "@/components/form/others/CheckBox";
 import CouponTable from "@/components/coupon/CouponTable";
 import NotFound from "@/components/table/NotFound";
-import UploadManyTwo from "@/components/common/UploadManyTwo";
 
 const Coupons = () => {
   const { t } = useTranslation();
@@ -42,9 +41,20 @@ const Coupons = () => {
     handleChangePage,
     resultsPerPage,
     setCurrentPage,
-    loading,
     setLoading,
   } = useContext(SidebarContext);
+
+  const {data, loading, error} = useAsync(()=>CouponServices.getAllCoupons(
+      status,
+      type,
+      currentPage,
+      20,
+      name,
+      createAt,
+      expiryperiodTo,
+      expiryperiodFrom
+  ));
+  console.log(data)
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
 
@@ -56,11 +66,8 @@ const Coupons = () => {
   const [expiryperiodFrom, setExpiryperiodFrom] = useState(null);
   const [alldata, setAllData] = useState({ count: 0, data: [] });
   const [name, setName] = useState("");
-  console.log(expiryperiodTo, expiryperiodFrom);
-  useEffect(() => {
-    handleSubmitCoupon();
-  }, [status, type, currentPage]);
   const handleSubmitCoupon = async (event) => {
+    console.log("handleSubmitCoupon")
     if (event) event.preventDefault();
     setLoading(true);
 
@@ -74,6 +81,7 @@ const Coupons = () => {
       expiryperiodTo,
       expiryperiodFrom
     );
+    console.log("handleSubmitCoupon ",response)
     setLoading(false);
     setAllData(response);
   };
@@ -205,7 +213,7 @@ const Coupons = () => {
 
       {loading ? (
         <TableLoading row={12} col={7} width={160} height={20} />
-      ) : alldata?.data?.length > 0 ? (
+      ) : data?.data?.length > 0 ? (
         <TableContainer className="mb-8">
           <Table>
             <TableHeader>
@@ -235,13 +243,13 @@ const Coupons = () => {
             <CouponTable
               lang={lang}
               isCheck={isCheck}
-              coupons={alldata?.data}
+              coupons={data?.data}
               setIsCheck={setIsCheck}
             />
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={alldata.count}
+              totalResults={data?.data?.count}
               resultsPerPage={20}
               onChange={handleChangePage}
               label="Table navigation"

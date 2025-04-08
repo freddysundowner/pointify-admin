@@ -98,6 +98,7 @@ const usePackagesSubmit = (id) => {
             setValue("discount", res.discount);
             setValue("durationUnit", res.durationUnit);
             setValue("amountusd", res.amountusd);
+            setValue("maxShops", res.maxShops);
             
             setPublished(res.status);
           }
