@@ -87,12 +87,11 @@ const Dashboard = () => {
     dashboardRecentPayments?.payments
   );
 
-  console.log(adminInfo?.permissions)
   return (
     <>
       <PageTitle>{t("DashboardOverview")}</PageTitle>
 
-      {adminInfo?.permissions == "all" && <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-2">
+      <div className="grid gap-2 mb-8 xl:grid-cols-5 md:grid-cols-2">
         <CardItemTwo
           mode={mode}
           title="Today Subscriptions"
@@ -254,7 +253,7 @@ const Dashboard = () => {
           className="text-white dark:text-emerald-100 bg-emerald-600"
           loading={loadingOrderAmount}
         />
-      </div>}
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <CardItem
