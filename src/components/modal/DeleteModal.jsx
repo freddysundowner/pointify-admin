@@ -10,7 +10,7 @@ import spinnerLoadingImage from "@/assets/img/spinner.gif";
 import { SidebarContext } from "@/context/SidebarContext";
 import AdminServices from "@/services/AdminServices";
 import CategoryServices from "@/services/CategoryServices";
-import CouponServices from "@/services/CouponServices";
+import CouponServices from "@/services/SubscriptionServices";
 import CustomerServices from "@/services/UserServices";
 import LanguageServices from "@/services/LanguageServices";
 import ProductServices from "@/services/ProductServices";

@@ -13,52 +13,48 @@ import {
   Label,
 } from "@windmill/react-ui";
 import { useContext, useEffect, useState } from "react";
-import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
-import SelectCategory from "@/components/form/selectOption/SelectOption";
 
 //internal import
 import { SidebarContext } from "@/context/SidebarContext";
-import CouponServices from "@/services/CouponServices";
+import SubscriptionServices from "@/services/SubscriptionServices";
 import useAsync from "@/hooks/useAsync";
 import useToggleDrawer from "@/hooks/useToggleDrawer";
-import useFilter from "@/hooks/useFilter";
 import PageTitle from "@/components/Typography/PageTitle";
 import DeleteModal from "@/components/modal/DeleteModal";
 import BulkActionDrawer from "@/components/drawer/BulkActionDrawer";
 import MainDrawer from "@/components/drawer/MainDrawer";
-import CouponDrawer from "@/components/drawer/CouponDrawer";
+import SubscriptionDrawer from "@/components/drawer/SubscriptionDrawer";
 import TableLoading from "@/components/preloader/TableLoading";
 import CheckBox from "@/components/form/others/CheckBox";
-import CouponTable from "@/components/coupon/CouponTable";
+import SubscriptionsTable from "@/components/subscription/SubscriptionTable";
 import NotFound from "@/components/table/NotFound";
+import useFilter from "@/hooks/useFilter";
 
-const Coupons = () => {
+const Subscriptions = () => {
   const { t } = useTranslation();
   const {
     lang,
     currentPage,
     handleChangePage,
-    resultsPerPage,
     setCurrentPage,
     setLoading,
   } = useContext(SidebarContext);
-
-  const {data, loading, error} = useAsync(()=>CouponServices.getAllCoupons(
-      status,
-      type,
-      currentPage,
-      20,
-      name,
-      createAt,
-      expiryperiodTo,
-      expiryperiodFrom
+  const { data, loading, error } = useAsync(() => SubscriptionServices.getAllSubscriptions(
+    status,
+    type,
+    currentPage,
+    20,
+    name,
+    createAt,
+    expiryperiodTo,
+    expiryperiodFrom
   ));
-  console.log(data)
+  
   const [isCheckAll, setIsCheckAll] = useState(false);
   const [isCheck, setIsCheck] = useState([]);
 
-  const { allId, serviceId } = useToggleDrawer();
+  const { allId, serviceId,userId } = useToggleDrawer();
   const [type, setType] = useState("");
   const [status, setStatus] = useState("");
   const [createAt, setStartDate] = useState("");
@@ -66,25 +62,11 @@ const Coupons = () => {
   const [expiryperiodFrom, setExpiryperiodFrom] = useState(null);
   const [alldata, setAllData] = useState({ count: 0, data: [] });
   const [name, setName] = useState("");
-  const handleSubmitCoupon = async (event) => {
-    console.log("handleSubmitCoupon")
-    if (event) event.preventDefault();
-    setLoading(true);
-
-    const response = await CouponServices.getAllCoupons(
-      status,
-      type,
-      currentPage,
-      20,
-      name,
-      createAt,
-      expiryperiodTo,
-      expiryperiodFrom
-    );
-    console.log("handleSubmitCoupon ",response)
-    setLoading(false);
-    setAllData(response);
-  };
+  const effectiveData = alldata?.data?.length ? alldata : data;
+  const {
+      totalResults,
+      resultsPerPage,dataTable
+  } = useFilter(effectiveData);
 
   const handleSelectAll = () => {
     setIsCheckAll(!isCheckAll);
@@ -96,15 +78,35 @@ const Coupons = () => {
 
   // handle reset field function
   const handleResetField = () => {
-    // setSearchCoupon("");
-    // couponRef.current.value = "";
     setExpiryperiodTo(null);
     setExpiryperiodFrom(null);
     setStatus("");
     setType("");
     setStartDate("");
-    setCurrentPage(1), handleSubmitCoupon();
   };
+  const handleSubmitSubscription = async (event) => {
+    if (event) event.preventDefault();
+    setLoading(true);
+    try {
+      const response = await SubscriptionServices.getAllSubscriptions(
+        status,
+        type,
+        currentPage,
+        20,
+        name,
+        createAt,
+        expiryperiodTo,
+        expiryperiodFrom
+      );
+      setAllData(response);
+      // setSubscriptions(response); // inject data into useFilter
+    } catch (error) {
+      console.error("Error fetching subscriptions", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  console.log("userId", userId);
 
   return (
     <>
@@ -112,18 +114,18 @@ const Coupons = () => {
       <DeleteModal
         ids={allId}
         setIsCheck={setIsCheck}
-        title="Selected Coupon"
+        title="Selected Subscription"
       />
-      <BulkActionDrawer ids={allId} title="Coupons" />
+      <BulkActionDrawer ids={allId} title="Subscriptions" />
 
       <MainDrawer>
-        <CouponDrawer id={serviceId} />
+        <SubscriptionDrawer id={serviceId}  />
       </MainDrawer>
 
       <Card className="min-w-0 shadow-xs overflow-hidden bg-white dark:bg-gray-800 mb-5">
         <CardBody>
           <form
-            onSubmit={handleSubmitCoupon}
+            onSubmit={handleSubmitSubscription}
             className="py-3 gap-2 flex flex-col"
           >
             <div className="grid  gap-4 lg:gap-6 xl:gap-6 md:flex xl:flex">
@@ -213,7 +215,7 @@ const Coupons = () => {
 
       {loading ? (
         <TableLoading row={12} col={7} width={160} height={20} />
-      ) : data?.data?.length > 0 ? (
+      ) : dataTable?.length > 0 ? (
         <TableContainer className="mb-8">
           <Table>
             <TableHeader>
@@ -240,16 +242,16 @@ const Coupons = () => {
                 </TableCell>
               </tr>
             </TableHeader>
-            <CouponTable
+            <SubscriptionsTable
               lang={lang}
               isCheck={isCheck}
-              coupons={data?.data}
+              subscriptions={dataTable}
               setIsCheck={setIsCheck}
             />
           </Table>
           <TableFooter>
             <Pagination
-              totalResults={data?.data?.count}
+              totalResults={dataTable?.length}
               resultsPerPage={20}
               onChange={handleChangePage}
               label="Table navigation"
@@ -257,10 +259,10 @@ const Coupons = () => {
           </TableFooter>
         </TableContainer>
       ) : (
-        <NotFound title="Sorry, There are no coupons right now." />
+        <NotFound title="Sorry, There are no Subscriptions right now." />
       )}
     </>
   );
 };
 
-export default Coupons;
+export default Subscriptions;

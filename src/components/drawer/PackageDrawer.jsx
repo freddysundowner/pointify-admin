@@ -9,7 +9,7 @@ import InputArea from "@/components/form/input/InputArea";
 import InputValue from "@/components/form/input/InputValue";
 import LabelArea from "@/components/form/selectOption/LabelArea";
 import Uploader from "@/components/image-uploader/Uploader";
-import useCouponSubmit from "@/hooks/useCouponSubmit";
+import useCouponSubmit from "@/hooks/useSubscriptionSubmit";
 import DrawerButton from "@/components/form/button/DrawerButton";
 import SwitchToggle from "@/components/form/switch/SwitchToggle";
 import SwitchToggleFour from "@/components/form/switch/SwitchToggleFour";
@@ -67,7 +67,7 @@ const PackageDrawer = ({ id }) => {
             </div>
 
             <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label="Duration Value" />
+              <LabelArea label="Duration Value (7, 30)" />
               <div className="col-span-8 sm:col-span-4">
                 <InputArea
                   register={register}
@@ -80,9 +80,25 @@ const PackageDrawer = ({ id }) => {
                 <Error errorName={errors.durationValue} />
               </div>
             </div>
+            {/* drop down for type trial or prodduction */}
 
             <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
-              <LabelArea label="Duration Unit" />
+              <LabelArea label="Duration Type" />
+              <div className="col-span-8 sm:col-span-4">
+                <InputArea
+                  register={register}
+                  label="Duration Type"
+                  name="type"
+                  type="text"
+                  placeholder="Duration Type"
+                />
+
+                <Error errorName={errors.durationType} />
+              </div>   
+            </div>
+
+            <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+              <LabelArea label="Duration Unit ('days', 'weeks', 'months', 'years')" />
               <div className="col-span-8 sm:col-span-4">
                 <InputArea
                   register={register}

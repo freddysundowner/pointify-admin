@@ -95,14 +95,6 @@ const ShopCategoryTable = ({
                 <span>{showingTranslateValue(category?.name)}</span>
               )}
             </TableCell>
-
-            <TableCell className="text-center">
-              <ShowHideButton
-                id={category._id}
-                category
-                status={category.status}
-              />
-            </TableCell>
             <TableCell>
               <EditDeleteButton
                 id={category?._id}

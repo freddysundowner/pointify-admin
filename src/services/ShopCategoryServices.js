@@ -2,7 +2,7 @@ import requests from "./httpService";
 
 const ShopCategoryServices = {
   getAllCategory: async (page) => {
-    return requests.get("/shop/category?page="+page+"&limit=20");
+    return requests.get("/shop/category?page=" + page + "&limit=20");
   },
   getCategoryById: async (id) => {
     return requests.get(`/shop/category/${id}`);
@@ -10,10 +10,6 @@ const ShopCategoryServices = {
 
   addCategory: async (body) => {
     return requests.post("/shop/category", body);
-  },
-
-  addAllCategory: async (body) => {
-    return requests.post("/shop/category/add/all", body);
   },
 
   updateCategory: async (id, body) => {

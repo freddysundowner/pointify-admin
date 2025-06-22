@@ -71,7 +71,9 @@ const SMSTemplatePage = () => {
                     <option value="custom">Custom Sms</option>
                     <option value="all">All Users</option>
                     <option value="subscribers">Subscribers</option>
-                    <option value="expired">Expired Shops</option>
+                    <option value="expired">Expired Production Shops</option>
+                    <option value="trial">Active Trials</option>
+                    <option value="trial_expired">Expired Trials</option>
                     <option value="dormant">Dormant Shop Owners</option>
                 </select>
         </div>

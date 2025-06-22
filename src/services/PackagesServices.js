@@ -8,7 +8,11 @@ const PackagesServices = {
     return requests.post("/packages/add/all", body);
   },
   getAllCoupons: async (currentPage) => {
-    return requests.get("/packages?page="+currentPage+"&limit=20&admin=true");
+    return requests.get(
+      "/packages?page=" +
+        (currentPage == undefined ? 1 : currentPage) +
+        "&limit=20&admin=true"
+    );
   },
   getCouponById: async (id) => {
     return requests.get(`/subscriptions/${id}`);

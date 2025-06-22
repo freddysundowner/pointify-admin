@@ -19,8 +19,6 @@ const useShopCategorySubmit = (id, data) => {
   const [selectCategoryName, setSelectCategoryName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // const { handlerTextTranslateHandler } = useTranslationValue();
-
   const {
     register,
     handleSubmit,
@@ -30,23 +28,12 @@ const useShopCategorySubmit = (id, data) => {
     formState: { errors },
   } = useForm();
 
-  // console.log("lang", lang, language);
-
-  // console.log("resData", resData);
-
   const onSubmit = async ({ name, description }) => {
     try {
       setIsSubmitting(true);
-
-      // const nameTranslates = await handlerTextTranslateHandler(name, language);
-      // const descriptionTranslates = await handlerTextTranslateHandler(
-      //   description,
-      //   language
-      // );
-
       const categoryData = {
         name: name,
-        status: published ? "show" : "hide",
+        active: published,
       };
 
       console.log("category submit", categoryData);
@@ -85,19 +72,8 @@ const useShopCategorySubmit = (id, data) => {
     if (!isDrawerOpen) {
       setResData({});
       setValue("name");
-      setValue("parentId");
-      setValue("parentName");
-      setValue("description");
-      setValue("icon");
-      setImageUrl("");
+      setValue("status");
       setPublished(true);
-      clearErrors("name");
-      clearErrors("parentId");
-      clearErrors("parentName");
-      clearErrors("description");
-      setSelectCategoryName("Home");
-      setLanguage(lang);
-      setValue("language", language);
 
       if (data !== undefined && data[0]?._id !== undefined) {
         setChecked(data[0]._id);
@@ -108,18 +84,13 @@ const useShopCategorySubmit = (id, data) => {
       (async () => {
         try {
           const res = await ShopCategoryServices.getCategoryById(id);
-          // console.log("res category", res);
 
           if (res) {
             setResData(res);
             setValue("name", res.name);
-            setValue("language", language);
-            setValue("parentId", res.parentId);
-            setValue("parentName", res.parentName);
-            setSelectCategoryName(res.parentName);
+            setValue("status", res.active);
             setChecked(res.parentId);
             setImageUrl(res.icon);
-            setPublished(res.status === "show" ? true : false);
           }
         } catch (err) {
           console.log(err);

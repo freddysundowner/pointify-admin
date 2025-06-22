@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import { SidebarContext } from "@/context/SidebarContext";
 import MeasureServices from "@/services/MeasureServices";
 import CategoryServices from "@/services/CategoryServices";
-import CouponServices from "@/services/CouponServices";
+import CouponServices from "@/services/SubscriptionServices";
 import CurrencyServices from "@/services/CurrencyServices";
 import LanguageServices from "@/services/LanguageServices";
 import ProductServices from "@/services/ProductServices";

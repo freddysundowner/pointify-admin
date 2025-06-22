@@ -3,6 +3,7 @@ import { SidebarContext } from "@/context/SidebarContext";
 
 const useToggleDrawer = () => {
   const [serviceId, setServiceId] = useState("");
+  const [userId, setUserId] = useState("");
   const [allId, setAllId] = useState([]);
   const [title, setTitle] = useState("");
   const { toggleDrawer, isDrawerOpen, toggleModal, toggleBulkDrawer } =
@@ -22,6 +23,11 @@ const useToggleDrawer = () => {
     setServiceId(id);
     toggleModal();
     setTitle(title);
+  };
+
+  const setUserIdData = (data) => {
+    console.log(data);
+    setUserId(data);
   };
 
   useEffect(() => {
@@ -45,6 +51,8 @@ const useToggleDrawer = () => {
     handleModalOpen,
     handleDeleteMany,
     handleUpdateMany,
+    userId,
+    setUserIdData,
   };
 };
 

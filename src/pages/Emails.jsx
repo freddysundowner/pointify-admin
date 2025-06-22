@@ -59,7 +59,9 @@ const EmailTemplatePage = () => {
                     <option value="custom">Custom Email</option>
                     <option value="subscribers">Subscribers</option>
                     <option value="all">All Users</option>
-                    <option value="expired">Expired Shops</option>
+                    <option value="expired">Expired Production Shops</option>
+                    <option value="trial">Active Trials</option>
+                    <option value="trial_expired">Expired Trials</option>
                     <option value="dormant">Dormant Shop Owners</option>
                 </select>
         </div>

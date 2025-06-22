@@ -97,32 +97,6 @@ const ShopCategory = () => {
           >
 
             <div className="lg:flex  md:flex xl:justify-end xl:w-1/2  md:w-full md:justify-start flex-grow-0">
-              <div className="w-full md:w-40 lg:w-40 xl:w-40 mr-3 mb-3 lg:mb-0">
-                <Button
-                  disabled={isCheck.length < 1}
-                  onClick={() => handleUpdateMany(isCheck)}
-                  className="w-full rounded-md h-12 text-gray-600 btn-gray"
-                >
-                  <span className="mr-2">
-                    <FiEdit />
-                  </span>
-
-                  {t("BulkAction")}
-                </Button>
-              </div>
-              <div className="w-full md:w-32 lg:w-32 xl:w-32  mr-3 mb-3 lg:mb-0">
-                <Button
-                  disabled={isCheck.length < 1}
-                  onClick={() => handleDeleteMany(isCheck)}
-                  className="w-full rounded-md h-12 bg-red-500 disabled  btn-red"
-                >
-                  <span className="mr-2">
-                    <FiTrash2 />
-                  </span>
-
-                  {t("Delete")}
-                </Button>
-              </div>
               <div className="w-full md:w-48 lg:w-48 xl:w-48">
                 <Button
                   onClick={toggleDrawer}
@@ -200,9 +174,6 @@ const ShopCategory = () => {
                   />
                 </TableCell>
                 <TableCell>{t("CatTbName")}</TableCell>
-                <TableCell className="text-center">
-                  {t("catPublishedTbl")}
-                </TableCell>
                 <TableCell className="text-right">
                   {t("catActionsTbl")}
                 </TableCell>

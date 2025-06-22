@@ -14,17 +14,17 @@ import CheckBox from "@/components/form/others/CheckBox";
 import useToggleDrawer from "@/hooks/useToggleDrawer";
 import DeleteModal from "@/components/modal/DeleteModal";
 import MainDrawer from "@/components/drawer/MainDrawer";
-import CouponDrawer from "@/components/drawer/CouponDrawer";
+import CouponDrawer from "@/components/drawer/SubscriptionDrawer";
 import ShowHideButton from "@/components/table/ShowHideButton";
 import EditDeleteButton from "@/components/table/EditDeleteButton";
 
 import { FiEdit, FiTrash2, FiZoomIn } from "react-icons/fi";
 
 import Tooltip from "@/components/tooltip/Tooltip";
-const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
+const SubscriptionTable = ({ isCheck, subscriptions, setIsCheck }) => {
   const [updatedCoupons, setUpdatedCoupons] = useState([]);
 
-  const { title, serviceId, handleModalOpen, handleUpdate } = useToggleDrawer();
+  const { title, serviceId, handleModalOpen, handleUpdate,setUserIdData } = useToggleDrawer();
 
   const { currency, showDateTimeFormat, globalSetting, showingTranslateValue } =
     useUtilsFunction();
@@ -36,9 +36,15 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
       setIsCheck(isCheck.filter((item) => item !== id));
     }
   };
+  const handleEditSubscription = (coupon) => {
+  setUserIdData(coupon?.userId?._id); // set userId first
+  setTimeout(() => {
+    handleUpdate(coupon?._id); // open drawer AFTER userId is set
+  }, 50); // small delay to ensure `userId` is committed
+};
 
   useEffect(() => {
-    const result = coupons?.map((el) => {
+    const result = subscriptions?.map((el) => {
       const newDate = new Date(el?.updatedAt).toLocaleString("en-US", {
         timeZone: globalSetting?.default_time_zone,
       });
@@ -49,7 +55,7 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
       return newObj;
     });
     setUpdatedCoupons(result);
-  }, [coupons, globalSetting?.default_time_zone]);
+  }, [subscriptions, globalSetting?.default_time_zone]);
 
   return (
     <>
@@ -158,7 +164,7 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
             <TableCell>
               <button
                 disabled={isCheck?.length > 0}
-                onClick={() => handleUpdate(coupon?._id)}
+                onClick={() => { handleEditSubscription(coupon); }}
                 className="p-2 cursor-pointer text-gray-400 hover:text-emerald-600 focus:outline-none"
               >
                 <Tooltip
@@ -176,4 +182,4 @@ const CouponTable = ({ isCheck, coupons, setIsCheck }) => {
   );
 };
 
-export default CouponTable;
+export default SubscriptionTable;

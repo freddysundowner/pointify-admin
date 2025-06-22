@@ -1,21 +1,21 @@
 import requests from "./httpService";
 
-const CouponServices = {
+const SubscriptionServices = {
   addCoupon: async (body) => {
     return requests.post("/coupon/add", body);
   },
   addAllCoupon: async (body) => {
     return requests.post("/coupon/add/all", body);
   },
-  getAllCoupons: async (
+  getAllSubscriptions: async (
     status = "",
     type = "",
     page = 1,
     limit = 20,
     shop = "",
     createAt = "",
-    expiryperiodTo = '',
-    expiryperiodFrom = ''
+    expiryperiodTo = "",
+    expiryperiodFrom = ""
   ) => {
     console.log("getAllCoupons");
 
@@ -61,4 +61,4 @@ const CouponServices = {
   },
 };
 
-export default CouponServices;
+export default SubscriptionServices;

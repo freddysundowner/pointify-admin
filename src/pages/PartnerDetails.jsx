@@ -26,7 +26,7 @@ import useUtilsFunction from "@/hooks/useUtilsFunction";
 import InvoiceForDownload from "@/components/invoice/InvoiceForDownload";
 import PartnersServices from "@/services/PartnersServices";
 import NotFound from "./404";
-import CouponServices from "@/services/CouponServices";
+import CouponServices from "@/services/SubscriptionServices";
 import CheckBox from "@/components/form/others/CheckBox";
 import EarningsTable from "@/components/partners/EarningsTable";
 import useFilter from "@/hooks/useFilter";

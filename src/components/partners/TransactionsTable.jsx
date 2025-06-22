@@ -14,7 +14,7 @@ import CheckBox from "@/components/form/others/CheckBox";
 import useToggleDrawer from "@/hooks/useToggleDrawer";
 import DeleteModal from "@/components/modal/DeleteModal";
 import MainDrawer from "@/components/drawer/MainDrawer";
-import CouponDrawer from "@/components/drawer/CouponDrawer";
+import CouponDrawer from "@/components/drawer/SubscriptionDrawer";
 import ShowHideButton from "@/components/table/ShowHideButton";
 import EditDeleteButton from "@/components/table/EditDeleteButton";
 

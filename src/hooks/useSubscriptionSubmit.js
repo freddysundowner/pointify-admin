@@ -4,13 +4,12 @@ import { useForm } from "react-hook-form";
 
 //internal import
 import { SidebarContext } from "@/context/SidebarContext";
-import CouponServices from "@/services/CouponServices";
+import SubscriptionServices from "@/services/SubscriptionServices";
 import { notifyError, notifySuccess } from "@/utils/toast";
-// import useTranslationValue from "./useTranslationValue";
 import useUtilsFunction from "./useUtilsFunction";
 import PackagesServices from "@/services/PackagesServices";
 
-const useCouponSubmit = (id) => {
+const useSubscriptionSubmit = (id) => {
   const { isDrawerOpen, closeDrawer, setIsUpdate, lang } =
     useContext(SidebarContext);
   const [imageUrl, setImageUrl] = useState("");
@@ -28,6 +27,7 @@ const useCouponSubmit = (id) => {
     handleSubmit,
     setValue,
     clearErrors,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -38,16 +38,21 @@ const useCouponSubmit = (id) => {
 
       const couponData = {
         endDate: data.endDate,
+        startDate: data.startDate,
+        packageId: data.packageId,
+        amount: data.amount,
+        status: published,
+        paid: data.paid,
       };
 
       if (id) {
-        const res = await CouponServices.updateCoupon(id, couponData);
+        const res = await SubscriptionServices.updateCoupon(id, couponData);
         setIsUpdate(true);
         setIsSubmitting(false);
         notifySuccess(res.message);
         closeDrawer();
       } else {
-        const res = await CouponServices.addCoupon(couponData);
+        const res = await SubscriptionServices.addCoupon(couponData);
         setIsUpdate(true);
         setIsSubmitting(false);
         notifySuccess(res.message);
@@ -71,6 +76,7 @@ const useCouponSubmit = (id) => {
     if (!isDrawerOpen) {
       setResData({});
       setValue("endDate");
+      setValue("startDate");
       return;
     }
     if (id) {
@@ -78,10 +84,16 @@ const useCouponSubmit = (id) => {
         try {
           const res = await PackagesServices.getCouponById(id);
           if (res) {
-            console.log('res coupon', res);
+            console.log("res coupon", res);
             setResData(res);
-            
+
             setValue("endDate", dayjs(res.endDate).format("YYYY-MM-DD HH:mm"));
+            setValue("packageId", res.packageId);
+            setValue("amount", res.amount);
+            setValue(
+              "startDate",
+              dayjs(res.startDate).format("YYYY-MM-DD HH:mm")
+            );
           }
         } catch (err) {
           notifyError(err?.response?.data?.message || err?.message);
@@ -104,7 +116,8 @@ const useCouponSubmit = (id) => {
     isSubmitting,
     setDiscountType,
     handleSelectLanguage,
+    watch,
   };
 };
 
-export default useCouponSubmit;
+export default useSubscriptionSubmit;

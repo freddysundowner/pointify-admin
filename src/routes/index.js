@@ -19,7 +19,7 @@ const CustomerOrder = lazy(() => import("@/pages/CustomerOrder"));
 const SupportComp = lazy(() => import("@/pages/Support"));
 const Orders = lazy(() => import("@/pages/Orders"));
 const OrderInvoice = lazy(() => import("@/pages/OrderInvoice"));
-const Subscriptions = lazy(() => import("@/pages/Coupons"));
+const Subscriptions = lazy(() => import("@/pages/Subscriptions"));
 const Packages = lazy(() => import("@/pages/Packages"));
 const EmailsArchive = lazy(() => import("@/pages/EmailsArchive"));
 const Page404 = lazy(() => import("@/pages/404"));
