@@ -80,7 +80,40 @@ export function registerSubscriptionRoutes(app: Express) {
     }
   });
 
+  app.get("/api/subscriptions/shop/stats", async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const result = await apiRequest("/subscriptions/shop/stats", { token: session.token });
+      res.json(result);
+    } catch (error: any) {
+      res.status(error.status || 500).json({ error: error.message });
+    }
+  });
+
   // Extend endpoint must be defined BEFORE the generic :id route
+  app.put("/api/subscriptions/verify/:id", async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const { id } = req.params;
+      const result = await apiRequest(`/subscriptions/verify/${id}`, {
+        method: "PUT",
+        body: req.body,
+        token: session.token,
+      });
+      res.json(result);
+    } catch (error: any) {
+      res.status(error.status || 500).json({ error: error.message });
+    }
+  });
+
   app.put("/api/subscriptions/extend/:id", async (req: Request, res: Response) => {
     try {
       const session = getSession(req);

@@ -11,6 +11,9 @@ import {
   Users,
   TrendingUp,
   ShoppingCart,
+  Send,
+  FileText,
+  Settings,
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,6 +41,9 @@ const menuItems = [
   { title: "Users", url: "/users", icon: Users },
   { title: "Subscriptions", url: "/subscriptions", icon: CreditCard },
   { title: "Revenue", url: "/revenue", icon: TrendingUp },
+  { title: "Bulk Messages", url: "/bulk-communication", icon: Send },
+  { title: "Templates", url: "/templates", icon: FileText },
+  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {

@@ -2,6 +2,59 @@ import type { Express, Request, Response } from "express";
 import { apiRequest, getSession } from "./utils";
 
 export function registerUserRoutes(app: Express) {
+  // Get admins filtered by subscription status and type (for bulk communication)
+  app.get("/api/admin/users/subscriptions", async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 10;
+      const subscriptionStatus = req.query.subscriptionStatus || "";
+      const subscriptionType = req.query.subscriptionType || "";
+
+      let endpoint = `/admin/users/subscriptions?page=${page}&limit=${limit}`;
+      
+      if (subscriptionStatus) {
+        endpoint += `&subscriptionStatus=${encodeURIComponent(subscriptionStatus as string)}`;
+      }
+      if (subscriptionType) {
+        endpoint += `&subscriptionType=${encodeURIComponent(subscriptionType as string)}`;
+      }
+
+      const result = await apiRequest(endpoint, { token: session.token });
+      
+      // Handle the response format from the Pointify API
+      if (result.admins) {
+        res.json({
+          admins: result.admins,
+          totalAdmins: result.totalAdmins || result.admins.length,
+          totalPages: result.totalPages || Math.ceil((result.totalAdmins || result.admins.length) / Number(limit)),
+          currentPage: result.currentPage || Number(page),
+        });
+      } else if (Array.isArray(result)) {
+        res.json({
+          admins: result,
+          totalAdmins: result.length,
+          totalPages: 1,
+          currentPage: 1,
+        });
+      } else {
+        res.json({
+          admins: [],
+          totalAdmins: 0,
+          totalPages: 1,
+          currentPage: 1,
+        });
+      }
+    } catch (error: any) {
+      console.error("Error fetching admins by subscription:", error.message);
+      res.status(error.status || 500).json({ error: error.message });
+    }
+  });
+
   app.get("/api/users", async (req: Request, res: Response) => {
     try {
       const session = getSession(req);

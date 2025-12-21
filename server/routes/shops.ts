@@ -14,6 +14,8 @@ export function registerShopRoutes(app: Express) {
       const name = req.query.name || "";
       const ownerid = req.query.ownerid || "";
       const affliatename = req.query.affliatename || "";
+      const subscriptionStatus = req.query.subscriptionStatus || "";
+      const subscriptionType = req.query.subscriptionType || "";
 
       let endpoint = `/shop?page=${page}&limit=${limit}`;
       if (name) {
@@ -25,23 +27,31 @@ export function registerShopRoutes(app: Express) {
       if (affliatename) {
         endpoint += `&affliatename=${encodeURIComponent(affliatename as string)}`;
       }
+      if (subscriptionStatus) {
+        endpoint += `&subscriptionStatus=${encodeURIComponent(subscriptionStatus as string)}`;
+      }
+      if (subscriptionType) {
+        endpoint += `&subscriptionType=${encodeURIComponent(subscriptionType as string)}`;
+      }
 
       const result = await apiRequest(endpoint, { token: session.token });
       
       if (Array.isArray(result)) {
         res.json({ data: result, count: result.length, totalPages: 1, currentPage: 1 });
       } else if (result.shops) {
+        const totalCount = result.totalShops || result.count || result.total || result.shops.length;
         res.json({
           data: result.shops,
-          count: result.count || result.total || result.shops.length,
-          totalPages: result.totalPages || result.pages || Math.ceil((result.count || result.shops.length) / Number(limit)),
+          count: totalCount,
+          totalPages: result.totalPages || result.pages || Math.ceil(totalCount / Number(limit)),
           currentPage: result.currentPage || result.page || Number(page),
         });
       } else if (result.data) {
+        const totalCount = result.totalShops || result.count || result.total || result.data.length;
         res.json({
           data: result.data,
-          count: result.count || result.total || result.data.length,
-          totalPages: result.totalPages || result.pages || Math.ceil((result.count || result.data.length) / Number(limit)),
+          count: totalCount,
+          totalPages: result.totalPages || result.pages || Math.ceil(totalCount / Number(limit)),
           currentPage: result.currentPage || result.page || Number(page),
         });
       } else {

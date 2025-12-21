@@ -1,7 +1,7 @@
 import { useState, Fragment, useRef, useEffect } from "react";
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { ArrowLeft, Mail, MessageSquare, Send, Loader2, Store, Calendar, MapPin, Phone, CreditCard, ChevronLeft, ChevronRight, CalendarPlus, ChevronDown, ChevronUp, FileText, Upload, Package, Search, Receipt, Eye } from "lucide-react";
+import { ArrowLeft, Mail, MessageSquare, Send, Loader2, Store, Calendar, MapPin, Phone, CreditCard, ChevronLeft, ChevronRight, CalendarPlus, ChevronDown, ChevronUp, FileText, Upload, Package, Search, Receipt, Eye, RotateCcw } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -169,6 +169,7 @@ export default function ShopDetailPage() {
   const [messageForm, setMessageForm] = useState({
     subject: "",
     message: "",
+    recipient: "",
   });
 
   const [subscriptionPage, setSubscriptionPage] = useState(1);
@@ -192,6 +193,14 @@ export default function ShopDetailPage() {
 
   const [salesPage, setSalesPage] = useState(1);
   const [viewSale, setViewSale] = useState<any | null>(null);
+  const [communicationPage, setCommunicationPage] = useState(1);
+  const [commFilters, setCommFilters] = useState({
+    status: "",
+    type: "",
+    to: "",
+    fromDate: "",
+    toDate: "",
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -241,6 +250,71 @@ export default function ShopDetailPage() {
   const sales = salesData?.data || [];
   const salesCount = salesData?.count || 0;
   const salesTotalPages = salesData?.totalPages || 1;
+
+  const { data: communicationsData, isLoading: isLoadingCommunications } = useQuery({
+    queryKey: ["/communication", "user", user?._id, communicationPage, commFilters],
+    queryFn: () => {
+      let url = `/communication?user=${encodeURIComponent(user?._id || "")}&page=${communicationPage}&limit=10`;
+      if (commFilters.status) url += `&status=${encodeURIComponent(commFilters.status)}`;
+      if (commFilters.type) url += `&type=${encodeURIComponent(commFilters.type)}`;
+      if (commFilters.to) url += `&to=${encodeURIComponent(commFilters.to)}`;
+      if (commFilters.fromDate) url += `&fromDate=${encodeURIComponent(commFilters.fromDate)}`;
+      if (commFilters.toDate) url += `&toDate=${encodeURIComponent(commFilters.toDate)}`;
+      return apiClient<any>(url);
+    },
+    enabled: !!user?._id,
+  });
+
+  const communications = communicationsData?.data || [];
+  const communicationsCount = communicationsData?.total || communicationsData?.count || 0;
+  const communicationsTotalPages = communicationsData?.totalPages || communicationsData?.pages || Math.ceil(communicationsCount / 10) || 1;
+  const [resendingId, setResendingId] = useState<string | null>(null);
+  const [viewCommunication, setViewCommunication] = useState<any | null>(null);
+  const [resendDialog, setResendDialog] = useState<{ open: boolean; comm: any | null; recipient: string }>({ open: false, comm: null, recipient: "" });
+
+  const resendMutation = useMutation({
+    mutationFn: async ({ id, to }: { id: string; to: string }) => {
+      setResendingId(id);
+      return apiClient(`/communication/${id}/resend`, {
+        method: "POST",
+        body: { to },
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Message resent",
+        description: "The message has been resent successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/communication", "user", user?._id] });
+      setResendingId(null);
+      setResendDialog({ open: false, comm: null, recipient: "" });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to resend",
+        description: error.message || "An error occurred while resending the message.",
+        variant: "destructive",
+      });
+      setResendingId(null);
+    },
+  });
+
+  const handleOpenResendDialog = (comm: any) => {
+    setResendDialog({
+      open: true,
+      comm,
+      recipient: comm.contact || "",
+    });
+  };
+
+  const handleResendWithNewRecipient = () => {
+    if (resendDialog.comm?._id && resendDialog.recipient) {
+      resendMutation.mutate({
+        id: resendDialog.comm._id,
+        to: resendDialog.recipient,
+      });
+    }
+  };
 
   const extendMutation = useMutation({
     mutationFn: async ({ id, endDate }: { id: string; endDate: string }) => {
@@ -364,28 +438,69 @@ export default function ShopDetailPage() {
   };
 
   const handleSendReminder = (type: "email" | "sms") => {
+    const defaultRecipient = type === "email" 
+      ? (shop?.ownerId?.email || shop?.email || "")
+      : (shop?.contact || shop?.ownerId?.phonenumber || "");
     setMessageDialog({ open: true, type, isReminder: true });
     setMessageForm({
       subject: "Payment Reminder",
       message: type === "email" 
         ? `Dear ${shop?.name || "Customer"},\n\nThis is a friendly reminder that your subscription payment is due. Please ensure timely payment to avoid service interruption.\n\nThank you for your continued business.`
         : `Hi ${shop?.name || "Customer"}, this is a reminder that your subscription payment is due. Please pay to avoid service interruption.`,
+      recipient: defaultRecipient,
     });
   };
 
   const handleCustomMessage = (type: "email" | "sms") => {
+    const defaultRecipient = type === "email" 
+      ? (shop?.ownerId?.email || shop?.email || "")
+      : (shop?.contact || shop?.ownerId?.phonenumber || "");
     setMessageDialog({ open: true, type, isReminder: false });
-    setMessageForm({ subject: "", message: "" });
+    setMessageForm({ subject: "", message: "", recipient: defaultRecipient });
   };
 
+  const sendMessageMutation = useMutation({
+    mutationFn: async (data: { to: string; body: string; type: string; subject?: string; user?: string }) => {
+      return apiClient("/communication", {
+        method: "POST",
+        body: data,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Message sent",
+        description: `${messageDialog.type === "email" ? "Email" : "SMS"} sent successfully.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/communication", "user", user?._id] });
+      setMessageDialog({ open: false, type: "email", isReminder: false });
+      setMessageForm({ subject: "", message: "" });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to send message",
+        description: error.message || "An error occurred while sending the message.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSendMessage = () => {
-    toast({
-      title: "Integration not configured",
-      description: `${messageDialog.type === "email" ? "Email" : "SMS"} integration needs to be set up to send messages.`,
-      variant: "destructive",
+    if (!messageForm.recipient) {
+      toast({
+        title: "No recipient",
+        description: `Please enter a ${messageDialog.type === "email" ? "email address" : "phone number"}.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    sendMessageMutation.mutate({
+      to: messageForm.recipient,
+      body: messageForm.message,
+      type: messageDialog.type,
+      subject: messageDialog.type === "email" ? messageForm.subject : undefined,
+      user: user?._id,
     });
-    setMessageDialog({ open: false, type: "email", isReminder: false });
-    setMessageForm({ subject: "", message: "" });
   };
 
   const getSubscriptionStatus = (sub: any) => {
@@ -557,6 +672,7 @@ export default function ShopDetailPage() {
             <TabsTrigger value="subscriptions" data-testid="tab-subscriptions">Subscriptions</TabsTrigger>
             <TabsTrigger value="products" data-testid="tab-products">Products</TabsTrigger>
             <TabsTrigger value="sales" data-testid="tab-sales">Sales</TabsTrigger>
+            <TabsTrigger value="communication" data-testid="tab-communication">Communication</TabsTrigger>
           </TabsList>
 
           <TabsContent value="subscriptions">
@@ -932,6 +1048,213 @@ export default function ShopDetailPage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="communication">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Communication History</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap items-end gap-3 mb-4">
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Status</Label>
+                    <Select
+                      value={commFilters.status}
+                      onValueChange={(v) => { setCommFilters({ ...commFilters, status: v === "all" ? "" : v }); setCommunicationPage(1); }}
+                    >
+                      <SelectTrigger className="w-[120px]" data-testid="select-comm-status">
+                        <SelectValue placeholder="All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="sent">Sent</SelectItem>
+                        <SelectItem value="failed">Failed</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Type</Label>
+                    <Select
+                      value={commFilters.type}
+                      onValueChange={(v) => { setCommFilters({ ...commFilters, type: v === "all" ? "" : v }); setCommunicationPage(1); }}
+                    >
+                      <SelectTrigger className="w-[120px]" data-testid="select-comm-type">
+                        <SelectValue placeholder="All" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        <SelectItem value="sms">SMS</SelectItem>
+                        <SelectItem value="email">Email</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">Recipient</Label>
+                    <Input
+                      placeholder="Phone/Email"
+                      value={commFilters.to}
+                      onChange={(e) => setCommFilters({ ...commFilters, to: e.target.value })}
+                      onBlur={() => setCommunicationPage(1)}
+                      className="w-[150px]"
+                      data-testid="input-comm-to"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">From Date</Label>
+                    <Input
+                      type="date"
+                      value={commFilters.fromDate}
+                      onChange={(e) => { setCommFilters({ ...commFilters, fromDate: e.target.value }); setCommunicationPage(1); }}
+                      className="w-[150px]"
+                      data-testid="input-comm-from-date"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">To Date</Label>
+                    <Input
+                      type="date"
+                      value={commFilters.toDate}
+                      onChange={(e) => { setCommFilters({ ...commFilters, toDate: e.target.value }); setCommunicationPage(1); }}
+                      className="w-[150px]"
+                      data-testid="input-comm-to-date"
+                    />
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => { setCommFilters({ status: "", type: "", to: "", fromDate: "", toDate: "" }); setCommunicationPage(1); }}
+                    data-testid="button-clear-comm-filters"
+                  >
+                    Clear
+                  </Button>
+                </div>
+                {isLoadingCommunications ? (
+                  <div className="space-y-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Skeleton key={i} className="h-10 w-full" />
+                    ))}
+                  </div>
+                ) : communications.length > 0 ? (
+                  <div className="space-y-4">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Contact</TableHead>
+                          <TableHead>Message</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {communications.map((comm: any) => (
+                          <TableRow key={comm._id} data-testid={`row-communication-${comm._id}`}>
+                            <TableCell>
+                              <Badge variant="outline" className="capitalize">
+                                {comm.type === "email" ? (
+                                  <Mail className="h-3 w-3 mr-1" />
+                                ) : (
+                                  <MessageSquare className="h-3 w-3 mr-1" />
+                                )}
+                                {comm.type || "sms"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground text-sm">
+                              {comm.contact || "-"}
+                            </TableCell>
+                            <TableCell 
+                              className="max-w-xs truncate text-sm cursor-pointer hover:text-foreground"
+                              onClick={() => setViewCommunication(comm)}
+                              data-testid={`cell-message-${comm._id}`}
+                            >
+                              {comm.message || "-"}
+                            </TableCell>
+                            <TableCell>
+                              <div className="space-y-1">
+                                <Badge variant={comm.status === "sent" ? "default" : "destructive"}>
+                                  {comm.status || "unknown"}
+                                </Badge>
+                                {(comm.failedreason || comm.failedReason || comm.failureReason || comm.error || comm.reason || comm.errorMessage) && (
+                                  <div className="text-xs text-destructive">{comm.failedreason || comm.failedReason || comm.failureReason || comm.error || comm.reason || comm.errorMessage}</div>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground text-sm">
+                              {formatDate(comm.createdAt)}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setViewCommunication(comm)}
+                                  data-testid={`button-view-${comm._id}`}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleOpenResendDialog(comm)}
+                                  disabled={resendingId === comm._id}
+                                  data-testid={`button-resend-${comm._id}`}
+                                >
+                                  {resendingId === comm._id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <RotateCcw className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    {communicationsTotalPages > 1 && (
+                      <div className="flex items-center justify-between gap-4 pt-2">
+                        <div className="text-sm text-muted-foreground">
+                          Showing {((communicationPage - 1) * 10) + 1}-{Math.min(communicationPage * 10, communicationsCount)} of {communicationsCount}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCommunicationPage(p => Math.max(1, p - 1))}
+                            disabled={communicationPage <= 1 || isLoadingCommunications}
+                            data-testid="button-communication-prev"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                            Previous
+                          </Button>
+                          <span className="text-sm text-muted-foreground px-2">
+                            Page {communicationPage} of {communicationsTotalPages}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCommunicationPage(p => Math.min(communicationsTotalPages, p + 1))}
+                            disabled={communicationPage >= communicationsTotalPages || isLoadingCommunications}
+                            data-testid="button-communication-next"
+                          >
+                            Next
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <MessageSquare className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p>No communication history found for this shop</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         <Dialog open={!!viewSale} onOpenChange={() => setViewSale(null)}>
@@ -1099,6 +1422,15 @@ export default function ShopDetailPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>{messageDialog.type === "email" ? "Email Address" : "Phone Number"}</Label>
+              <Input
+                value={messageForm.recipient}
+                onChange={(e) => setMessageForm({ ...messageForm, recipient: e.target.value })}
+                placeholder={messageDialog.type === "email" ? "email@example.com" : "+254..."}
+                data-testid="input-message-recipient"
+              />
+            </div>
             {messageDialog.type === "email" && (
               <div className="space-y-2">
                 <Label>Subject</Label>
@@ -1135,11 +1467,15 @@ export default function ShopDetailPage() {
             </Button>
             <Button
               onClick={handleSendMessage}
-              disabled={!messageForm.message || (messageDialog.type === "email" && !messageForm.subject)}
+              disabled={!messageForm.message || !messageForm.recipient || (messageDialog.type === "email" && !messageForm.subject) || sendMessageMutation.isPending}
               data-testid="button-send-message"
             >
-              <Send className="h-4 w-4 mr-2" />
-              Send {messageDialog.type === "email" ? "Email" : "SMS"}
+              {sendMessageMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              {sendMessageMutation.isPending ? "Sending..." : `Send ${messageDialog.type === "email" ? "Email" : "SMS"}`}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -1189,6 +1525,138 @@ export default function ShopDetailPage() {
                 <CalendarPlus className="h-4 w-4 mr-2" />
               )}
               Extend
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!viewCommunication} onOpenChange={() => setViewCommunication(null)}>
+        <DialogContent className="max-w-lg" data-testid="dialog-communication-details">
+          <DialogHeader>
+            <DialogTitle>
+              {viewCommunication?.type === "email" ? "Email" : "SMS"} Details
+            </DialogTitle>
+            <DialogDescription>
+              Sent on {viewCommunication?.createdAt ? formatDate(viewCommunication.createdAt) : "-"}
+            </DialogDescription>
+          </DialogHeader>
+          {viewCommunication && (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-muted-foreground">Type</Label>
+                  <div className="flex items-center gap-2 mt-1">
+                    {viewCommunication.type === "email" ? (
+                      <Mail className="h-4 w-4" />
+                    ) : (
+                      <MessageSquare className="h-4 w-4" />
+                    )}
+                    <span className="capitalize">{viewCommunication.type || "sms"}</span>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Status</Label>
+                  <div className="mt-1">
+                    <Badge variant={viewCommunication.status === "sent" ? "default" : "destructive"}>
+                      {viewCommunication.status || "unknown"}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <Label className="text-muted-foreground">Recipient</Label>
+                <p className="font-medium mt-1">{viewCommunication.contact || "-"}</p>
+              </div>
+              {viewCommunication.subject && (
+                <div>
+                  <Label className="text-muted-foreground">Subject</Label>
+                  <p className="font-medium mt-1">{viewCommunication.subject}</p>
+                </div>
+              )}
+              <div>
+                <Label className="text-muted-foreground">Message</Label>
+                <div className="mt-1 p-3 bg-muted rounded-md whitespace-pre-wrap text-sm">
+                  {viewCommunication.message || "-"}
+                </div>
+              </div>
+              {(viewCommunication.failedreason || viewCommunication.failedReason || viewCommunication.failureReason || viewCommunication.error || viewCommunication.reason || viewCommunication.errorMessage) && (
+                <div>
+                  <Label className="text-destructive">Failed Reason</Label>
+                  <div className="mt-1 p-3 bg-destructive/10 text-destructive rounded-md text-sm">
+                    {viewCommunication.failedreason || viewCommunication.failedReason || viewCommunication.failureReason || viewCommunication.error || viewCommunication.reason || viewCommunication.errorMessage}
+                  </div>
+                </div>
+              )}
+              {viewCommunication.resendAt && (
+                <div>
+                  <Label className="text-muted-foreground">Last Resent</Label>
+                  <p className="text-sm mt-1">{formatDate(viewCommunication.resendAt)}</p>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewCommunication(null)}>
+              Close
+            </Button>
+            <Button
+              onClick={() => {
+                if (viewCommunication) {
+                  handleOpenResendDialog(viewCommunication);
+                  setViewCommunication(null);
+                }
+              }}
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Resend
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={resendDialog.open} onOpenChange={(open) => !open && setResendDialog({ open: false, comm: null, recipient: "" })}>
+        <DialogContent className="max-w-md" data-testid="dialog-resend">
+          <DialogHeader>
+            <DialogTitle>Resend {resendDialog.comm?.type === "email" ? "Email" : "SMS"}</DialogTitle>
+            <DialogDescription>
+              You can change the recipient before resending this message.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>{resendDialog.comm?.type === "email" ? "Email Address" : "Phone Number"}</Label>
+              <Input
+                value={resendDialog.recipient}
+                onChange={(e) => setResendDialog({ ...resendDialog, recipient: e.target.value })}
+                placeholder={resendDialog.comm?.type === "email" ? "email@example.com" : "+254..."}
+                data-testid="input-resend-recipient"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-muted-foreground">Message Preview</Label>
+              <div className="p-3 bg-muted rounded-md text-sm whitespace-pre-wrap max-h-32 overflow-y-auto">
+                {resendDialog.comm?.message || "-"}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setResendDialog({ open: false, comm: null, recipient: "" })}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleResendWithNewRecipient}
+              disabled={!resendDialog.recipient || resendMutation.isPending}
+              data-testid="button-confirm-resend"
+            >
+              {resendMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <RotateCcw className="h-4 w-4 mr-2" />
+              )}
+              {resendMutation.isPending ? "Sending..." : "Resend"}
             </Button>
           </DialogFooter>
         </DialogContent>

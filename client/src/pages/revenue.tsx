@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { 
   DollarSign, 
@@ -13,6 +13,8 @@ import {
   ChevronRight,
   Banknote,
   RefreshCw,
+  CreditCardIcon,
+  Search,
 } from "lucide-react";
 import { apiClient } from "@/lib/api";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +28,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PeriodStats {
   count: number;
@@ -85,6 +90,27 @@ interface TransactionsResponse {
   totalPages?: number;
   page?: number;
   [key: string]: any;
+}
+
+interface UserOption {
+  _id: string;
+  username: string;
+  email?: string;
+  phone?: string;
+}
+
+interface ShopOption {
+  _id: string;
+  name: string;
+  adminId?: string | { _id: string };
+}
+
+interface PackageOption {
+  _id: string;
+  title: string;
+  amount: number;
+  duration?: number;
+  description?: string;
 }
 
 function formatCurrency(amount: number | undefined): string {
@@ -230,6 +256,25 @@ function RevenueContent() {
   const [reinitiateId, setReinitiateId] = useState<string | null>(null);
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Pay for Subscription state
+  const [paySubOpen, setPaySubOpen] = useState(false);
+  const [userSearch, setUserSearch] = useState("");
+  const [userSearchDebounced, setUserSearchDebounced] = useState("");
+  const [selectedUser, setSelectedUser] = useState<UserOption | null>(null);
+  const [selectedShops, setSelectedShops] = useState<string[]>([]);
+  const [selectedPackage, setSelectedPackage] = useState<PackageOption | null>(null);
+  const [payPhone, setPayPhone] = useState("");
+  const [payPhoneError, setPayPhoneError] = useState("");
+  const [isPaySubmitting, setIsPaySubmitting] = useState(false);
+
+  // Debounce user search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setUserSearchDebounced(userSearch);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [userSearch]);
   
   const { data, isLoading, error } = useQuery<RevenueStats>({
     queryKey: ["/api/revenue/stats"],
@@ -240,6 +285,112 @@ function RevenueContent() {
     queryKey: ["/api/revenue/transactions", page],
     queryFn: () => apiClient<TransactionsResponse>(`/revenue/transactions?page=${page}&limit=10`),
   });
+
+  // Search users for pay subscription
+  const { data: usersData, isLoading: usersLoading } = useQuery<{ data: UserOption[] }>({
+    queryKey: ["/api/users/search", userSearchDebounced],
+    queryFn: () => apiClient<{ data: UserOption[] }>(`/users?search=${encodeURIComponent(userSearchDebounced)}&limit=20`),
+    enabled: userSearchDebounced.length >= 2,
+  });
+
+  // Get shops for selected user
+  const { data: userShopsData, isLoading: shopsLoading } = useQuery<{ data: ShopOption[] }>({
+    queryKey: ["/api/shops/user", selectedUser?._id],
+    queryFn: () => apiClient<{ data: ShopOption[] }>(`/shops?ownerid=${selectedUser?._id}&limit=100`),
+    enabled: !!selectedUser?._id,
+  });
+
+  // Fetch packages
+  const { data: packagesData } = useQuery<PackageOption[]>({
+    queryKey: ["/api/packages"],
+    queryFn: () => apiClient<PackageOption[]>("/packages"),
+  });
+
+  const usersList = usersData?.data || [];
+  const userShops = userShopsData?.data || [];
+  const packages = packagesData || [];
+
+  const handlePayPhoneChange = (value: string) => {
+    setPayPhone(value);
+    if (value && !isValidKenyanPhone(value)) {
+      setPayPhoneError("Enter a valid Kenyan phone number (e.g., 0712345678)");
+    } else {
+      setPayPhoneError("");
+    }
+  };
+
+  const handlePaySubscription = async () => {
+    if (!selectedUser) {
+      toast({ title: "Error", description: "Please select a user", variant: "destructive" });
+      return;
+    }
+    if (selectedShops.length === 0) {
+      toast({ title: "Error", description: "Please select at least one shop", variant: "destructive" });
+      return;
+    }
+    if (!selectedPackage) {
+      toast({ title: "Error", description: "Please select a package", variant: "destructive" });
+      return;
+    }
+    if (!isValidKenyanPhone(payPhone)) {
+      setPayPhoneError("Enter a valid Kenyan phone number");
+      return;
+    }
+
+    setIsPaySubmitting(true);
+    try {
+      const result = await apiClient<{ status: boolean; message: string }>("/revenue/pay-subscription", {
+        method: "POST",
+        body: {
+          userId: selectedUser._id,
+          shops: selectedShops,
+          email: selectedUser.email || "",
+          phonenumber: formatKenyanPhone(payPhone),
+          package: selectedPackage._id,
+          paymentType: "mpesa",
+          shop: selectedShops[0],
+          amount: selectedPackage.amount,
+        },
+      });
+      if (result.status) {
+        toast({ title: "Success", description: result.message || "Payment initiated successfully" });
+        setPaySubOpen(false);
+        resetPaySubForm();
+        refetchTransactions();
+      } else {
+        toast({ title: "Error", description: result.message || "Payment failed", variant: "destructive" });
+      }
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Payment failed", variant: "destructive" });
+    } finally {
+      setIsPaySubmitting(false);
+    }
+  };
+
+  const resetPaySubForm = () => {
+    setUserSearch("");
+    setSelectedUser(null);
+    setSelectedShops([]);
+    setSelectedPackage(null);
+    setPayPhone("");
+    setPayPhoneError("");
+  };
+
+  const toggleShopSelection = (shopId: string) => {
+    setSelectedShops(prev => 
+      prev.includes(shopId) 
+        ? prev.filter(id => id !== shopId)
+        : [...prev, shopId]
+    );
+  };
+
+  const selectAllShops = () => {
+    if (selectedShops.length === userShops.length) {
+      setSelectedShops([]);
+    } else {
+      setSelectedShops(userShops.map(s => s._id));
+    }
+  };
 
   const handlePhoneChange = (value: string) => {
     setPhoneNumber(value);
@@ -348,19 +499,205 @@ function RevenueContent() {
           <h1 className="text-2xl font-semibold" data-testid="text-page-title">Revenue</h1>
           <p className="text-muted-foreground">Subscription revenue statistics and insights</p>
         </div>
-        <Dialog open={withdrawOpen} onOpenChange={(open) => {
-          setWithdrawOpen(open);
-          if (!open) {
-            setReinitiateId(null);
-            setTransactionId(null);
-          }
-        }}>
-          <DialogTrigger asChild>
-            <Button data-testid="button-withdraw">
-              <Banknote className="h-4 w-4 mr-2" />
-              Withdraw
-            </Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Dialog open={paySubOpen} onOpenChange={(open) => {
+            setPaySubOpen(open);
+            if (!open) resetPaySubForm();
+          }}>
+            <DialogTrigger asChild>
+              <Button variant="outline" data-testid="button-pay-subscription">
+                <CreditCardIcon className="h-4 w-4 mr-2" />
+                Pay for Subscription
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg">
+              <DialogHeader>
+                <DialogTitle>Pay for Subscription</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                {/* User Search */}
+                <div className="space-y-2">
+                  <Label>Search User</Label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search by username, email or phone..."
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      className="pl-9"
+                      data-testid="input-user-search"
+                    />
+                  </div>
+                  {usersLoading && userSearchDebounced.length >= 2 && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Searching...
+                    </div>
+                  )}
+                  {usersList.length > 0 && !selectedUser && (
+                    <ScrollArea className="h-40 border rounded-md">
+                      <div className="p-2 space-y-1">
+                        {usersList.map((user) => (
+                          <div
+                            key={user._id}
+                            className="p-2 rounded-md cursor-pointer hover:bg-accent"
+                            onClick={() => {
+                              setSelectedUser(user);
+                              setUserSearch(user.username);
+                              setPayPhone(user.phone || "");
+                              setSelectedShops([]);
+                            }}
+                          >
+                            <div className="font-medium">{user.username}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {user.email} {user.phone ? `• ${user.phone}` : ""}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  )}
+                  {selectedUser && (
+                    <div className="flex items-center justify-between p-2 bg-accent rounded-md">
+                      <div>
+                        <div className="font-medium">{selectedUser.username}</div>
+                        <div className="text-xs text-muted-foreground">{selectedUser.email}</div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setSelectedUser(null);
+                          setUserSearch("");
+                          setSelectedShops([]);
+                        }}
+                      >
+                        Change
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Shops Selection */}
+                {selectedUser && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label>Select Shops</Label>
+                      {userShops.length > 0 && (
+                        <Button variant="ghost" size="sm" onClick={selectAllShops}>
+                          {selectedShops.length === userShops.length ? "Deselect All" : "Select All"}
+                        </Button>
+                      )}
+                    </div>
+                    {shopsLoading ? (
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Loading shops...
+                      </div>
+                    ) : userShops.length > 0 ? (
+                      <ScrollArea className="h-32 border rounded-md">
+                        <div className="p-2 space-y-2">
+                          {userShops.map((shop) => (
+                            <div
+                              key={shop._id}
+                              className="flex items-center gap-2 p-2 rounded-md hover:bg-accent cursor-pointer"
+                              onClick={() => toggleShopSelection(shop._id)}
+                            >
+                              <Checkbox
+                                checked={selectedShops.includes(shop._id)}
+                                onCheckedChange={() => toggleShopSelection(shop._id)}
+                              />
+                              <span>{shop.name}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No shops found for this user</p>
+                    )}
+                    {selectedShops.length > 0 && (
+                      <p className="text-sm text-muted-foreground">{selectedShops.length} shop(s) selected</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Package Selection */}
+                {selectedUser && (
+                  <div className="space-y-2">
+                    <Label>Select Package</Label>
+                    <Select
+                      value={selectedPackage?._id || ""}
+                      onValueChange={(value) => {
+                        const pkg = packages.find(p => p._id === value);
+                        setSelectedPackage(pkg || null);
+                      }}
+                    >
+                      <SelectTrigger data-testid="select-package">
+                        <SelectValue placeholder="Select a package" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {packages.map((pkg) => (
+                          <SelectItem key={pkg._id} value={pkg._id}>
+                            {pkg.title} - {formatCurrency(pkg.amount)}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {selectedPackage && (
+                      <p className="text-sm text-muted-foreground">
+                        Amount: {formatCurrency(selectedPackage.amount)}
+                        {selectedPackage.duration && ` • ${selectedPackage.duration} days`}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Phone Number */}
+                {selectedUser && (
+                  <div className="space-y-2">
+                    <Label htmlFor="pay-phone">Phone Number (M-Pesa)</Label>
+                    <Input
+                      id="pay-phone"
+                      placeholder="0712345678"
+                      value={payPhone}
+                      onChange={(e) => handlePayPhoneChange(e.target.value)}
+                      data-testid="input-pay-phone"
+                    />
+                    {payPhoneError && (
+                      <p className="text-sm text-destructive">{payPhoneError}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setPaySubOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handlePaySubscription}
+                  disabled={isPaySubmitting || !selectedUser || selectedShops.length === 0 || !selectedPackage || !payPhone || !!payPhoneError}
+                  data-testid="button-submit-pay"
+                >
+                  {isPaySubmitting && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                  Pay Subscription
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Dialog open={withdrawOpen} onOpenChange={(open) => {
+            setWithdrawOpen(open);
+            if (!open) {
+              setReinitiateId(null);
+              setTransactionId(null);
+            }
+          }}>
+            <DialogTrigger asChild>
+              <Button data-testid="button-withdraw">
+                <Banknote className="h-4 w-4 mr-2" />
+                Withdraw
+              </Button>
+            </DialogTrigger>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Withdraw Funds</DialogTitle>
@@ -417,6 +754,7 @@ function RevenueContent() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

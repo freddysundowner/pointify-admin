@@ -12,6 +12,9 @@ import { registerSalesRoutes } from "./sales";
 import { registerUserRoutes } from "./users";
 import { registerRevenueRoutes } from "./revenue";
 import { registerPurchaseRoutes } from "./purchases";
+import { registerCommunicationRoutes } from "./communication";
+import { registerSettingsRoutes } from "./settings";
+import { registerTemplateRoutes } from "./templates";
 
 export function registerAllRoutes(app: Express) {
   registerAuthRoutes(app);
@@ -27,4 +30,7 @@ export function registerAllRoutes(app: Express) {
   registerUserRoutes(app);
   registerRevenueRoutes(app);
   registerPurchaseRoutes(app);
+  registerCommunicationRoutes(app);
+  registerSettingsRoutes(app);
+  registerTemplateRoutes(app);
 }

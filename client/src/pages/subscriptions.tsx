@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Search, Loader2, CreditCard, ChevronLeft, ChevronRight, X, Calendar, CheckCircle, XCircle, Clock, Store, CalendarPlus, Check } from "lucide-react";
+import { Search, Loader2, CreditCard, ChevronLeft, ChevronRight, X, Calendar, CheckCircle, XCircle, Clock, Store, CalendarPlus, Check, MoreHorizontal, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +32,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { useToast } from "@/hooks/use-toast";
 import { apiClient } from "@/lib/api";
@@ -46,11 +52,21 @@ interface SubscriptionsResponse {
   currentPage: number;
 }
 
-interface SubscriptionStats {
+interface StatsCategory {
   total: number;
-  active: number;
-  expired: number;
-  pending: number;
+  trial: number;
+  production: number;
+}
+
+interface ShopStats {
+  users: {
+    active: StatsCategory;
+    expired: StatsCategory;
+  };
+  shops: {
+    active: StatsCategory;
+    expired: StatsCategory;
+  };
 }
 
 export default function SubscriptionsPage() {
@@ -71,6 +87,8 @@ export default function SubscriptionsPage() {
   const [assignSubscription, setAssignSubscription] = useState<Subscription | null>(null);
   const [selectedShopIds, setSelectedShopIds] = useState<string[]>([]);
   const [shopSearch, setShopSearch] = useState("");
+  const [verifyMpesaSubscription, setVerifyMpesaSubscription] = useState<Subscription | null>(null);
+  const [mpesaCode, setMpesaCode] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -109,8 +127,8 @@ export default function SubscriptionsPage() {
   });
 
   const { data: stats } = useQuery({
-    queryKey: ["/subscriptions/summary/stats"],
-    queryFn: () => apiClient<SubscriptionStats>("/subscriptions/summary/stats"),
+    queryKey: ["/subscriptions/shop/stats"],
+    queryFn: () => apiClient<ShopStats>("/subscriptions/shop/stats"),
     enabled: !!user,
   });
 
@@ -160,6 +178,20 @@ export default function SubscriptionsPage() {
     },
     onError: (error: Error) => {
       toast({ title: "Failed to assign shops", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const verifyMpesaMutation = useMutation({
+    mutationFn: ({ subscriptionId, transactionCode }: { subscriptionId: string; transactionCode: string }) =>
+      apiClient(`/subscriptions/verify/${subscriptionId}`, { method: "PUT", body: { transaction_code: transactionCode } }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/subscriptions"] });
+      setVerifyMpesaSubscription(null);
+      setMpesaCode("");
+      toast({ title: "M-Pesa code verified successfully" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Failed to verify M-Pesa code", description: error.message, variant: "destructive" });
     },
   });
 
@@ -239,38 +271,38 @@ export default function SubscriptionsPage() {
         <div className="grid gap-4 md:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-              <CardTitle className="text-sm font-medium">Total</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Active Shops</CardTitle>
+              <Store className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats?.total || 0}</div>
+              <div className="text-2xl font-bold text-green-600">{stats?.shops?.active?.total || 0}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-              <CardTitle className="text-sm font-medium">Active</CardTitle>
+              <CardTitle className="text-sm font-medium">Expired Shops</CardTitle>
+              <Store className="h-4 w-4 text-destructive" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-destructive">{stats?.shops?.expired?.total || 0}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
+              <CardTitle className="text-sm font-medium">Active Users</CardTitle>
               <CheckCircle className="h-4 w-4 text-green-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats?.active || 0}</div>
+              <div className="text-2xl font-bold text-green-600">{stats?.users?.active?.total || 0}</div>
             </CardContent>
           </Card>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-              <CardTitle className="text-sm font-medium">Expired</CardTitle>
+              <CardTitle className="text-sm font-medium">Expired Users</CardTitle>
               <XCircle className="h-4 w-4 text-destructive" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-destructive">{stats?.expired || 0}</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between gap-2 pb-2">
-              <CardTitle className="text-sm font-medium">Pending</CardTitle>
-              <Clock className="h-4 w-4 text-amber-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-amber-600">{stats?.pending || 0}</div>
+              <div className="text-2xl font-bold text-destructive">{stats?.users?.expired?.total || 0}</div>
             </CardContent>
           </Card>
         </div>
@@ -382,26 +414,27 @@ export default function SubscriptionsPage() {
                         <TableCell className="text-muted-foreground text-sm">{formatDate(subscription.endDate)}</TableCell>
                         <TableCell>{getStatusBadge(subscription)}</TableCell>
                         <TableCell className="text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setAssignSubscription(subscription)}
-                              data-testid={`button-assign-${subscription._id}`}
-                            >
-                              <Store className="h-4 w-4 mr-1" />
-                              Assign
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleOpenExtendDialog(subscription)}
-                              data-testid={`button-extend-${subscription._id}`}
-                            >
-                              <CalendarPlus className="h-4 w-4 mr-1" />
-                              Extend
-                            </Button>
-                          </div>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" data-testid={`button-actions-${subscription._id}`}>
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => setAssignSubscription(subscription)}>
+                                <Store className="h-4 w-4 mr-2" />
+                                Assign Shops
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleOpenExtendDialog(subscription)}>
+                                <CalendarPlus className="h-4 w-4 mr-2" />
+                                Extend Subscription
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setVerifyMpesaSubscription(subscription)}>
+                                <Phone className="h-4 w-4 mr-2" />
+                                Verify M-Pesa Code
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -592,6 +625,53 @@ export default function SubscriptionsPage() {
                 <Store className="h-4 w-4 mr-2" />
               )}
               Assign {selectedShopIds.length > 0 ? `(${selectedShopIds.length})` : ""}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!verifyMpesaSubscription} onOpenChange={(open) => {
+        if (!open) {
+          setVerifyMpesaSubscription(null);
+          setMpesaCode("");
+        }
+      }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Verify M-Pesa Code</DialogTitle>
+            <DialogDescription>
+              Enter the M-Pesa transaction code to verify payment for this subscription.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <p className="text-sm text-muted-foreground">
+              Verifying payment for "{verifyMpesaSubscription && getShopName(verifyMpesaSubscription)}"
+            </p>
+            <div className="space-y-2">
+              <Label>M-Pesa Transaction Code</Label>
+              <Input
+                placeholder="e.g. SLH4XYZ123"
+                value={mpesaCode}
+                onChange={(e) => setMpesaCode(e.target.value.toUpperCase())}
+                data-testid="input-mpesa-code"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setVerifyMpesaSubscription(null); setMpesaCode(""); }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => verifyMpesaSubscription && mpesaCode && verifyMpesaMutation.mutate({ subscriptionId: verifyMpesaSubscription._id, transactionCode: mpesaCode })}
+              disabled={!mpesaCode || verifyMpesaMutation.isPending}
+              data-testid="button-confirm-verify"
+            >
+              {verifyMpesaMutation.isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Phone className="h-4 w-4 mr-2" />
+              )}
+              Verify
             </Button>
           </DialogFooter>
         </DialogContent>

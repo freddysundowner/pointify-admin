@@ -76,6 +76,8 @@ export default function ShopsPage() {
   const [ownerIdDebounced, setOwnerIdDebounced] = useState("");
   const [affiliateName, setAffiliateName] = useState("");
   const [affiliateNameDebounced, setAffiliateNameDebounced] = useState("");
+  const [subscriptionStatus, setSubscriptionStatus] = useState("");
+  const [subscriptionType, setSubscriptionType] = useState("");
   const [page, setPage] = useState(1);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editShop, setEditShop] = useState<Shop | null>(null);
@@ -131,11 +133,13 @@ export default function ShopsPage() {
     if (searchDebounced) params.set("name", searchDebounced);
     if (ownerIdDebounced) params.set("ownerid", ownerIdDebounced);
     if (affiliateNameDebounced) params.set("affliatename", affiliateNameDebounced);
+    if (subscriptionStatus) params.set("subscriptionStatus", subscriptionStatus);
+    if (subscriptionType) params.set("subscriptionType", subscriptionType);
     return params.toString();
   };
 
   const { data: shopsData, isLoading } = useQuery({
-    queryKey: ["/shops", page, searchDebounced, ownerIdDebounced, affiliateNameDebounced],
+    queryKey: ["/shops", page, searchDebounced, ownerIdDebounced, affiliateNameDebounced, subscriptionStatus, subscriptionType],
     queryFn: () => apiClient<ShopsResponse>(`/shops?${buildQueryString()}`),
     enabled: !!user,
     staleTime: 0,
@@ -287,7 +291,39 @@ export default function ShopsPage() {
                 className="w-36"
                 data-testid="input-filter-affiliate"
               />
-              {(search || ownerId || affiliateName) && (
+              <Select
+                value={subscriptionStatus}
+                onValueChange={(value) => {
+                  setSubscriptionStatus(value === "all" ? "" : value);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger className="w-40" data-testid="select-subscription-status">
+                  <SelectValue placeholder="Subscription Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="expired">Expired</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
+                value={subscriptionType}
+                onValueChange={(value) => {
+                  setSubscriptionType(value === "all" ? "" : value);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger className="w-40" data-testid="select-subscription-type">
+                  <SelectValue placeholder="Subscription Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="trial">Trial</SelectItem>
+                  <SelectItem value="production">Production</SelectItem>
+                </SelectContent>
+              </Select>
+              {(search || ownerId || affiliateName || subscriptionStatus || subscriptionType) && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -295,6 +331,8 @@ export default function ShopsPage() {
                     setSearch("");
                     setOwnerId("");
                     setAffiliateName("");
+                    setSubscriptionStatus("");
+                    setSubscriptionType("");
                   }}
                   data-testid="button-clear-filters"
                 >
@@ -345,7 +383,7 @@ export default function ShopsPage() {
                           </div>
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">
-                          {shop.contact || "-"}
+                          {shop.contact || (shop.adminId as any)?.phone || "-"}
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">
                           {shop.currency || "KES"}

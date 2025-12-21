@@ -1,18 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
-import { Package, AlertTriangle, XCircle, FolderTree } from "lucide-react";
+import { Store, Users, XCircle, AlertTriangle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { apiClient } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
-import type { DashboardStats, Product } from "@shared/schema";
 
-interface ProductsResponse {
-  data: Product[];
-  count: number;
-  totalPages: number;
-  currentPage: number;
+interface StatsCategory {
+  total: number;
+  trial: number;
+  production: number;
 }
+
+interface ShopStats {
+  users: {
+    active: StatsCategory;
+    expired: StatsCategory;
+  };
+  shops: {
+    active: StatsCategory;
+    expired: StatsCategory;
+  };
+}
+
 
 function StatCard({
   title,
@@ -67,21 +77,11 @@ function StatCardSkeleton() {
 export default function DashboardPage() {
   const { user } = useAuth();
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
-    queryKey: ["/dashboard/stats"],
-    queryFn: () => apiClient<DashboardStats>("/dashboard/stats"),
+  const { data: shopStats, isLoading } = useQuery({
+    queryKey: ["/subscriptions/shop/stats"],
+    queryFn: () => apiClient<ShopStats>("/subscriptions/shop/stats"),
     enabled: !!user,
   });
-
-  const { data: productsData, isLoading: productsLoading } = useQuery({
-    queryKey: ["/products", "recent"],
-    queryFn: () => apiClient<ProductsResponse | Product[]>("/products?limit=5"),
-    enabled: !!user,
-  });
-
-  // Handle both array and paginated response formats
-  const products = Array.isArray(productsData) ? productsData : productsData?.data || [];
-  const isLoading = statsLoading;
 
   return (
     <DashboardLayout title="Dashboard">
@@ -91,7 +91,7 @@ export default function DashboardPage() {
             Welcome back, {user?.username || "Admin"}
           </h2>
           <p className="text-sm text-muted-foreground">
-            Here's an overview of your store's inventory
+            Here's an overview of your shop statistics
           </p>
         </div>
 
@@ -106,63 +106,127 @@ export default function DashboardPage() {
           ) : (
             <>
               <StatCard
-                title="Total Products"
-                value={stats?.totalProducts || 0}
-                icon={Package}
+                title="Active Users"
+                value={shopStats?.users?.active?.total || 0}
+                icon={Users}
               />
               <StatCard
-                title="Low Stock"
-                value={stats?.lowStockProducts || 0}
-                icon={AlertTriangle}
-                variant="warning"
-              />
-              <StatCard
-                title="Out of Stock"
-                value={stats?.outOfStockProducts || 0}
-                icon={XCircle}
+                title="Expired Users"
+                value={shopStats?.users?.expired?.total || 0}
+                icon={Users}
                 variant="danger"
               />
               <StatCard
-                title="Categories"
-                value={stats?.totalCategories || 0}
-                icon={FolderTree}
+                title="Active Shops"
+                value={shopStats?.shops?.active?.total || 0}
+                icon={Store}
+              />
+              <StatCard
+                title="Expired Shops"
+                value={shopStats?.shops?.expired?.total || 0}
+                icon={Store}
+                variant="danger"
               />
             </>
           )}
         </div>
 
-        {!productsLoading && products.length > 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">Recent Products</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {products.slice(0, 5).map((product) => (
-                  <div
-                    key={product._id}
-                    className="flex items-center justify-between py-2 border-b last:border-0"
-                    data-testid={`product-item-${product._id}`}
-                  >
-                    <div>
-                      <p className="font-medium text-sm">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {product.barcode}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-sm">
-                        {product.sellingPrice?.toLocaleString()}
-                      </p>
-                      <p className={`text-xs ${product.quantity <= 0 ? "text-red-600" : product.quantity <= product.reorderLevel ? "text-amber-600" : "text-muted-foreground"}`}>
-                        {product.quantity} in stock
-                      </p>
+        {shopStats && (
+          <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Users Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium text-muted-foreground">Active</p>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Total</span>
+                        <span className="font-bold text-green-600">{shopStats.users?.active?.total || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Subscribed</span>
+                        <span className="font-medium">{shopStats.users?.active?.production || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Trial</span>
+                        <span className="font-medium text-amber-600">{shopStats.users?.active?.trial || 0}</span>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium text-muted-foreground">Expired</p>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Total</span>
+                        <span className="font-bold text-red-600">{shopStats.users?.expired?.total || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Subscribed</span>
+                        <span className="font-medium">{shopStats.users?.expired?.production || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Trial</span>
+                        <span className="font-medium">{shopStats.users?.expired?.trial || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Store className="h-4 w-4" />
+                  Shops Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium text-muted-foreground">Active</p>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Total</span>
+                        <span className="font-bold text-green-600">{shopStats.shops?.active?.total || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Subscribed</span>
+                        <span className="font-medium">{shopStats.shops?.active?.production || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Trial</span>
+                        <span className="font-medium text-amber-600">{shopStats.shops?.active?.trial || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium text-muted-foreground">Expired</p>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Total</span>
+                        <span className="font-bold text-red-600">{shopStats.shops?.expired?.total || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Subscribed</span>
+                        <span className="font-medium">{shopStats.shops?.expired?.production || 0}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Trial</span>
+                        <span className="font-medium">{shopStats.shops?.expired?.trial || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
     </DashboardLayout>
