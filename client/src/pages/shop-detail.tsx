@@ -1,7 +1,7 @@
 import { useState, Fragment, useRef, useEffect } from "react";
 import { useRoute } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { ArrowLeft, Mail, MessageSquare, Send, Loader2, Store, Calendar, MapPin, Phone, CreditCard, ChevronLeft, ChevronRight, CalendarPlus, ChevronDown, ChevronUp, FileText, Upload, Package, Search, Receipt, Eye, RotateCcw } from "lucide-react";
+import { ArrowLeft, Mail, MessageSquare, Send, Loader2, Store, Calendar, MapPin, Phone, CreditCard, ChevronLeft, ChevronRight, CalendarPlus, ChevronDown, ChevronUp, FileText, Upload, Package, Search, Receipt, Eye, RotateCcw, Users, Trash2, Pencil, Key } from "lucide-react";
 import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -201,6 +201,7 @@ export default function ShopDetailPage() {
     fromDate: "",
     toDate: "",
   });
+  const [attendantsPage, setAttendantsPage] = useState(1);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -268,6 +269,144 @@ export default function ShopDetailPage() {
   const communications = communicationsData?.data || [];
   const communicationsCount = communicationsData?.total || communicationsData?.count || 0;
   const communicationsTotalPages = communicationsData?.totalPages || communicationsData?.pages || Math.ceil(communicationsCount / 10) || 1;
+
+  const { data: attendantsData, isLoading: isLoadingAttendants } = useQuery({
+    queryKey: ["/attendants/shop/filter", shopId, attendantsPage],
+    queryFn: () => apiClient<any>(`/attendants/shop/filter?shopId=${shopId}&page=${attendantsPage}&limit=10`),
+    enabled: !!user && !!shopId,
+  });
+
+  const attendants = attendantsData?.data || [];
+  const attendantsCount = attendantsData?.count || attendantsData?.total || 0;
+  const attendantsTotalPages = attendantsData?.totalPages || Math.ceil(attendantsCount / 10) || 1;
+
+  const [editAttendantDialog, setEditAttendantDialog] = useState<{ open: boolean; attendant: any | null }>({ open: false, attendant: null });
+  const [editAttendantForm, setEditAttendantForm] = useState({ username: "", email: "", phone: "" });
+  const [resetPasswordDialog, setResetPasswordDialog] = useState<{ open: boolean; attendant: any | null }>({ open: false, attendant: null });
+  const [resetPasswordForm, setResetPasswordForm] = useState({ password: "", phone: "" });
+  const [deleteAttendantDialog, setDeleteAttendantDialog] = useState<{ open: boolean; attendant: any | null }>({ open: false, attendant: null });
+
+  const updateAttendantMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: { username: string; shopId: string; email: string; phone: string } }) => {
+      return apiClient(`/attendants/${id}`, {
+        method: "PUT",
+        body: data,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Attendant updated",
+        description: "The attendant has been updated successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/attendants/shop/filter", shopId] });
+      setEditAttendantDialog({ open: false, attendant: null });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to update attendant",
+        description: error.message || "An error occurred.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteAttendantMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiClient(`/attendants/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Attendant deleted",
+        description: "The attendant has been deleted successfully.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/attendants/shop/filter", shopId] });
+      setDeleteAttendantDialog({ open: false, attendant: null });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to delete attendant",
+        description: error.message || "An error occurred.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: { id: string; password: string; phone: string } }) => {
+      return apiClient(`/attendants/reset/password/sms/${id}`, {
+        method: "PUT",
+        body: data,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Password reset",
+        description: "The password has been reset and sent via SMS.",
+      });
+      setResetPasswordDialog({ open: false, attendant: null });
+      setResetPasswordForm({ password: "", phone: "" });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to reset password",
+        description: error.message || "An error occurred.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleOpenEditAttendant = (attendant: any) => {
+    setEditAttendantForm({
+      username: attendant.username || "",
+      email: attendant.email || "",
+      phone: attendant.phone || "",
+    });
+    setEditAttendantDialog({ open: true, attendant });
+  };
+
+  const handleUpdateAttendant = () => {
+    if (editAttendantDialog.attendant?._id) {
+      updateAttendantMutation.mutate({
+        id: editAttendantDialog.attendant._id,
+        data: {
+          username: editAttendantForm.username,
+          shopId: shopId || "",
+          email: editAttendantForm.email,
+          phone: editAttendantForm.phone,
+        },
+      });
+    }
+  };
+
+  const handleOpenResetPassword = (attendant: any) => {
+    setResetPasswordForm({
+      password: "",
+      phone: attendant.phone || "",
+    });
+    setResetPasswordDialog({ open: true, attendant });
+  };
+
+  const handleResetPassword = () => {
+    if (resetPasswordDialog.attendant?._id) {
+      resetPasswordMutation.mutate({
+        id: resetPasswordDialog.attendant._id,
+        data: {
+          id: resetPasswordDialog.attendant._id,
+          password: resetPasswordForm.password,
+          phone: resetPasswordForm.phone,
+        },
+      });
+    }
+  };
+
+  const handleDeleteAttendant = () => {
+    if (deleteAttendantDialog.attendant?._id) {
+      deleteAttendantMutation.mutate(deleteAttendantDialog.attendant._id);
+    }
+  };
+
   const [resendingId, setResendingId] = useState<string | null>(null);
   const [viewCommunication, setViewCommunication] = useState<any | null>(null);
   const [resendDialog, setResendDialog] = useState<{ open: boolean; comm: any | null; recipient: string }>({ open: false, comm: null, recipient: "" });
@@ -673,6 +812,7 @@ export default function ShopDetailPage() {
             <TabsTrigger value="products" data-testid="tab-products">Products</TabsTrigger>
             <TabsTrigger value="sales" data-testid="tab-sales">Sales</TabsTrigger>
             <TabsTrigger value="communication" data-testid="tab-communication">Communication</TabsTrigger>
+            <TabsTrigger value="attendants" data-testid="tab-attendants">Attendants</TabsTrigger>
           </TabsList>
 
           <TabsContent value="subscriptions">
@@ -1255,7 +1395,239 @@ export default function ShopDetailPage() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          <TabsContent value="attendants">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Attendants</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoadingAttendants ? (
+                  <div className="space-y-3">
+                    {[...Array(3)].map((_, i) => (
+                      <Skeleton key={i} className="h-10 w-full" />
+                    ))}
+                  </div>
+                ) : attendants.length > 0 ? (
+                  <div className="space-y-4">
+                    <div className="rounded-md border">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Username</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Phone</TableHead>
+                            <TableHead>Role</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {attendants.map((attendant: any) => (
+                            <TableRow key={attendant._id} data-testid={`row-attendant-${attendant._id}`}>
+                              <TableCell className="font-medium">{attendant.username || "-"}</TableCell>
+                              <TableCell>{attendant.email || "-"}</TableCell>
+                              <TableCell>{attendant.phone || "-"}</TableCell>
+                              <TableCell>
+                                <Badge variant="secondary">{attendant.role || "attendant"}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={attendant.isActive ? "default" : "secondary"}>
+                                  {attendant.isActive ? "Active" : "Inactive"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleOpenEditAttendant(attendant)}
+                                    title="Edit"
+                                    data-testid={`button-edit-attendant-${attendant._id}`}
+                                  >
+                                    <Pencil className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => handleOpenResetPassword(attendant)}
+                                    title="Reset Password"
+                                    data-testid={`button-reset-password-${attendant._id}`}
+                                  >
+                                    <Key className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => setDeleteAttendantDialog({ open: true, attendant })}
+                                    title="Delete"
+                                    className="text-destructive hover:text-destructive"
+                                    data-testid={`button-delete-attendant-${attendant._id}`}
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    {attendantsTotalPages > 1 && (
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">
+                          Showing {attendants.length} of {attendantsCount} attendants
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={attendantsPage === 1}
+                            onClick={() => setAttendantsPage((p) => Math.max(1, p - 1))}
+                            data-testid="button-attendants-prev"
+                          >
+                            <ChevronLeft className="h-4 w-4" />
+                            Previous
+                          </Button>
+                          <span className="text-sm text-muted-foreground">
+                            Page {attendantsPage} of {attendantsTotalPages}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={attendantsPage >= attendantsTotalPages}
+                            onClick={() => setAttendantsPage((p) => p + 1)}
+                            data-testid="button-attendants-next"
+                          >
+                            Next
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p>No attendants found for this shop</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
+
+        <Dialog open={editAttendantDialog.open} onOpenChange={(open) => !open && setEditAttendantDialog({ open: false, attendant: null })}>
+          <DialogContent data-testid="dialog-edit-attendant">
+            <DialogHeader>
+              <DialogTitle>Edit Attendant</DialogTitle>
+              <DialogDescription>Update attendant information</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-username">Username</Label>
+                <Input
+                  id="edit-username"
+                  value={editAttendantForm.username}
+                  onChange={(e) => setEditAttendantForm((prev) => ({ ...prev, username: e.target.value }))}
+                  placeholder="Enter username"
+                  data-testid="input-edit-username"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={editAttendantForm.email}
+                  onChange={(e) => setEditAttendantForm((prev) => ({ ...prev, email: e.target.value }))}
+                  placeholder="Enter email"
+                  data-testid="input-edit-email"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-phone">Phone</Label>
+                <Input
+                  id="edit-phone"
+                  value={editAttendantForm.phone}
+                  onChange={(e) => setEditAttendantForm((prev) => ({ ...prev, phone: e.target.value }))}
+                  placeholder="Enter phone number"
+                  data-testid="input-edit-phone"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditAttendantDialog({ open: false, attendant: null })}>
+                Cancel
+              </Button>
+              <Button onClick={handleUpdateAttendant} disabled={updateAttendantMutation.isPending} data-testid="button-save-attendant">
+                {updateAttendantMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={resetPasswordDialog.open} onOpenChange={(open) => !open && setResetPasswordDialog({ open: false, attendant: null })}>
+          <DialogContent data-testid="dialog-reset-password">
+            <DialogHeader>
+              <DialogTitle>Reset Password</DialogTitle>
+              <DialogDescription>Reset password and send via SMS</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="reset-password">New Password</Label>
+                <Input
+                  id="reset-password"
+                  type="password"
+                  value={resetPasswordForm.password}
+                  onChange={(e) => setResetPasswordForm((prev) => ({ ...prev, password: e.target.value }))}
+                  placeholder="Enter new password"
+                  data-testid="input-reset-password"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="reset-phone">Phone Number</Label>
+                <Input
+                  id="reset-phone"
+                  value={resetPasswordForm.phone}
+                  onChange={(e) => setResetPasswordForm((prev) => ({ ...prev, phone: e.target.value }))}
+                  placeholder="Enter phone number for SMS"
+                  data-testid="input-reset-phone"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setResetPasswordDialog({ open: false, attendant: null })}>
+                Cancel
+              </Button>
+              <Button onClick={handleResetPassword} disabled={resetPasswordMutation.isPending} data-testid="button-confirm-reset-password">
+                {resetPasswordMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Reset Password
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={deleteAttendantDialog.open} onOpenChange={(open) => !open && setDeleteAttendantDialog({ open: false, attendant: null })}>
+          <DialogContent data-testid="dialog-delete-attendant">
+            <DialogHeader>
+              <DialogTitle>Delete Attendant</DialogTitle>
+              <DialogDescription>
+                Are you sure you want to delete {deleteAttendantDialog.attendant?.username || "this attendant"}? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDeleteAttendantDialog({ open: false, attendant: null })}>
+                Cancel
+              </Button>
+              <Button variant="destructive" onClick={handleDeleteAttendant} disabled={deleteAttendantMutation.isPending} data-testid="button-confirm-delete-attendant">
+                {deleteAttendantMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <Dialog open={!!viewSale} onOpenChange={() => setViewSale(null)}>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="dialog-sale-details">

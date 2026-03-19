@@ -1,8 +1,14 @@
 import type { Express, Request, Response } from "express";
 import { getSession, apiRequest } from "./utils";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
+const API_BASE_URL = "https://sandbox.pointifypos.com";
 
 const SMS_SETTING_NAME = "SMS_CONFIG";
 const EMAIL_SETTING_NAME = "EMAIL_CONFIG";
+const PERMISSIONS_SETTING_NAME = "ATTENDANT_PERMISSIONS";
+const THEME_SETTING_NAME = "theme";
 
 export function registerSettingsRoutes(app: Express) {
   // Get SMS settings
@@ -238,6 +244,150 @@ export function registerSettingsRoutes(app: Express) {
       }
     } catch (error: any) {
       console.error("Error fetching raw email settings:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get Theme settings
+  app.get("/api/settings/theme", async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const themeConfig = await apiRequest<any>(`/themes`, {
+        token: session.token,
+      });
+      
+      console.log("[API] Theme settings response:", JSON.stringify(themeConfig));
+      
+      res.json(themeConfig || {});
+    } catch (error: any) {
+      console.error("Error fetching theme settings:", error);
+      res.json({});
+    }
+  });
+
+  // Save Theme settings (JSON only, no file)
+  app.post("/api/settings/theme", async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const themeData = req.body;
+
+      await apiRequest(`/themes`, {
+        method: "POST",
+        token: session.token,
+        body: themeData,
+      });
+
+      res.json({ message: "Theme settings saved successfully" });
+    } catch (error: any) {
+      console.error("Error saving theme settings:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Save Theme settings with file upload
+  app.post("/api/settings/theme/upload", upload.single("image"), async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const formData = new FormData();
+      
+      // Add all text fields
+      Object.keys(req.body).forEach(key => {
+        formData.append(key, req.body[key]);
+      });
+
+      // Add image file if present
+      if (req.file) {
+        const blob = new Blob([req.file.buffer], { type: req.file.mimetype });
+        formData.append("image", blob, req.file.originalname);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/themes`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${session.token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to save theme");
+      }
+
+      const result = await response.json();
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error saving theme with upload:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get Permissions settings
+  app.get("/api/settings/permissions", async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const permissionsConfig = await apiRequest<any>(`/settings?type=${PERMISSIONS_SETTING_NAME}`, {
+        token: session.token,
+      });
+      
+      const settings = permissionsConfig?.setting || permissionsConfig;
+      
+      if (settings?.permissions && Array.isArray(settings.permissions)) {
+        res.json({ permissions: settings.permissions });
+      } else {
+        res.json({ permissions: [] });
+      }
+    } catch (error: any) {
+      console.error("Error fetching permissions settings:", error);
+      res.json({ permissions: [] });
+    }
+  });
+
+  // Save Permissions settings
+  app.post("/api/settings/permissions", async (req: Request, res: Response) => {
+    try {
+      const session = getSession(req);
+      if (!session) {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const { permissions } = req.body;
+
+      if (!Array.isArray(permissions)) {
+        return res.status(400).json({ error: "Permissions must be an array" });
+      }
+
+      await apiRequest(`/settings`, {
+        method: "POST",
+        token: session.token,
+        body: {
+          name: PERMISSIONS_SETTING_NAME,
+          sync: false,
+          setting: {
+            permissions: permissions,
+          },
+        },
+      });
+
+      res.json({ message: "Permissions saved successfully" });
+    } catch (error: any) {
+      console.error("Error saving permissions:", error);
       res.status(500).json({ error: error.message });
     }
   });

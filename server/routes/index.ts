@@ -15,6 +15,7 @@ import { registerPurchaseRoutes } from "./purchases";
 import { registerCommunicationRoutes } from "./communication";
 import { registerSettingsRoutes } from "./settings";
 import { registerTemplateRoutes } from "./templates";
+import { registerAttendantRoutes } from "./attendants";
 
 export function registerAllRoutes(app: Express) {
   registerAuthRoutes(app);
@@ -33,4 +34,5 @@ export function registerAllRoutes(app: Express) {
   registerCommunicationRoutes(app);
   registerSettingsRoutes(app);
   registerTemplateRoutes(app);
+  registerAttendantRoutes(app);
 }
