@@ -70,6 +70,7 @@ const packageSchema = z.object({
   amountusd: z.coerce.number().min(0, "USD amount must be 0 or more"),
   newAmount: z.coerce.number().min(0).optional(),
   newAmountusd: z.coerce.number().min(0).optional(),
+  newMaxShops: z.coerce.number().min(0).optional(),
   discount: z.coerce.number().min(0).max(100).optional(),
   type: z.enum(["trial", "production"]),
   status: z.boolean(),
@@ -115,6 +116,7 @@ function EditPackageDialog({
       amountusd: pkg.amountusd,
       newAmount: pkg.newAmount ?? 0,
       newAmountusd: pkg.newAmountusd ?? 0,
+      newMaxShops: pkg.newMaxShops ?? undefined,
       discount: pkg.discount ?? undefined,
       type: pkg.type,
       status: pkg.status,
@@ -288,8 +290,8 @@ function EditPackageDialog({
               />
             </div>
 
-            {/* New Amounts */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* New Amounts + New Max Shops */}
+            <div className="grid grid-cols-3 gap-4">
               <FormField
                 control={form.control}
                 name="newAmount"
@@ -322,6 +324,26 @@ function EditPackageDialog({
                         min={0}
                         step="0.01"
                         data-testid="input-new-amountusd"
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="newMaxShops"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Max Shops</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        placeholder="Unlimited"
+                        data-testid="input-new-maxshops"
                         {...field}
                         value={field.value ?? ""}
                       />

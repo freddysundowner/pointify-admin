@@ -68,6 +68,7 @@ export interface Package {
   amountusd: number;
   newAmount?: number;
   newAmountusd?: number;
+  newMaxShops?: number;
   discount?: number;
   status: boolean;
   order?: number;
