@@ -71,6 +71,8 @@ const packageSchema = z.object({
   newAmount: z.coerce.number().min(0).optional(),
   newAmountusd: z.coerce.number().min(0).optional(),
   newMaxShops: z.coerce.number().min(0).optional(),
+  newDurationValue: z.coerce.number().min(0).optional(),
+  newDurationUnit: z.enum(["days", "weeks", "months", "years"]).optional(),
   discount: z.coerce.number().min(0).max(100).optional(),
   type: z.enum(["trial", "production"]),
   status: z.boolean(),
@@ -118,6 +120,8 @@ function EditPackageDialog({
       newAmount: pkg.newAmount ?? 0,
       newAmountusd: pkg.newAmountusd ?? 0,
       newMaxShops: pkg.newMaxShops ?? undefined,
+      newDurationValue: pkg.newDurationValue ?? undefined,
+      newDurationUnit: pkg.newDurationUnit ?? undefined,
       discount: pkg.discount ?? undefined,
       type: pkg.type,
       status: pkg.status,
@@ -235,6 +239,53 @@ function EditPackageDialog({
                       <FormControl>
                         <SelectTrigger data-testid="select-duration-unit">
                           <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="days">Days</SelectItem>
+                        <SelectItem value="weeks">Weeks</SelectItem>
+                        <SelectItem value="months">Months</SelectItem>
+                        <SelectItem value="years">Years</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* New Duration */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="newDurationValue"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Duration</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        placeholder="e.g. 30"
+                        data-testid="input-new-duration-value"
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="newDurationUnit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Duration Unit</FormLabel>
+                    <Select value={field.value ?? ""} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger data-testid="select-new-duration-unit">
+                          <SelectValue placeholder="Select unit" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

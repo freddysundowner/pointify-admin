@@ -69,6 +69,8 @@ export interface Package {
   newAmount?: number;
   newAmountusd?: number;
   newMaxShops?: number;
+  newDurationValue?: number;
+  newDurationUnit?: "days" | "weeks" | "months" | "years";
   discount?: number;
   status: boolean;
   sync?: boolean;
