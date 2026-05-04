@@ -13,13 +13,12 @@ export function registerPackageRoutes(app: Express) {
       const endpoint = queryString ? `/packages/?${queryString}` : "/packages";
       const result = await apiRequest(endpoint, { token: session.token });
       
-      if (Array.isArray(result)) {
-        res.json(result);
-      } else if (result.data) {
-        res.json(result.data);
-      } else {
-        res.json([]);
+      const data = Array.isArray(result) ? result : result.data ?? [];
+      if (data.length > 0) {
+        const fs = await import("fs");
+        fs.writeFileSync("/tmp/package_sample.json", JSON.stringify(data[0], null, 2));
       }
+      res.json(data);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
     }
