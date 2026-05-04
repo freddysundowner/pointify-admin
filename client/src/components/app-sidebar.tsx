@@ -14,6 +14,7 @@ import {
   Send,
   FileText,
   Settings,
+  BoxesIcon,
 } from "lucide-react";
 import {
   Sidebar,
@@ -39,6 +40,7 @@ const menuItems = [
   { title: "Sales", url: "/sales", icon: Receipt },
   { title: "Purchases", url: "/purchases", icon: ShoppingCart },
   { title: "Users", url: "/users", icon: Users },
+  { title: "Packages", url: "/packages", icon: BoxesIcon },
   { title: "Subscriptions", url: "/subscriptions", icon: CreditCard },
   { title: "Revenue", url: "/revenue", icon: TrendingUp },
   { title: "Bulk Messages", url: "/bulk-communication", icon: Send },

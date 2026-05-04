@@ -19,6 +19,7 @@ import PurchasesPage from "@/pages/purchases";
 import BulkCommunicationPage from "@/pages/bulk-communication";
 import TemplatesPage from "@/pages/templates";
 import SettingsPage from "@/pages/settings";
+import PackagesPage from "@/pages/packages";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -98,6 +99,9 @@ function Router() {
       </Route>
       <Route path="/templates">
         <ProtectedRoute component={TemplatesPage} />
+      </Route>
+      <Route path="/packages">
+        <ProtectedRoute component={PackagesPage} />
       </Route>
       <Route path="/settings">
         <ProtectedRoute component={SettingsPage} />

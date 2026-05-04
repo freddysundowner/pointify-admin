@@ -9,7 +9,9 @@ export function registerPackageRoutes(app: Express) {
         return res.status(401).json({ error: "Not authenticated" });
       }
 
-      const result = await apiRequest("/packages", { token: session.token });
+      const queryString = new URLSearchParams(req.query as Record<string, string>).toString();
+      const endpoint = queryString ? `/packages/?${queryString}` : "/packages";
+      const result = await apiRequest(endpoint, { token: session.token });
       
       if (Array.isArray(result)) {
         res.json(result);
