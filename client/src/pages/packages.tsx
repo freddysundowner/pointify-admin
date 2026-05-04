@@ -68,6 +68,7 @@ const packageSchema = z.object({
   durationUnit: z.enum(["days", "weeks", "months", "years"]),
   amount: z.coerce.number().min(0, "Amount must be 0 or more"),
   amountusd: z.coerce.number().min(0, "USD amount must be 0 or more"),
+  newTitle: z.string().optional(),
   newAmount: z.coerce.number().min(0).optional(),
   newAmountusd: z.coerce.number().min(0).optional(),
   newMaxShops: z.coerce.number().min(0).optional(),
@@ -117,6 +118,7 @@ function EditPackageDialog({
       durationUnit: pkg.durationUnit,
       amount: pkg.amount,
       amountusd: pkg.amountusd,
+      newTitle: pkg.newTitle ?? "",
       newAmount: pkg.newAmount ?? 0,
       newAmountusd: pkg.newAmountusd ?? 0,
       newMaxShops: pkg.newMaxShops ?? undefined,
@@ -183,6 +185,26 @@ function EditPackageDialog({
                   <FormLabel>Title</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g. Basic Plan" data-testid="input-title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* New Title */}
+            <FormField
+              control={form.control}
+              name="newTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>New Title</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="e.g. Updated Plan Name"
+                      data-testid="input-new-title"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

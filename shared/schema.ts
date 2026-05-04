@@ -66,6 +66,7 @@ export interface Package {
   durationUnit: "days" | "weeks" | "months" | "years";
   amount: number;
   amountusd: number;
+  newTitle?: string;
   newAmount?: number;
   newAmountusd?: number;
   newMaxShops?: number;
