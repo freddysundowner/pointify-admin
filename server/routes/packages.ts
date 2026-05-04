@@ -14,10 +14,6 @@ export function registerPackageRoutes(app: Express) {
       const result = await apiRequest(endpoint, { token: session.token });
       
       const data = Array.isArray(result) ? result : result.data ?? [];
-      if (data.length > 0) {
-        const fs = await import("fs");
-        fs.writeFileSync("/tmp/package_sample.json", JSON.stringify(data[0], null, 2));
-      }
       res.json(data);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });

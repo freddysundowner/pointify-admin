@@ -68,6 +68,8 @@ const packageSchema = z.object({
   durationUnit: z.enum(["days", "weeks", "months", "years"]),
   amount: z.coerce.number().min(0, "Amount must be 0 or more"),
   amountusd: z.coerce.number().min(0, "USD amount must be 0 or more"),
+  newAmount: z.coerce.number().min(0).optional(),
+  newAmountusd: z.coerce.number().min(0).optional(),
   discount: z.coerce.number().min(0).max(100).optional(),
   type: z.enum(["trial", "production"]),
   status: z.boolean(),
@@ -111,6 +113,8 @@ function EditPackageDialog({
       durationUnit: pkg.durationUnit,
       amount: pkg.amount,
       amountusd: pkg.amountusd,
+      newAmount: pkg.newAmount ?? 0,
+      newAmountusd: pkg.newAmountusd ?? 0,
       discount: pkg.discount ?? undefined,
       type: pkg.type,
       status: pkg.status,
@@ -276,6 +280,50 @@ function EditPackageDialog({
                         step="0.01"
                         data-testid="input-amountusd"
                         {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* New Amounts */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="newAmount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Amount (KES)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        data-testid="input-new-amount"
+                        {...field}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="newAmountusd"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Amount (USD)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        min={0}
+                        step="0.01"
+                        data-testid="input-new-amountusd"
+                        {...field}
+                        value={field.value ?? ""}
                       />
                     </FormControl>
                     <FormMessage />
