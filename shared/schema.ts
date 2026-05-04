@@ -71,6 +71,7 @@ export interface Package {
   newMaxShops?: number;
   discount?: number;
   status: boolean;
+  sync?: boolean;
   order?: number;
   type: "trial" | "production";
   features?: string[];

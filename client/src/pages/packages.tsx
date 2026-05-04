@@ -74,6 +74,7 @@ const packageSchema = z.object({
   discount: z.coerce.number().min(0).max(100).optional(),
   type: z.enum(["trial", "production"]),
   status: z.boolean(),
+  sync: z.boolean().optional(),
   order: z.coerce.number().optional(),
   maxShops: z.coerce.number().optional(),
   features: z.array(z.string()),
@@ -120,6 +121,7 @@ function EditPackageDialog({
       discount: pkg.discount ?? undefined,
       type: pkg.type,
       status: pkg.status,
+      sync: pkg.sync ?? false,
       order: pkg.order ?? undefined,
       maxShops: pkg.maxShops ?? undefined,
       features: pkg.features ?? [],
@@ -444,28 +446,51 @@ function EditPackageDialog({
               />
             </div>
 
-            {/* Status */}
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem className="flex items-center justify-between rounded-lg border p-3">
-                  <div>
-                    <FormLabel className="text-sm font-medium">Active</FormLabel>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Make this package visible and available to users
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                      data-testid="switch-status"
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+            {/* Status & Sync */}
+            <div className="space-y-3">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                    <div>
+                      <FormLabel className="text-sm font-medium">Active</FormLabel>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Make this package visible and available to users
+                      </p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        data-testid="switch-status"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sync"
+                render={({ field }) => (
+                  <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                    <div>
+                      <FormLabel className="text-sm font-medium">Sync</FormLabel>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Keep this package synchronised across connected systems
+                      </p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value ?? false}
+                        onCheckedChange={field.onChange}
+                        data-testid="switch-sync"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             {/* Features */}
             <div className="space-y-2">
