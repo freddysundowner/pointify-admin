@@ -16,6 +16,7 @@ export default function LoginPage() {
   const { login } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -27,6 +28,7 @@ export default function LoginPage() {
 
   async function onSubmit(data: LoginInput) {
     setIsLoading(true);
+    setLoginError(null);
     try {
       await login(data.email, data.password);
       toast({
@@ -35,9 +37,11 @@ export default function LoginPage() {
       });
       setLocation("/");
     } catch (error) {
+      const message = error instanceof Error ? error.message : "Invalid credentials";
+      setLoginError(message);
       toast({
         title: "Login failed",
-        description: error instanceof Error ? error.message : "Invalid credentials",
+        description: message,
         variant: "destructive",
       });
     } finally {
@@ -58,6 +62,14 @@ export default function LoginPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              {loginError && (
+                <div
+                  className="rounded-md bg-destructive/10 border border-destructive/30 px-4 py-3 text-sm text-destructive"
+                  data-testid="login-error"
+                >
+                  {loginError}
+                </div>
+              )}
               <FormField
                 control={form.control}
                 name="email"
