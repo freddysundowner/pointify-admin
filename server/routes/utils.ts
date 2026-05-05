@@ -1,6 +1,6 @@
 import type { Request } from "express";
 
-const POINTIFY_API_URL = "https://sandbox.pointifypos.com";
+const POINTIFY_API_URL = "https://api.pointifypos.com";
 
 export const userSessions: Map<string, { token: string; user: any }> = new Map();
 
