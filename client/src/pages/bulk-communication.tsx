@@ -117,7 +117,7 @@ const emailFooter = `
                 <a href="https://yourdomain.com" style="color: #10b981; text-decoration: none;">yourdomain.com</a>
               </p>
               <p style="color: #6b7280; font-size: 11px; margin: 10px 0 0 0;">
-                Need help? Contact us via <a href="https://wa.me/254791334234" style="color: #10b981; text-decoration: none;">WhatsApp</a>
+                Need help? Contact us via <a href="https://wa.me/YOUR_WHATSAPP_NUMBER" style="color: #10b981; text-decoration: none;">WhatsApp</a>
               </p>
             </td>
           </tr>
