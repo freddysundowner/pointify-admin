@@ -57,10 +57,10 @@ export function AppSidebar() {
       <SidebarHeader className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-primary rounded-md flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">P</span>
+            <span className="text-primary-foreground font-bold text-lg">R</span>
           </div>
           <div>
-            <h2 className="font-semibold text-sm">Pointify</h2>
+            <h2 className="font-semibold text-sm">ReggyPOS</h2>
             <p className="text-xs text-muted-foreground">Admin Dashboard</p>
           </div>
         </div>

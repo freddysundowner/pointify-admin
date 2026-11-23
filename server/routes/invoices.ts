@@ -1,6 +1,32 @@
 import type { Express, Request, Response } from "express";
 import { apiRequest, getSession } from "./utils";
 
+// The ReggyPOS API has no separate invoice store: every subscription record is
+// an invoice (it carries invoiceNo, amount, currency and paid status). These
+// routes read subscriptions and present them in the shape the admin UI expects.
+function toInvoice(sub: any) {
+  if (!sub || typeof sub !== "object") return null;
+  return {
+    _id: sub._id,
+    invoiceNo: sub.invoiceNo || "",
+    amount: Number(sub.amount || 0),
+    currency: sub.currency || "",
+    status: sub.paid ? "paid" : "pending",
+    dueDate: sub.endDate || null,
+    paidDate: sub.paid ? sub.startDate || sub.createAt || null : null,
+    subscription: sub._id,
+    shop: sub.shop?._id || sub.shop || null,
+    package: sub.packageId?.title || sub.packageId?.name || null,
+  };
+}
+
+function listFrom(result: any): any[] {
+  if (Array.isArray(result)) return result;
+  if (Array.isArray(result?.data)) return result.data;
+  if (Array.isArray(result?.subscriptions)) return result.subscriptions;
+  return [];
+}
+
 export function registerInvoiceRoutes(app: Express) {
   app.get("/api/invoices", async (req: Request, res: Response) => {
     try {
@@ -9,33 +35,29 @@ export function registerInvoiceRoutes(app: Express) {
         return res.status(401).json({ error: "Not authenticated" });
       }
 
-      const page = req.query.page || 1;
-      const limit = req.query.limit || 10;
-      const subscription = req.query.subscription || "";
-      const shop = req.query.shop || "";
+      const page = Number(req.query.page || 1);
+      const limit = Number(req.query.limit || 10);
+      const subscription = (req.query.subscription as string) || "";
+      const shop = (req.query.shop as string) || "";
 
-      let endpoint = `/invoices?page=${page}&limit=${limit}`;
       if (subscription) {
-        endpoint += `&subscription=${encodeURIComponent(subscription as string)}`;
-      }
-      if (shop) {
-        endpoint += `&shop=${encodeURIComponent(shop as string)}`;
+        const sub = await apiRequest(`/subscriptions/${encodeURIComponent(subscription)}`, { token: session.token });
+        const invoice = toInvoice(sub?.data || sub);
+        const data = invoice ? [invoice] : [];
+        return res.json({ data, count: data.length, totalPages: 1, currentPage: 1 });
       }
 
+      let endpoint = `/subscriptions?page=${page}&limit=${limit}`;
+      if (shop) endpoint += `&shop=${encodeURIComponent(shop)}`;
       const result = await apiRequest(endpoint, { token: session.token });
-      
-      if (Array.isArray(result)) {
-        res.json({ data: result, count: result.length, totalPages: 1, currentPage: 1 });
-      } else if (result.data) {
-        res.json({
-          data: result.data,
-          count: result.count || result.total || result.data.length,
-          totalPages: result.totalPages || result.pages || Math.ceil((result.count || result.data.length) / Number(limit)),
-          currentPage: result.currentPage || result.page || Number(page),
-        });
-      } else {
-        res.json({ data: [], count: 0, totalPages: 1, currentPage: 1 });
-      }
+      const data = listFrom(result).map(toInvoice).filter(Boolean);
+      const count = Number(result?.count || result?.total || data.length);
+      res.json({
+        data,
+        count,
+        totalPages: Number(result?.totalPages || Math.max(1, Math.ceil(count / limit))),
+        currentPage: Number(result?.currentPage || page),
+      });
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
     }
@@ -49,8 +71,10 @@ export function registerInvoiceRoutes(app: Express) {
       }
 
       const { id } = req.params;
-      const result = await apiRequest(`/invoices/${id}`, { token: session.token });
-      res.json(result);
+      const sub = await apiRequest(`/subscriptions/${encodeURIComponent(id)}`, { token: session.token });
+      const invoice = toInvoice(sub?.data || sub);
+      if (!invoice) return res.status(404).json({ error: "Invoice not found" });
+      res.json(invoice);
     } catch (error: any) {
       res.status(error.status || 500).json({ error: error.message });
     }

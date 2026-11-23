@@ -288,9 +288,9 @@ export default function SettingsPage() {
         formData.append('image', imageFile);
       }
 
-      const sessionId = localStorage.getItem("pointify_session_id") || "";
-      const token = localStorage.getItem("pointify_token") || "";
-      const userData = localStorage.getItem("pointify_user") || "";
+      const sessionId = localStorage.getItem("reggypos_session_id") || "";
+      const token = localStorage.getItem("reggypos_token") || "";
+      const userData = localStorage.getItem("reggypos_user") || "";
 
       const response = await fetch('/api/settings/theme/upload', {
         method: 'POST',
@@ -443,7 +443,7 @@ export default function SettingsPage() {
                         id="sms-short-code"
                         value={smsShortCode}
                         onChange={(e) => setSmsShortCode(e.target.value)}
-                        placeholder="POINTIFY"
+                        placeholder="REGGYPOS"
                         data-testid="input-sms-short-code"
                       />
                     </div>
@@ -533,7 +533,7 @@ export default function SettingsPage() {
                         id="brevo-sender-name"
                         value={brevoSenderName}
                         onChange={(e) => setBrevoSenderName(e.target.value)}
-                        placeholder="Pointify POS"
+                        placeholder="ReggyPOS"
                         data-testid="input-brevo-sender-name"
                       />
                     </div>
@@ -616,7 +616,7 @@ export default function SettingsPage() {
                           {themeImagePreview ? (
                             <img src={themeImagePreview} alt="Theme preview" className="w-full h-full object-cover" />
                           ) : themeSettings.image ? (
-                            <img src={`https://sandbox.pointifypos.com${themeSettings.image}`} alt="Current theme" className="w-full h-full object-cover" />
+                            <img src={`https://sandbox.yourdomain.com${themeSettings.image}`} alt="Current theme" className="w-full h-full object-cover" />
                           ) : (
                             <Image className="h-8 w-8 text-muted-foreground" />
                           )}
@@ -640,7 +640,7 @@ export default function SettingsPage() {
                         type="text"
                         value={themeSettings.APP_NAME || ""}
                         onChange={(e) => handleThemeChange("APP_NAME", e.target.value)}
-                        placeholder="Pointify"
+                        placeholder="ReggyPOS"
                       />
                     </div>
 

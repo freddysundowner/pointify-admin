@@ -234,7 +234,7 @@ export function registerCommunicationRoutes(app: Express) {
         body: {
           to: email,
           body: message,
-          subject: subject || "Message from Pointify POS",
+          subject: subject || "Message from ReggyPOS",
           type: "email",
           user: userId,
         },
@@ -418,7 +418,7 @@ export function registerCommunicationRoutes(app: Express) {
         }
       }
 
-      // Fetch Brevo settings from Pointify API
+      // Fetch Brevo settings from ReggyPOS API
       const emailConfig = await apiRequest<any>(`/settings?type=${EMAIL_SETTING_NAME}`, {
         token: session.token,
       });
@@ -426,7 +426,7 @@ export function registerCommunicationRoutes(app: Express) {
       const settings = emailConfig?.setting || emailConfig;
       const brevoApiKey = settings?.BREVO_API_KEY;
       const senderEmail = settings?.BREVO_SENDER_EMAIL;
-      const senderName = settings?.BREVO_SENDER_NAME || "Pointify POS";
+      const senderName = settings?.BREVO_SENDER_NAME || "ReggyPOS";
       
       // Log key info for debugging (masked)
       console.log(`[Bulk Email] API Key prefix: ${brevoApiKey?.substring(0, 10)}..., Sender: ${senderEmail}`);

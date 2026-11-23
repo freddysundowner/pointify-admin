@@ -54,9 +54,9 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-2">
           <div className="mx-auto w-12 h-12 bg-primary rounded-md flex items-center justify-center mb-2">
-            <span className="text-primary-foreground font-bold text-xl">P</span>
+            <span className="text-primary-foreground font-bold text-xl">R</span>
           </div>
-          <CardTitle className="text-2xl font-semibold">Pointify Admin</CardTitle>
+          <CardTitle className="text-2xl font-semibold">ReggyPOS Admin</CardTitle>
           <CardDescription>Sign in to access your dashboard</CardDescription>
         </CardHeader>
         <CardContent>

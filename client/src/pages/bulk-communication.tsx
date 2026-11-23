@@ -76,7 +76,7 @@ const emailHeader = `<!DOCTYPE html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pointify POS</title>
+  <title>ReggyPOS</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px 0;">
@@ -86,7 +86,7 @@ const emailHeader = `<!DOCTYPE html>
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px 40px; text-align: center;">
-              <img src="https://pointifypos.com/imgs/logos/pointifylogo1.png" alt="Pointify" style="height: 50px; margin-bottom: 10px;">
+              <img src="https://api.yourdomain.com/images/logo.png" alt="ReggyPOS" style="height: 50px; margin-bottom: 10px;">
               <p style="color: #ffffff; font-size: 14px; margin: 0; opacity: 0.9;">Manage Your Stock, Sales & Cashflow</p>
             </td>
           </tr>
@@ -100,21 +100,21 @@ const emailFooter = `
           <!-- Footer -->
           <tr>
             <td style="background-color: #1f2937; padding: 30px 40px; text-align: center;">
-              <img src="https://pointifypos.com/imgs/logos/pointifylogo1.png" alt="Pointify" style="height: 35px; margin-bottom: 15px;">
+              <img src="https://api.yourdomain.com/images/logo.png" alt="ReggyPOS" style="height: 35px; margin-bottom: 15px;">
               <p style="color: #9ca3af; font-size: 13px; margin: 0 0 10px 0;">
-                Download Pointify POS on your device
+                Download ReggyPOS on your device
               </p>
               <p style="margin: 15px 0;">
-                <a href="https://play.google.com/store/apps/details?id=com.pointify.com" style="display: inline-block; margin: 0 5px;">
-                  <img src="https://pointifypos.com/imgs/gg.png" alt="Google Play" style="height: 40px;">
+                <a href="https://play.google.com/store/apps/details?id=com.reggypos.app" style="display: inline-block; margin: 0 5px;">
+                  <img src="https://yourdomain.com/imgs/gg.png" alt="Google Play" style="height: 40px;">
                 </a>
-                <a href="https://apps.apple.com/us/app/pointify-pos/id6456891671" style="display: inline-block; margin: 0 5px;">
-                  <img src="https://pointifypos.com/imgs/apple-app-store-logo.jpg" alt="App Store" style="height: 40px; border-radius: 6px;">
+                <a href="https://apps.apple.com/app/idYOUR_APP_STORE_ID" style="display: inline-block; margin: 0 5px;">
+                  <img src="https://yourdomain.com/imgs/apple-app-store-logo.jpg" alt="App Store" style="height: 40px; border-radius: 6px;">
                 </a>
               </p>
               <p style="color: #6b7280; font-size: 12px; margin: 20px 0 0 0; border-top: 1px solid #374151; padding-top: 20px;">
-                &copy; ${new Date().getFullYear()} Pointify. All Rights Reserved.<br>
-                <a href="https://pointifypos.com" style="color: #10b981; text-decoration: none;">pointifypos.com</a>
+                &copy; ${new Date().getFullYear()} ReggyPOS. All Rights Reserved.<br>
+                <a href="https://yourdomain.com" style="color: #10b981; text-decoration: none;">yourdomain.com</a>
               </p>
               <p style="color: #6b7280; font-size: 11px; margin: 10px 0 0 0;">
                 Need help? Contact us via <a href="https://wa.me/254791334234" style="color: #10b981; text-decoration: none;">WhatsApp</a>

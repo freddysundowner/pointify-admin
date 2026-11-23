@@ -74,7 +74,6 @@ export interface Package {
   newDurationUnit?: "days" | "weeks" | "months" | "years";
   discount?: number;
   status: boolean;
-  sync?: boolean;
   order?: number;
   type: "trial" | "production";
   features?: string[];

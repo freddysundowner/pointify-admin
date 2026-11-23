@@ -1,8 +1,7 @@
 import type { Request } from "express";
 
-const POINTIFY_API_URL = "https://api.pointifypos.com";
-
-export const userSessions: Map<string, { token: string; user: any }> = new Map();
+// URL of the ReggyPOS API (set REGGYPOS_API_URL in .env), without a trailing slash.
+export const REGGYPOS_API_URL = (process.env.REGGYPOS_API_URL || "http://localhost:3000").replace(/\/+$/, "");
 
 interface ApiRequestOptions {
   method?: string;
@@ -31,7 +30,7 @@ export async function apiRequest<T = any>(
     config.body = JSON.stringify(options.body);
   }
 
-  const url = `${POINTIFY_API_URL}${endpoint}`;
+  const url = `${REGGYPOS_API_URL}${endpoint}`;
   console.log(`[API] ${config.method} ${url}`);
   
   const response = await fetch(url, config);
@@ -72,23 +71,21 @@ export async function apiRequest<T = any>(
   return data;
 }
 
-export function getSessionId(req: Request): string {
-  return req.headers["x-session-id"] as string || "default";
-}
-
 export function getSession(req: Request): { token: string; user: any } | undefined {
+  // The admin server keeps no sessions of its own: every request must carry the
+  // staff token, which the ReggyPOS API verifies on each call.
   const authHeader = req.headers["authorization"];
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.substring(7);
-    const userDataHeader = req.headers["x-user-data"] as string;
-    if (userDataHeader) {
-      try {
-        const user = JSON.parse(userDataHeader);
-        return { token, user };
-      } catch {
-        // Fall through to session lookup
-      }
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return undefined;
+  const token = authHeader.substring(7).trim();
+  if (!token) return undefined;
+  let user: any = {};
+  const userDataHeader = req.headers["x-user-data"] as string;
+  if (userDataHeader) {
+    try {
+      user = JSON.parse(userDataHeader);
+    } catch {
+      user = {};
     }
   }
-  return userSessions.get(getSessionId(req));
+  return { token, user };
 }

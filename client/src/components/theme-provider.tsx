@@ -12,7 +12,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem("pointify-theme") as Theme;
+      const stored = localStorage.getItem("reggypos-theme") as Theme;
       return stored || "light";
     }
     return "light";
@@ -22,7 +22,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const root = document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(theme);
-    localStorage.setItem("pointify-theme", theme);
+    localStorage.setItem("reggypos-theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {

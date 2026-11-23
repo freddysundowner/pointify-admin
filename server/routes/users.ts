@@ -26,7 +26,7 @@ export function registerUserRoutes(app: Express) {
 
       const result = await apiRequest(endpoint, { token: session.token });
       
-      // Handle the response format from the Pointify API
+      // Handle the response format from the ReggyPOS API
       if (result.admins) {
         res.json({
           admins: result.admins,

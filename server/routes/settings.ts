@@ -1,9 +1,9 @@
 import type { Express, Request, Response } from "express";
-import { getSession, apiRequest } from "./utils";
+import { getSession, apiRequest, REGGYPOS_API_URL } from "./utils";
 import multer from "multer";
 
 const upload = multer({ storage: multer.memoryStorage() });
-const API_BASE_URL = "https://sandbox.pointifypos.com";
+const API_BASE_URL = REGGYPOS_API_URL;
 
 const SMS_SETTING_NAME = "SMS_CONFIG";
 const EMAIL_SETTING_NAME = "EMAIL_CONFIG";

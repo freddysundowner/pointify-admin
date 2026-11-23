@@ -62,7 +62,7 @@ const emailHeader = `<!DOCTYPE html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pointify POS</title>
+  <title>ReggyPOS</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 20px 0;">
@@ -72,7 +72,7 @@ const emailHeader = `<!DOCTYPE html>
           <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px 40px; text-align: center;">
-              <img src="https://pointifypos.com/imgs/logos/pointifylogo1.png" alt="Pointify" style="height: 50px; margin-bottom: 10px;">
+              <img src="https://api.yourdomain.com/images/logo.png" alt="ReggyPOS" style="height: 50px; margin-bottom: 10px;">
               <p style="color: #ffffff; font-size: 14px; margin: 0; opacity: 0.9;">Manage Your Stock, Sales & Cashflow</p>
             </td>
           </tr>
@@ -86,21 +86,21 @@ const emailFooter = `
           <!-- Footer -->
           <tr>
             <td style="background-color: #1f2937; padding: 30px 40px; text-align: center;">
-              <img src="https://pointifypos.com/imgs/logos/pointifylogo1.png" alt="Pointify" style="height: 35px; margin-bottom: 15px;">
+              <img src="https://api.yourdomain.com/images/logo.png" alt="ReggyPOS" style="height: 35px; margin-bottom: 15px;">
               <p style="color: #9ca3af; font-size: 13px; margin: 0 0 10px 0;">
-                Download Pointify POS on your device
+                Download ReggyPOS on your device
               </p>
               <p style="margin: 15px 0;">
-                <a href="https://play.google.com/store/apps/details?id=com.pointify.com" style="display: inline-block; margin: 0 5px;">
-                  <img src="https://pointifypos.com/imgs/gg.png" alt="Google Play" style="height: 40px;">
+                <a href="https://play.google.com/store/apps/details?id=com.reggypos.app" style="display: inline-block; margin: 0 5px;">
+                  <img src="https://yourdomain.com/imgs/gg.png" alt="Google Play" style="height: 40px;">
                 </a>
-                <a href="https://apps.apple.com/us/app/pointify-pos/id6456891671" style="display: inline-block; margin: 0 5px;">
-                  <img src="https://pointifypos.com/imgs/apple-app-store-logo.jpg" alt="App Store" style="height: 40px; border-radius: 6px;">
+                <a href="https://apps.apple.com/app/idYOUR_APP_STORE_ID" style="display: inline-block; margin: 0 5px;">
+                  <img src="https://yourdomain.com/imgs/apple-app-store-logo.jpg" alt="App Store" style="height: 40px; border-radius: 6px;">
                 </a>
               </p>
               <p style="color: #6b7280; font-size: 12px; margin: 20px 0 0 0; border-top: 1px solid #374151; padding-top: 20px;">
-                &copy; ${new Date().getFullYear()} Pointify. All Rights Reserved.<br>
-                <a href="https://pointifypos.com" style="color: #10b981; text-decoration: none;">pointifypos.com</a>
+                &copy; ${new Date().getFullYear()} ReggyPOS. All Rights Reserved.<br>
+                <a href="https://yourdomain.com" style="color: #10b981; text-decoration: none;">yourdomain.com</a>
               </p>
               <p style="color: #6b7280; font-size: 11px; margin: 10px 0 0 0;">
                 Need help? Contact us via <a href="https://wa.me/254791334234" style="color: #10b981; text-decoration: none;">WhatsApp</a>
@@ -118,15 +118,15 @@ const starterTemplates = [
   {
     name: "Welcome Message",
     slug: "welcome",
-    subject: "Welcome to Pointify POS!",
+    subject: "Welcome to ReggyPOS!",
     category: "welcome",
     htmlContent: `${emailHeader}
-              <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Welcome to Pointify!</h1>
+              <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Welcome to ReggyPOS!</h1>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
                 Dear <strong>{{name}}</strong>,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Welcome to Pointify POS! We're excited to have you on board.
+                Welcome to ReggyPOS! We're excited to have you on board.
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
                 Your account is now active and you can start using all the features of our system to manage your stock, sales, and cashflow from anywhere.
@@ -141,14 +141,14 @@ const starterTemplates = [
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
   {
     name: "Data Backup",
     slug: "backup",
-    subject: "Your Pointify Backup - {{backup_date}}",
+    subject: "Your ReggyPOS Backup - {{backup_date}}",
     category: "announcement",
     htmlContent: `${emailHeader}
               <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Your Data Backup is Ready!</h1>
@@ -177,18 +177,18 @@ ${emailFooter}`,
                 Please download and save these files in a secure location. Regular backups help protect your business data.
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Thank you for using Pointify POS!
+                Thank you for using ReggyPOS!
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
   {
     name: "Subscription Expiry",
     slug: "subscriptionexpiry",
-    subject: "Your Pointify Subscription Expires Soon!",
+    subject: "Your ReggyPOS Subscription Expires Soon!",
     category: "reminder",
     htmlContent: `${emailHeader}
               <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Subscription Expiring Soon!</h1>
@@ -196,7 +196,7 @@ ${emailFooter}`,
                 Dear <strong>{{username}}</strong>,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Your Pointify subscription for <strong>{{shopname}}</strong> is about to expire.
+                Your ReggyPOS subscription for <strong>{{shopname}}</strong> is about to expire.
               </p>
               <div style="text-align: center; margin: 30px 0;">
                 <div style="display: inline-block; background-color: #fef3c7; border: 2px solid #f59e0b; padding: 20px 40px; border-radius: 12px;">
@@ -210,24 +210,24 @@ ${emailFooter}`,
                 </p>
               </div>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Don't wait until the last minute! Renew now to ensure uninterrupted access to all Pointify features.
+                Don't wait until the last minute! Renew now to ensure uninterrupted access to all ReggyPOS features.
               </p>
               <p style="text-align: center; margin: 30px 0;">
-                <a href="https://pointifypos.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Renew Now</a>
+                <a href="https://yourdomain.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Renew Now</a>
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Thank you for being a valued Pointify customer!
+                Thank you for being a valued ReggyPOS customer!
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
   {
     name: "Subscription Reminder",
     slug: "subscriptionreminder",
-    subject: "Renew Your Pointify Subscription - {{days}} Days Left",
+    subject: "Renew Your ReggyPOS Subscription - {{days}} Days Left",
     category: "reminder",
     htmlContent: `${emailHeader}
               <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Subscription Renewal Reminder</h1>
@@ -235,7 +235,7 @@ ${emailFooter}`,
                 Dear <strong>{{username}}</strong>,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Your Pointify subscription for <strong>{{shopname}}</strong> has expired <strong style="color: #dc2626;">{{differenceDays}} days ago</strong>.
+                Your ReggyPOS subscription for <strong>{{shopname}}</strong> has expired <strong style="color: #dc2626;">{{differenceDays}} days ago</strong>.
               </p>
               <div style="text-align: center; margin: 30px 0;">
                 <div style="display: inline-block; background-color: #fef2f2; border: 2px solid #ef4444; padding: 20px 40px; border-radius: 12px;">
@@ -252,14 +252,14 @@ ${emailFooter}`,
                 Don't let your business operations be interrupted. Renew today and keep your shop running smoothly.
               </p>
               <p style="text-align: center; margin: 30px 0;">
-                <a href="https://pointifypos.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Renew Subscription</a>
+                <a href="https://yourdomain.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Renew Subscription</a>
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
                 Thank you for being a valued customer!
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
@@ -282,21 +282,21 @@ ${emailFooter}`,
                 </p>
               </div>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Don't miss out on this limited-time opportunity to upgrade your business with Pointify POS.
+                Don't miss out on this limited-time opportunity to upgrade your business with ReggyPOS.
               </p>
               <p style="text-align: center; margin: 30px 0;">
-                <a href="https://pointifypos.com" style="background-color: #10b981; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Claim Offer</a>
+                <a href="https://yourdomain.com" style="background-color: #10b981; color: #ffffff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Claim Offer</a>
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
   {
     name: "General Announcement",
     slug: "announcement",
-    subject: "Important Update from Pointify",
+    subject: "Important Update from ReggyPOS",
     category: "announcement",
     htmlContent: `${emailHeader}
               <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Important Announcement</h1>
@@ -312,18 +312,18 @@ ${emailFooter}`,
                 </p>
               </div>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Thank you for being part of the Pointify community. We're committed to helping your business grow.
+                Thank you for being part of the ReggyPOS community. We're committed to helping your business grow.
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
   {
     name: "Password Reset",
     slug: "password-reset",
-    subject: "Reset Your Pointify Password",
+    subject: "Reset Your ReggyPOS Password",
     category: "security",
     htmlContent: `${emailHeader}
               <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Password Reset Request</h1>
@@ -331,7 +331,7 @@ ${emailFooter}`,
                 Dear <strong>{{name}}</strong>,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                We received a request to reset your Pointify account password. Use the OTP code below to reset your password:
+                We received a request to reset your ReggyPOS account password. Use the OTP code below to reset your password:
               </p>
               <div style="text-align: center; margin: 30px 0;">
                 <div style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px 40px; border-radius: 12px;">
@@ -348,7 +348,7 @@ ${emailFooter}`,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
@@ -363,7 +363,7 @@ ${emailFooter}`,
                 Dear <strong>{{referrerName}}</strong>,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Great news! You've earned points through the Pointify Partner Program.
+                Great news! You've earned points through the ReggyPOS Partner Program.
               </p>
               <div style="text-align: center; margin: 30px 0;">
                 <div style="display: inline-block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 25px 50px; border-radius: 12px;">
@@ -379,24 +379,24 @@ ${emailFooter}`,
                 </p>
               </div>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Keep referring new merchants to Pointify and watch your earnings grow! The more you refer, the more you earn.
+                Keep referring new merchants to ReggyPOS and watch your earnings grow! The more you refer, the more you earn.
               </p>
               <p style="text-align: center; margin: 30px 0;">
-                <a href="https://pointifypos.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">View Dashboard</a>
+                <a href="https://yourdomain.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">View Dashboard</a>
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Thank you for being a valued Pointify partner!
+                Thank you for being a valued ReggyPOS partner!
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
   {
     name: "Subscription Successful",
     slug: "subscription",
-    subject: "Your Pointify Subscription is Now Active!",
+    subject: "Your ReggyPOS Subscription is Now Active!",
     category: "welcome",
     htmlContent: `${emailHeader}
               <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Subscription Activated!</h1>
@@ -404,7 +404,7 @@ ${emailFooter}`,
                 Dear <strong>{{username}}</strong>,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Great news! Your Pointify subscription has been successfully activated.
+                Great news! Your ReggyPOS subscription has been successfully activated.
               </p>
               <div style="text-align: center; margin: 30px 0;">
                 <div style="display: inline-block; background-color: #f0fdf4; border: 2px solid #10b981; padding: 20px 40px; border-radius: 12px;">
@@ -417,7 +417,7 @@ ${emailFooter}`,
                 </p>
               </div>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                You now have full access to all Pointify POS features to manage your stock, sales, and cashflow from anywhere.
+                You now have full access to all ReggyPOS features to manage your stock, sales, and cashflow from anywhere.
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 10px 0;">
                 <strong>What you can do now:</strong>
@@ -429,21 +429,21 @@ ${emailFooter}`,
                 <li>Manage multiple shops from one account</li>
               </ul>
               <p style="text-align: center; margin: 30px 0;">
-                <a href="https://pointifypos.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Start Selling</a>
+                <a href="https://yourdomain.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Start Selling</a>
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Thank you for choosing Pointify!
+                Thank you for choosing ReggyPOS!
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
   {
     name: "Password Reset Successful",
     slug: "password-reset-success",
-    subject: "Your Pointify Password Has Been Reset",
+    subject: "Your ReggyPOS Password Has Been Reset",
     category: "security",
     htmlContent: `${emailHeader}
               <h1 style="color: #1f2937; font-size: 24px; margin: 0 0 20px 0;">Password Reset Successful</h1>
@@ -451,7 +451,7 @@ ${emailFooter}`,
                 Dear <strong>{{name}}</strong>,
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">
-                Your Pointify account password has been successfully reset.
+                Your ReggyPOS account password has been successfully reset.
               </p>
               <div style="text-align: center; margin: 30px 0;">
                 <div style="display: inline-block; background-color: #f0fdf4; border: 2px solid #10b981; padding: 20px 40px; border-radius: 12px;">
@@ -467,11 +467,11 @@ ${emailFooter}`,
                 You can now log in to your account using your new password.
               </p>
               <p style="text-align: center; margin: 30px 0;">
-                <a href="https://pointifypos.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Login Now</a>
+                <a href="https://yourdomain.com" style="background-color: #10b981; color: #ffffff; padding: 14px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">Login Now</a>
               </p>
               <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin: 30px 0 0 0;">
                 Best regards,<br>
-                <strong style="color: #10b981;">The Pointify Team</strong>
+                <strong style="color: #10b981;">The ReggyPOS Team</strong>
               </p>
 ${emailFooter}`,
   },
@@ -813,7 +813,7 @@ export default function TemplatesPage() {
                   <Input
                     value={editingTemplate.subject || ""}
                     onChange={(e) => setEditingTemplate({ ...editingTemplate, subject: e.target.value })}
-                    placeholder="e.g., Welcome to Pointify POS!"
+                    placeholder="e.g., Welcome to ReggyPOS!"
                   />
                 </div>
 

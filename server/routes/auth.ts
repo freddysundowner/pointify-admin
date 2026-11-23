@@ -1,5 +1,5 @@
 import type { Express, Request, Response } from "express";
-import { apiRequest, getSession, getSessionId, userSessions } from "./utils";
+import { apiRequest, getSession } from "./utils";
 
 export function registerAuthRoutes(app: Express) {
   app.post("/api/auth/login", async (req: Request, res: Response) => {
@@ -9,12 +9,6 @@ export function registerAuthRoutes(app: Express) {
       const result = await apiRequest("/staff", {
         method: "POST",
         body: { email, password },
-      });
-
-      const sessionId = getSessionId(req);
-      userSessions.set(sessionId, {
-        token: result.token,
-        user: result.userdata,
       });
 
       res.json({
@@ -28,8 +22,6 @@ export function registerAuthRoutes(app: Express) {
   });
 
   app.post("/api/auth/logout", (req: Request, res: Response) => {
-    const sessionId = getSessionId(req);
-    userSessions.delete(sessionId);
     res.json({ success: true });
   });
 

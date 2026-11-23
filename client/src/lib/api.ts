@@ -1,20 +1,20 @@
 // Generate a unique session ID that persists across page reloads
 function getSessionId(): string {
-  let sessionId = localStorage.getItem("pointify_session_id");
+  let sessionId = localStorage.getItem("reggypos_session_id");
   if (!sessionId) {
     sessionId = crypto.randomUUID();
-    localStorage.setItem("pointify_session_id", sessionId);
+    localStorage.setItem("reggypos_session_id", sessionId);
   }
   return sessionId;
 }
 
 // Token storage
 export function getStoredToken(): string | null {
-  return localStorage.getItem("pointify_token");
+  return localStorage.getItem("reggypos_token");
 }
 
 export function setStoredToken(token: string): void {
-  localStorage.setItem("pointify_token", token);
+  localStorage.setItem("reggypos_token", token);
 }
 
 interface RequestOptions {
@@ -40,7 +40,7 @@ export async function apiClient<T>(
   }
 
   // Add user data for server-side access
-  const userData = localStorage.getItem("pointify_user");
+  const userData = localStorage.getItem("reggypos_user");
   if (userData) {
     headers["X-User-Data"] = userData;
   }
@@ -66,33 +66,33 @@ export async function apiClient<T>(
 
 // Auth helpers - persist login state across page reloads
 export function isLoggedIn(): boolean {
-  return localStorage.getItem("pointify_logged_in") === "true";
+  return localStorage.getItem("reggypos_logged_in") === "true";
 }
 
 export function setLoggedIn(value: boolean): void {
   if (value) {
-    localStorage.setItem("pointify_logged_in", "true");
+    localStorage.setItem("reggypos_logged_in", "true");
   } else {
-    localStorage.removeItem("pointify_logged_in");
+    localStorage.removeItem("reggypos_logged_in");
   }
 }
 
 export function getStoredUser(): string | null {
-  return localStorage.getItem("pointify_user");
+  return localStorage.getItem("reggypos_user");
 }
 
 export function setStoredUser(user: unknown): void {
-  localStorage.setItem("pointify_user", JSON.stringify(user));
+  localStorage.setItem("reggypos_user", JSON.stringify(user));
 }
 
 export function removeStoredUser(): void {
-  localStorage.removeItem("pointify_user");
-  localStorage.removeItem("pointify_logged_in");
+  localStorage.removeItem("reggypos_user");
+  localStorage.removeItem("reggypos_logged_in");
 }
 
 export function clearAllAuthData(): void {
-  localStorage.removeItem("pointify_user");
-  localStorage.removeItem("pointify_logged_in");
-  localStorage.removeItem("pointify_session_id");
-  localStorage.removeItem("pointify_token");
+  localStorage.removeItem("reggypos_user");
+  localStorage.removeItem("reggypos_logged_in");
+  localStorage.removeItem("reggypos_session_id");
+  localStorage.removeItem("reggypos_token");
 }
