@@ -1,3 +1,4 @@
+import "dotenv/config"; // load settings from .env (PORT, HOST, POINTIFY_API_URL)
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -48,10 +49,7 @@ app.use((req, res, next) => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        const jsonStr = JSON.stringify(capturedJsonResponse);
-        logLine += ` :: ${jsonStr.length > 200 ? jsonStr.substring(0, 200) + '...' : jsonStr}`;
-      }
+      // Response bodies are not logged: they can contain login tokens and customer data.
 
       log(logLine);
     }
@@ -81,16 +79,13 @@ app.use((req, res, next) => {
     await setupVite(httpServer, app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // Serves both the admin API and the web client. Set PORT and HOST in .env
+  // (use HOST=127.0.0.1 behind a reverse proxy such as Nginx).
   const port = parseInt(process.env.PORT || "5000", 10);
   httpServer.listen(
     {
       port,
-      host: "0.0.0.0",
-      reusePort: true,
+      host: process.env.HOST || "0.0.0.0",
     },
     () => {
       log(`serving on port ${port}`);

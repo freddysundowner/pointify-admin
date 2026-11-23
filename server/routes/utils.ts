@@ -1,8 +1,7 @@
 import type { Request } from "express";
 
-const POINTIFY_API_URL = "https://api.pointifypos.com";
-
-export const userSessions: Map<string, { token: string; user: any }> = new Map();
+// URL of the Pointify API (override with POINTIFY_API_URL), without a trailing slash.
+export const POINTIFY_API_URL = (process.env.POINTIFY_API_URL || "https://api.pointifypos.com").replace(/\/+$/, "");
 
 interface ApiRequestOptions {
   method?: string;
@@ -72,23 +71,21 @@ export async function apiRequest<T = any>(
   return data;
 }
 
-export function getSessionId(req: Request): string {
-  return req.headers["x-session-id"] as string || "default";
-}
-
 export function getSession(req: Request): { token: string; user: any } | undefined {
+  // The admin server keeps no sessions of its own: every request must carry the
+  // staff token, which the Pointify API verifies on each call.
   const authHeader = req.headers["authorization"];
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    const token = authHeader.substring(7);
-    const userDataHeader = req.headers["x-user-data"] as string;
-    if (userDataHeader) {
-      try {
-        const user = JSON.parse(userDataHeader);
-        return { token, user };
-      } catch {
-        // Fall through to session lookup
-      }
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return undefined;
+  const token = authHeader.substring(7).trim();
+  if (!token) return undefined;
+  let user: any = {};
+  const userDataHeader = req.headers["x-user-data"] as string;
+  if (userDataHeader) {
+    try {
+      user = JSON.parse(userDataHeader);
+    } catch {
+      user = {};
     }
   }
-  return userSessions.get(getSessionId(req));
+  return { token, user };
 }

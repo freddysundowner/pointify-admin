@@ -612,7 +612,7 @@ export default function ShopDetailPage() {
       });
       queryClient.invalidateQueries({ queryKey: ["/communication", "user", user?._id] });
       setMessageDialog({ open: false, type: "email", isReminder: false });
-      setMessageForm({ subject: "", message: "" });
+      setMessageForm({ subject: "", message: "", recipient: "" });
     },
     onError: (error: any) => {
       toast({
