@@ -37,40 +37,6 @@ export function registerRevenueRoutes(app: Express) {
     }
   });
 
-  app.post("/api/revenue/withdraw", async (req: Request, res: Response) => {
-    try {
-      const session = getSession(req);
-      if (!session) {
-        return res.status(401).json({ error: "Not authenticated" });
-      }
-
-      const { phonenumber, amount, pin, id, transactionId } = req.body;
-
-      if (!phonenumber || !amount || !pin) {
-        return res.status(400).json({ error: "Phone number, amount, and PIN are required" });
-      }
-
-      const body: Record<string, any> = { phonenumber, amount, pin };
-      if (id) {
-        body.id = id;
-      }
-      if (transactionId) {
-        body.transactionId = transactionId;
-      }
-
-      const result = await apiRequest("/payments/mpesa/withdraw", { 
-        method: "POST",
-        token: session.token,
-        body
-      });
-      
-      res.json(result);
-    } catch (error: any) {
-      console.error("Error processing withdrawal:", error);
-      res.status(error.status || 500).json({ error: error.message || "Failed to process withdrawal" });
-    }
-  });
-
   app.post("/api/revenue/pay-subscription", async (req: Request, res: Response) => {
     try {
       const session = getSession(req);

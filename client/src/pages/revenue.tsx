@@ -11,8 +11,6 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
-  Banknote,
-  RefreshCw,
   CreditCardIcon,
   Search,
 } from "lucide-react";
@@ -247,14 +245,6 @@ function StatCard({
 
 function RevenueContent() {
   const [page, setPage] = useState(1);
-  const [withdrawOpen, setWithdrawOpen] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [amount, setAmount] = useState("");
-  const [pin, setPin] = useState("");
-  const [phoneError, setPhoneError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [reinitiateId, setReinitiateId] = useState<string | null>(null);
-  const [transactionId, setTransactionId] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Pay for Subscription state
@@ -390,77 +380,6 @@ function RevenueContent() {
     } else {
       setSelectedShops(userShops.map(s => s._id));
     }
-  };
-
-  const handlePhoneChange = (value: string) => {
-    setPhoneNumber(value);
-    if (value && !isValidKenyanPhone(value)) {
-      setPhoneError("Enter a valid Kenyan phone number (e.g., 0712345678)");
-    } else {
-      setPhoneError("");
-    }
-  };
-
-  const handleWithdraw = async () => {
-    if (!isValidKenyanPhone(phoneNumber)) {
-      setPhoneError("Enter a valid Kenyan phone number");
-      return;
-    }
-    if (!amount || parseFloat(amount) <= 0) {
-      toast({ title: "Error", description: "Enter a valid amount", variant: "destructive" });
-      return;
-    }
-    if (!pin) {
-      toast({ title: "Error", description: "Enter your PIN", variant: "destructive" });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const body: Record<string, any> = {
-        phonenumber: formatKenyanPhone(phoneNumber),
-        amount: parseInt(amount),
-        pin,
-      };
-      if (reinitiateId) {
-        body.id = reinitiateId;
-      }
-      if (transactionId) {
-        body.transactionId = transactionId;
-      }
-      const result = await apiClient<{ status: boolean; message: string }>("/revenue/withdraw", {
-        method: "POST",
-        body,
-      });
-      if (result.status) {
-        toast({ title: "Success", description: result.message || "Withdrawal request submitted" });
-        setWithdrawOpen(false);
-        setPhoneNumber("");
-        setAmount("");
-        setPin("");
-        setReinitiateId(null);
-        setTransactionId(null);
-        refetchTransactions();
-      } else {
-        toast({ title: "Error", description: result.message || "Withdrawal failed", variant: "destructive" });
-      }
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Withdrawal failed", variant: "destructive" });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleReinitiate = (tx: Transaction) => {
-    // Pre-fill with transaction data
-    const phone = tx.affliate?.phonenumber || tx.phoneNumber || "";
-    setPhoneNumber(phone);
-    setAmount(tx.amount?.toString() || "");
-    setPin("");
-    setPhoneError("");
-    setReinitiateId(tx.affliate?._id || null);
-    setTransactionId(tx._id || null);
-    setWithdrawOpen(true);
   };
 
   if (isLoading) {
@@ -685,75 +604,6 @@ function RevenueContent() {
             </DialogContent>
           </Dialog>
 
-          <Dialog open={withdrawOpen} onOpenChange={(open) => {
-            setWithdrawOpen(open);
-            if (!open) {
-              setReinitiateId(null);
-              setTransactionId(null);
-            }
-          }}>
-            <DialogTrigger asChild>
-              <Button data-testid="button-withdraw">
-                <Banknote className="h-4 w-4 mr-2" />
-                Withdraw
-              </Button>
-            </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Withdraw Funds</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number (M-Pesa)</Label>
-                <Input
-                  id="phone"
-                  placeholder="0712345678"
-                  value={phoneNumber}
-                  onChange={(e) => handlePhoneChange(e.target.value)}
-                  data-testid="input-phone"
-                />
-                {phoneError && (
-                  <p className="text-sm text-destructive">{phoneError}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="amount">Amount (KES)</Label>
-                <Input
-                  id="amount"
-                  type="number"
-                  placeholder="Enter amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  data-testid="input-amount"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pin">PIN</Label>
-                <Input
-                  id="pin"
-                  type="password"
-                  placeholder="Enter PIN"
-                  value={pin}
-                  onChange={(e) => setPin(e.target.value)}
-                  data-testid="input-pin"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setWithdrawOpen(false)} data-testid="button-cancel">
-                Cancel
-              </Button>
-              <Button 
-                onClick={handleWithdraw} 
-                disabled={isSubmitting || !phoneNumber || !amount || !pin || !!phoneError}
-                data-testid="button-submit-withdraw"
-              >
-                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Withdraw
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
         </div>
       </div>
 
@@ -820,7 +670,6 @@ function RevenueContent() {
                     <TableHead>Amount</TableHead>
                     <TableHead>Affiliate</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -870,24 +719,11 @@ function RevenueContent() {
                       <TableCell data-testid={`badge-status-${tx._id}`}>
                         {getStatusBadge(tx.status)}
                       </TableCell>
-                      <TableCell>
-                        {tx.type?.toLowerCase() === "withdraw" && tx.status === false && (
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            onClick={() => handleReinitiate(tx)}
-                            data-testid={`button-reinitiate-${tx._id}`}
-                          >
-                            <RefreshCw className="h-3 w-3 mr-1" />
-                            Reinitiate
-                          </Button>
-                        )}
-                      </TableCell>
                     </TableRow>
                   ))}
                   {(transactionsData?.data || transactionsData?.transactions || []).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                      <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                         No transactions found
                       </TableCell>
                     </TableRow>
