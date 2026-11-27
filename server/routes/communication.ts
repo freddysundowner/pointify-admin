@@ -101,7 +101,6 @@ export function registerCommunicationRoutes(app: Express) {
         return hasPhone;
       });
       
-      console.log(`Page ${pageNum}: Total shops: ${totalFromApi}, Shops in page: ${allShops.length}, With phone: ${filteredShops.length}, userType: ${userType}`);
 
       // Return shop owners with phone numbers
       const usersWithPhone = filteredShops.map((shop: any) => {
@@ -175,7 +174,6 @@ export function registerCommunicationRoutes(app: Express) {
         return hasEmail;
       });
       
-      console.log(`Page ${pageNum}: Total shops: ${totalFromApi}, Shops in page: ${allShops.length}, With email: ${filteredShops.length}, userType: ${userType}`);
 
       // Return shop owners with email addresses
       const usersWithEmail = filteredShops.map((shop: any) => {
@@ -429,7 +427,6 @@ export function registerCommunicationRoutes(app: Express) {
       const senderName = settings?.BREVO_SENDER_NAME || "ReggyPOS";
       
       // Log key info for debugging (masked)
-      console.log(`[Bulk Email] API Key prefix: ${brevoApiKey?.substring(0, 10)}..., Sender: ${senderEmail}`);
 
       if (!dryRun && (!brevoApiKey || !senderEmail)) {
         return res.status(400).json({ 
@@ -475,7 +472,6 @@ export function registerCommunicationRoutes(app: Express) {
               // Simulate sending
               await new Promise(resolve => setTimeout(resolve, 50));
               results.push({ email, name, success: true });
-              console.log(`[Bulk Email] DRY RUN: Would send to ${email}`);
             } else {
               // Actually send via Brevo
               await brevoApi.sendTransacEmail({
@@ -485,7 +481,6 @@ export function registerCommunicationRoutes(app: Express) {
                 htmlContent: personalizedHtml,
               });
               results.push({ email, name, success: true });
-              console.log(`[Bulk Email] Sent to ${email}`);
             }
           } catch (error: any) {
             const errorMsg = error.response?.body?.message || error.response?.text || error.message;
@@ -602,7 +597,6 @@ export function registerCommunicationRoutes(app: Express) {
               // Simulate sending
               await new Promise(resolve => setTimeout(resolve, 50));
               results.push({ email, name, success: true });
-              console.log(`[Bulk Email] DRY RUN: Would send to ${email}`);
             } else {
               // Actually send via Brevo
               await brevoApi.sendTransacEmail({
@@ -612,7 +606,6 @@ export function registerCommunicationRoutes(app: Express) {
                 htmlContent: personalizedHtml,
               });
               results.push({ email, name, success: true });
-              console.log(`[Bulk Email] Sent to ${email}`);
             }
           } catch (error: any) {
             const errorMsg = error.response?.body?.message || error.response?.text || error.message;

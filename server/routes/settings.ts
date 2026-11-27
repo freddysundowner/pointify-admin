@@ -260,7 +260,6 @@ export function registerSettingsRoutes(app: Express) {
         token: session.token,
       });
       
-      console.log("[API] Theme settings response:", JSON.stringify(themeConfig));
       
       res.json(themeConfig || {});
     } catch (error: any) {
