@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,21 @@ export default function LoginPage() {
       password: "",
     },
   });
+
+  // Demo installations pre-fill the staff login (see DEMO_LOGIN_* in .env).
+  const [demo, setDemo] = useState<{ email: string; password: string } | null>(null);
+  useEffect(() => {
+    fetch("/api/demo-login")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d?.enabled) {
+          setDemo({ email: d.email, password: d.password });
+          form.setValue("email", d.email);
+          form.setValue("password", d.password);
+        }
+      })
+      .catch(() => {});
+  }, [form]);
 
   async function onSubmit(data: LoginInput) {
     setIsLoading(true);
@@ -58,6 +73,14 @@ export default function LoginPage() {
           </div>
           <CardTitle className="text-2xl font-semibold">ReggyPOS Admin</CardTitle>
           <CardDescription>Sign in to access your dashboard</CardDescription>
+          {demo && (
+            <div className="mt-3 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-left text-xs" data-testid="demo-login-note">
+              <div className="font-semibold text-primary">Demo login (already filled in)</div>
+              <div className="mt-0.5 text-muted-foreground">
+                {demo.email} · {demo.password}
+              </div>
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <Form {...form}>

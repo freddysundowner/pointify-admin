@@ -2,6 +2,14 @@ import type { Express, Request, Response } from "express";
 import { apiRequest, getSession } from "./utils";
 
 export function registerAuthRoutes(app: Express) {
+  // Demo mode: when DEMO_LOGIN_EMAIL and DEMO_LOGIN_PASSWORD are set in .env,
+  // the login page pre-fills them. Leave them empty on a real installation.
+  app.get("/api/demo-login", (_req: Request, res: Response) => {
+    const email = process.env.DEMO_LOGIN_EMAIL || "";
+    const password = process.env.DEMO_LOGIN_PASSWORD || "";
+    res.json(email && password ? { enabled: true, email, password } : { enabled: false });
+  });
+
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
